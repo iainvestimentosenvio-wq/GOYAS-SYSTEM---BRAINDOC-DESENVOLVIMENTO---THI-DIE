@@ -1,0 +1,225 @@
+# PROJETO PROTONS - Development Rules for AI Assistants
+# Version: 1.0
+# Last Updated: 2026-01-29
+
+## Project Context
+project_type: "WPF Desktop Application"
+framework: ".NET Framework 4.8"
+platform: "Windows (offline-only)"
+architecture: "MVVM"
+persistence: "SQLite local"
+language: "C#"
+markup: "XAML"
+
+## Critical Rules (MANDATORY - Breaking these fails Definition of Done)
+
+### Documentation Mirroring (BLOCKING REQUIREMENT)
+documentation_mirroring:
+  enabled: true
+  strictness: "blocking"
+  rules:
+    - "Every code file created/modified MUST have corresponding .md documentation"
+    - "Documentation path mirrors code path exactly"
+    - "Example: App/Login/AuthService.cs → documentos/doc_login/App/Login/AuthService.md"
+    - "Documentation must include: objective, functionality, inputs/outputs, dependencies, testing"
+    - "NO empty documentation files allowed"
+    - "Update indices MANDATORY: documentos/DOCS_OVERVIEW.md AND documentos/doc_login/INDEX.md"
+
+  verification:
+    - "Run: git status to list all modified files"
+    - "Verify each code file has corresponding .md"
+    - "Verify indices are updated"
+    - "Present file tree showing documentation structure"
+
+### Architecture Rules (STRICT)
+architecture:
+  pattern: "MVVM"
+  layers:
+    - name: "UI"
+      path: "App/*/UI/"
+      allowed_dependencies: ["Core"]
+      forbidden: ["Direct database access", "SQLite references"]
+
+    - name: "Core"
+      path: "App/*/Core/"
+      allowed_dependencies: ["Infrastructure"]
+      forbidden: ["WPF references", "XAML dependencies"]
+
+    - name: "Infrastructure"
+      path: "App/*/Infrastructure/"
+      allowed_dependencies: ["SQLite", "System.Data"]
+      forbidden: ["UI references", "ViewModel access"]
+
+  flow: "UI → Core → Infrastructure (one-way only)"
+
+  validation:
+    - "ViewModels must NOT access SQLite directly"
+    - "Services (Core) must NOT reference WPF"
+    - "Repositories (Infrastructure) must NOT reference UI"
+
+### Security Rules (NON-NEGOTIABLE)
+security:
+  password_storage:
+    - "NEVER store passwords in plaintext"
+    - "MUST use PBKDF2 + salt"
+    - "Store iterations in IteracoesPBKDF2 field"
+
+  lockout:
+    - "5 failed attempts → 30 second lockout"
+    - "All lockout events MUST be audited"
+
+  error_messages:
+    - "Never reveal if email exists"
+    - "Use generic messages: 'Invalid credentials'"
+
+  logging:
+    - "NEVER log passwords"
+    - "NEVER log full CPF"
+    - "Sanitize sensitive data in logs"
+
+### Audit Requirements (MANDATORY)
+audit:
+  events:
+    - "LOGIN_SUCESSO"
+    - "LOGIN_FALHA"
+    - "CRIAR_CONTA"
+    - "APROVAR_USUARIO"
+    - "REJEITAR_USUARIO"
+    - "LOCKOUT"
+    - "LOGOUT"
+
+  required_fields:
+    - "timestamp"
+    - "userId/email"
+    - "acao"
+    - "resultado (OK/ERRO)"
+    - "detalhes (sanitized)"
+    - "maquina (hostname)"
+    - "versaoApp"
+
+  optional:
+    - "PrevHash (for hash chain)"
+    - "Hash (for hash chain)"
+
+### Terminal Safety Rules (CRITICAL)
+terminal_safety:
+  forbidden_without_confirmation:
+    - "rm -rf"
+    - "git reset --hard"
+    - "git push --force"
+    - "Deleting files"
+    - "Overwriting files without reading first"
+
+  required_practices:
+    - "Always use idempotent operations when possible"
+    - "Read file content before modifying"
+    - "Prefer reversible operations"
+    - "Use git status before commits"
+
+## Definition of Done (Checklist)
+definition_of_done:
+  code:
+    - "Follows MVVM pattern"
+    - "Respects layer separation (UI/Core/Infrastructure)"
+    - "No direct database access from UI"
+    - "Security rules maintained (PBKDF2, lockout, audit)"
+
+  documentation:
+    - "Mirror .md created/updated for each code file"
+    - "Documentation includes: objective + functionality + testing"
+    - "DOCS_OVERVIEW.md updated"
+    - "Module INDEX.md updated (e.g., doc_login/INDEX.md)"
+    - "No empty documentation files"
+
+  verification:
+    - "File tree presented showing modified files"
+    - "1:1 correspondence verified between code and docs"
+    - "All indices updated and linked correctly"
+
+  testing:
+    - "Testing approach documented in .md file"
+    - "When tests exist: unit tests pass"
+    - "When tests exist: integration tests pass"
+
+## Templates
+templates:
+  documentation: "documentos/TEMPLATES/TEMPLATE_DOC_ARQUIVO.md"
+  module_doc: "documentos/TEMPLATES/TEMPLATE_DOC_MODULO.md"
+  checklist: "documentos/TEMPLATES/TEMPLATE_CHECKLIST.md"
+
+## Project Structure
+structure:
+  code: "App/"
+  documentation: "documentos/doc_login/"
+  templates: "documentos/TEMPLATES/"
+  codex_rules: ".codex/"
+
+  modules:
+    - "Login (current - MVP phase)"
+    - "Importacao (future)"
+    - "Dominio (future)"
+    - "Prefeitura (future)"
+
+## Technology Stack
+technology:
+  ui: "WPF (Windows Presentation Foundation)"
+  ui_toolkit: "MaterialDesignInXamlToolkit"
+  theme: "Dark theme"
+  data_access: "SQLite"
+  hashing: "PBKDF2"
+  binding: "MVVM INotifyPropertyChanged"
+
+## Code Style Preferences
+code_style:
+  naming:
+    - "PascalCase for classes, methods, properties"
+    - "camelCase for local variables"
+    - "Private fields: _camelCase with underscore"
+
+  organization:
+    - "One class per file"
+    - "Interfaces in separate files"
+    - "Group usings by: System, external, internal"
+
+## Validation Commands
+validation:
+  check_structure:
+    - "find App/ -type f -name '*.cs'"
+    - "find documentos/doc_login/App/ -type f -name '*.md'"
+    - "Compare counts and paths"
+
+  check_indices:
+    - "grep -l 'AuthService' documentos/DOCS_OVERVIEW.md"
+    - "grep -l 'AuthService' documentos/doc_login/INDEX.md"
+
+## Before Finalizing ANY Task
+pre_completion_checklist:
+  required_output:
+    - "List of all files created/modified"
+    - "File tree of affected areas (find documentos -maxdepth 3 -type f)"
+    - "Verification that doc mirrors exist for all code files"
+    - "Confirmation indices are updated"
+    - "No destructive commands executed without permission"
+
+## AI Assistant Behavior
+assistant_behavior:
+  approach: "Conservative and verification-focused"
+  priorities:
+    1: "Safety (no destructive operations)"
+    2: "Documentation completeness"
+    3: "Architecture compliance"
+    4: "Security rules adherence"
+    5: "Code functionality"
+
+  when_uncertain:
+    - "Ask user for confirmation"
+    - "Read existing patterns first"
+    - "Follow templates from documentos/TEMPLATES/"
+    - "Verify against .codex/ rules"
+
+  forbidden:
+    - "Creating code without documentation"
+    - "Creating empty documentation files"
+    - "Breaking layer dependencies"
+    - "Skipping index updates"
+    - "Using destructive commands without approval"

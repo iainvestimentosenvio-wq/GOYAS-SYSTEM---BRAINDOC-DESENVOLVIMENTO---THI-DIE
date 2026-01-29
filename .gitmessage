@@ -1,0 +1,33 @@
+# <type>: <subject> (max 50 chars)
+
+# <body> (wrap at 72 chars)
+
+# DOCUMENTATION CHECKLIST (mandatory):
+# [ ] All modified .cs files have corresponding .md updates
+# [ ] documentos/DOCS_OVERVIEW.md updated
+# [ ] documentos/doc_login/INDEX.md updated
+# [ ] No empty documentation files
+
+# ARCHITECTURE CHECKLIST:
+# [ ] MVVM pattern followed
+# [ ] Layer separation maintained (UI → Core → Infrastructure)
+# [ ] No direct database access from UI
+
+# SECURITY CHECKLIST:
+# [ ] No passwords in plaintext
+# [ ] PBKDF2 used for password hashing
+# [ ] Audit events logged for critical actions
+# [ ] No sensitive data in logs
+
+# Types: feat, fix, docs, refactor, test, chore
+# Example:
+# feat: Add user approval functionality in AuthService
+#
+# Implements admin approval workflow with audit trail.
+# Updates UserRepository with ApproveUser method.
+#
+# Documentation:
+# - Created documentos/doc_login/App/Login/Core/AuthService.md
+# - Updated DOCS_OVERVIEW.md and INDEX.md
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>

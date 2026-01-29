@@ -1,0 +1,113 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "msbuild",
+      "type": "process",
+      "args": [
+        "/property:GenerateFullPaths=true",
+        "/property:Configuration=Debug",
+        "/t:Build",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-release",
+      "command": "msbuild",
+      "type": "process",
+      "args": [
+        "/property:GenerateFullPaths=true",
+        "/property:Configuration=Release",
+        "/t:Build",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean",
+      "command": "msbuild",
+      "type": "process",
+      "args": [
+        "/t:Clean",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "rebuild",
+      "command": "msbuild",
+      "type": "process",
+      "args": [
+        "/t:Rebuild",
+        "/property:Configuration=Debug",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "restore",
+      "command": "nuget",
+      "type": "process",
+      "args": [
+        "restore",
+        "${workspaceFolder}/Protons.sln"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "verify-documentation-mirror",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-File",
+        "${workspaceFolder}/scripts/verify-doc-mirror.ps1"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "git-status-check",
+      "type": "shell",
+      "command": "git",
+      "args": [
+        "status",
+        "-sb"
+      ],
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
