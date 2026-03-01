@@ -1,0 +1,121 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Protons.UI.App"
+             xmlns:local="using:Protons.UI"
+             RequestedThemeVariant="Dark">
+
+   <Application.DataTemplates>
+       <local:ViewLocator/>
+   </Application.DataTemplates>
+
+   <Application.Resources>
+       <!-- Fonte -->
+       <FontFamily x:Key="PainelFont">avares://Protons.UI/Assets/Fonts/Sora/#Sora</FontFamily>
+
+       <!-- ── FUNDOS (hierarquia clara) ──────────────────────────────── -->
+       <SolidColorBrush x:Key="BackgroundBrush"      Color="#0C1220" />
+       <SolidColorBrush x:Key="SurfaceBrush"         Color="#111927" />
+       <SolidColorBrush x:Key="SurfaceElevatedBrush" Color="#16233B" />
+       <SolidColorBrush x:Key="SurfaceBorderBrush"   Color="#1E2D45" />
+       <SolidColorBrush x:Key="SurfaceHoverBrush"    Color="#1A2B40" />
+       <SolidColorBrush x:Key="SidebarBrush"         Color="#0A1019" />
+
+       <!-- ── ACENTO PRIMÁRIO — AZUL DA MARCA ─────────────────────── -->
+       <SolidColorBrush x:Key="AccentPrimaryBrush"   Color="#3B82F6" />
+       <SolidColorBrush x:Key="AccentHoverBrush"     Color="#2563EB" />
+       <SolidColorBrush x:Key="AccentActiveBrush"    Color="#1D4ED8" />
+
+       <!-- ── ACENTOS SEMÂNTICOS ──────────────────────────────────── -->
+       <SolidColorBrush x:Key="AccentTealBrush"      Color="#06B6D4" />
+       <SolidColorBrush x:Key="AccentGreenBrush"     Color="#22C55E" />
+       <SolidColorBrush x:Key="AccentOrangeBrush"    Color="#F59E0B" />
+       <SolidColorBrush x:Key="AccentRedBrush"       Color="#EF4444" />
+
+       <!-- ── TIPOGRAFIA ─────────────────────────────────────────── -->
+       <SolidColorBrush x:Key="TextPrimaryBrush"     Color="#F1F5F9" />
+       <SolidColorBrush x:Key="TextSecondaryBrush"   Color="#94A3B8" />
+       <SolidColorBrush x:Key="TextMutedBrush"       Color="#475569" />
+
+       <!-- ── ESPECIAIS ───────────────────────────────────────────── -->
+       <SolidColorBrush x:Key="OverlayBrush"         Color="#B3000000" />
+
+       <!-- ── LEGADOS: aliases para UserControls existentes ─────── -->
+       <SolidColorBrush x:Key="PanelBackground"      Color="#0C1220" />
+       <SolidColorBrush x:Key="PanelSurface"         Color="#111927" />
+       <SolidColorBrush x:Key="PanelSurfaceAlt"      Color="#16233B" />
+       <SolidColorBrush x:Key="PanelBorder"          Color="#1E2D45" />
+       <SolidColorBrush x:Key="PanelSidebar"         Color="#0A1019" />
+       <SolidColorBrush x:Key="AccentBlue"           Color="#3B82F6" />
+       <SolidColorBrush x:Key="AccentTeal"           Color="#06B6D4" />
+       <SolidColorBrush x:Key="AccentGreen"          Color="#22C55E" />
+       <SolidColorBrush x:Key="AccentOrange"         Color="#F59E0B" />
+       <SolidColorBrush x:Key="AccentRed"            Color="#EF4444" />
+       <SolidColorBrush x:Key="TextPrimary"          Color="#F1F5F9" />
+       <SolidColorBrush x:Key="TextSecondary"        Color="#94A3B8" />
+       <SolidColorBrush x:Key="TextMuted"            Color="#475569" />
+
+       <!-- ── MENSAGENS ──────────────────────────────────────────── -->
+       <SolidColorBrush x:Key="ErrorBrush"           Color="#EF4444"/>
+       <SolidColorBrush x:Key="SuccessBrush"         Color="#22C55E"/>
+       <SolidColorBrush x:Key="InfoBrush"            Color="#06B6D4"/>
+       <SolidColorBrush x:Key="WarningBrush"         Color="#F59E0B"/>
+   </Application.Resources>
+
+   <Application.Styles>
+       <FluentTheme />
+       <Style Selector="Window">
+           <Setter Property="Background" Value="#0C1220"/>
+           <Setter Property="TransparencyLevelHint" Value="None"/>
+       </Style>
+       <Style Selector="TextBlock">
+           <Setter Property="Foreground" Value="#F1F5F9"/>
+       </Style>
+       <Style Selector="TextBox">
+           <Setter Property="Background" Value="#111927"/>
+           <Setter Property="Foreground" Value="#F1F5F9"/>
+           <Setter Property="BorderBrush" Value="#1E2D45"/>
+           <Setter Property="BorderThickness" Value="1"/>
+           <Setter Property="CornerRadius" Value="6"/>
+           <Setter Property="Padding" Value="12,8"/>
+           <Setter Property="FontSize" Value="14"/>
+           <Setter Property="MinHeight" Value="40"/>
+       </Style>
+       <Style Selector="TextBox:focus">
+           <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}"/>
+       </Style>
+       <Style Selector="Button">
+           <Setter Property="Background" Value="#1A2535"/>
+           <Setter Property="Foreground" Value="#F1F5F9"/>
+           <Setter Property="BorderBrush" Value="#1E2D45"/>
+           <Setter Property="BorderThickness" Value="1"/>
+           <Setter Property="CornerRadius" Value="6"/>
+           <Setter Property="Padding" Value="12,8"/>
+           <Setter Property="FontSize" Value="14"/>
+           <Setter Property="MinHeight" Value="38"/>
+       </Style>
+       <Style Selector="Button.Primary">
+           <Setter Property="Background" Value="{DynamicResource AccentPrimaryBrush}"/>
+           <Setter Property="Foreground" Value="White"/>
+           <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}"/>
+       </Style>
+       <Style Selector="Button.Ghost">
+           <Setter Property="Background" Value="Transparent"/>
+           <Setter Property="BorderBrush" Value="#1E2D45"/>
+       </Style>
+       <Style Selector="Button.CloseButton">
+           <Setter Property="Background" Value="Transparent"/>
+           <Setter Property="Foreground" Value="#C8D0DA"/>
+           <Setter Property="BorderBrush" Value="Transparent"/>
+           <Setter Property="BorderThickness" Value="0"/>
+           <Setter Property="CornerRadius" Value="6"/>
+       </Style>
+       <Style Selector="Button.CloseButton:pointerover">
+           <Setter Property="Background" Value="#1E2D45"/>
+           <Setter Property="Foreground" Value="#FFFFFF"/>
+       </Style>
+       <Style Selector="Button.CloseButton:pressed">
+           <Setter Property="Background" Value="{DynamicResource AccentPrimaryBrush}"/>
+           <Setter Property="Foreground" Value="White"/>
+       </Style>
+   </Application.Styles>
+</Application>

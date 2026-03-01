@@ -1,0 +1,548 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             xmlns:partes="using:Protons.UI.Painel.Views.PainelPrincipal.Partes"
+             xmlns:funcionalidades="using:Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.TarefasRealizadas"
+             xmlns:ancorarPdf="using:Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.Ferramentas.AncorarPdf"
+             xmlns:funcionalidadesCadastro="using:Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.CadastroClientes"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelView"
+             x:DataType="vm:PainelViewModel"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+  <UserControl.Styles>
+    <Style Selector="UserControl">
+      <Setter Property="FontFamily" Value="{DynamicResource PainelFont}" />
+    </Style>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+    <Style Selector="TextBlock.muted">
+      <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
+    </Style>
+
+    <!-- Card base -->
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="{DynamicResource PanelSurface}" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="20" />
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!-- Botoes de navegacao da sidebar -->
+    <Style Selector="Button.sidebar-btn">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.12" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active">
+      <Setter Property="Background" Value="#1F3B82F6" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="3,0,0,0" />
+    </Style>
+    <Style Selector="Button.sidebar-btn Path">
+      <Setter Property="Fill" Value="{DynamicResource TextSecondary}" />
+    </Style>
+    <Style Selector="Button.sidebar-btn:pointerover Path">
+      <Setter Property="Fill" Value="{DynamicResource TextPrimary}" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active Path">
+      <Setter Property="Fill" Value="{DynamicResource AccentPrimaryBrush}" />
+    </Style>
+
+    <!-- Botao primario -->
+    <Style Selector="Button.btn-primary">
+      <Setter Property="Background" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="16,10" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.btn-primary:pointerover">
+      <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+    </Style>
+
+    <!-- Botao secundario -->
+    <Style Selector="Button.btn-secondary">
+      <Setter Property="Background" Value="{DynamicResource PanelSurfaceAlt}" />
+      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
+      <Setter Property="Padding" Value="16,10" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.btn-secondary:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+    </Style>
+
+    <!-- Botao de logout -->
+    <Style Selector="Button.btn-logout">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{DynamicResource AccentRed}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentRed}" />
+      <Setter Property="Padding" Value="12,8" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.btn-logout:pointerover">
+      <Setter Property="Background" Value="{DynamicResource AccentRed}" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Botoes de controle da janela -->
+    <Style Selector="Button.window-btn">
+      <Setter Property="Width" Value="36" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.window-btn:pointerover">
+      <Setter Property="Background" Value="#2D333B" />
+    </Style>
+    <Style Selector="Button.window-btn.close:pointerover">
+      <Setter Property="Background" Value="#DA3633" />
+    </Style>
+    <Style Selector="Button.window-btn.close:pointerover Path">
+      <Setter Property="Stroke" Value="White" />
+    </Style>
+  </UserControl.Styles>
+
+  <Grid Background="{DynamicResource BackgroundBrush}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="220" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <partes:BarraLateralPainelPrincipalView x:Name="BarraLateralPainel" Grid.Column="0" Grid.RowSpan="2" />
+
+    <!-- ==================== TOPBAR ==================== -->
+    <Border Grid.Column="1" Grid.Row="0"
+            Background="{DynamicResource SidebarBrush}"
+            BorderBrush="{DynamicResource PanelBorder}"
+            BorderThickness="0,0,0,1"
+            Padding="20,8,20,8">
+      <Grid ColumnDefinitions="Auto,*,Auto"
+            RowDefinitions="Auto,Auto"
+            ColumnSpacing="22"
+            RowSpacing="6">
+        <StackPanel Grid.RowSpan="2" VerticalAlignment="Center" Spacing="2" MinWidth="130">
+          <TextBlock Text="Dashboard" FontSize="18" FontWeight="SemiBold" />
+          <TextBlock Text="Visao para cada sistema" FontSize="11" Classes="muted" />
+          <TextBlock Text="{Binding StatusNavegacao}" FontSize="10" Classes="muted" />
+        </StackPanel>
+
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" RowDefinitions="Auto,Auto" RowSpacing="6">
+          <Border x:Name="SeletorClientesContainer"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="0">
+            <Grid RowDefinitions="Auto,Auto" RowSpacing="4">
+              <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+                <TextBox x:Name="BuscaClienteTextBox"
+                         Grid.Column="0"
+                         Text="{Binding BuscaTexto}"
+                         Watermark="{Binding WatermarkBuscaPainel}"
+                         HorizontalAlignment="Stretch"
+                         Background="{DynamicResource PanelSurfaceAlt}"
+                         BorderBrush="{DynamicResource PanelBorder}"
+                         BorderThickness="1"
+                         Padding="10,7"
+                         FontSize="12"
+                         PointerPressed="OnBuscaClientePointerPressed" />
+
+                <Button Grid.Column="1"
+                        Command="{Binding AbrirSeletorClientesCommand}"
+                        Background="{DynamicResource PanelSurfaceAlt}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        Padding="8,4"
+                        MinWidth="34"
+                        HorizontalAlignment="Right"
+                        Cursor="Hand">
+                  <Path Data="M4,8 L12,16 L20,8"
+                        Stroke="{DynamicResource TextSecondaryBrush}"
+                        StrokeThickness="1.8"
+                        StrokeLineCap="Round"
+                        Width="12" Height="8"
+                        Stretch="Uniform" />
+                </Button>
+
+                <Button Grid.Column="2"
+                        Command="{Binding LimparClienteSelecionadoCommand}"
+                        IsVisible="{Binding TemClienteSelecionado}"
+                        Background="{DynamicResource PanelSurfaceAlt}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        Padding="8,4"
+                        MinWidth="34"
+                        HorizontalAlignment="Right"
+                        Cursor="Hand">
+                  <Path Data="M4,4 L12,12 M12,4 L4,12"
+                        Stroke="{DynamicResource TextSecondaryBrush}"
+                        StrokeThickness="1.8"
+                        StrokeLineCap="Round"
+                        Width="10" Height="10"
+                        Stretch="Uniform" />
+                </Button>
+              </Grid>
+
+              <Border Grid.Row="1"
+                      IsVisible="{Binding SeletorClientesAberto}"
+                      Background="{DynamicResource PanelSurfaceAlt}"
+                      BorderBrush="{DynamicResource PanelBorder}"
+                      BorderThickness="1"
+                      CornerRadius="8"
+                      Padding="6">
+                <ScrollViewer MaxHeight="320"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                  <ItemsControl ItemsSource="{Binding ItensSeletorClientes}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:SeletorClienteItemPainel">
+                        <StackPanel Spacing="2">
+                          <Button IsVisible="{Binding EhGrupo}"
+                                  Command="{Binding $parent[UserControl].((vm:PainelViewModel)DataContext).AlternarGrupoSeletorCommand}"
+                                  CommandParameter="{Binding}"
+                                  Background="{DynamicResource SurfaceHoverBrush}"
+                                  BorderBrush="{DynamicResource PanelBorder}"
+                                  BorderThickness="1"
+                                  Padding="8,6"
+                                  HorizontalContentAlignment="Stretch"
+                                  Cursor="Hand">
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                              <TextBlock Text="{Binding IconeGrupo}" FontSize="12" VerticalAlignment="Center" />
+                              <TextBlock Grid.Column="1"
+                                         Text="{Binding TextoPrincipal}"
+                                         FontSize="12"
+                                         FontWeight="{Binding PesoTextoPrincipal}" />
+                              <TextBlock Grid.Column="2"
+                                         Text="{Binding TextoSecundario}"
+                                         FontSize="10"
+                                         Classes="muted"
+                                         VerticalAlignment="Center" />
+                            </Grid>
+                          </Button>
+
+                          <Button IsVisible="{Binding EhCliente}"
+                                  Command="{Binding $parent[UserControl].((vm:PainelViewModel)DataContext).SelecionarClienteSeletorCommand}"
+                                  CommandParameter="{Binding}"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Padding="8,6"
+                                  HorizontalContentAlignment="Left"
+                                  Cursor="Hand">
+                            <StackPanel Spacing="1" Margin="{Binding MargemConteudo}">
+                              <TextBlock Text="{Binding TextoPrincipal}"
+                                         FontSize="12"
+                                         FontWeight="{Binding PesoTextoPrincipal}" />
+                              <TextBlock Text="{Binding TextoSecundario}"
+                                         IsVisible="{Binding TemTextoSecundario}"
+                                         FontSize="10"
+                                         Classes="muted"
+                                         TextWrapping="Wrap" />
+                            </StackPanel>
+                          </Button>
+
+                          <TextBlock IsVisible="{Binding EhVazio}"
+                                     Text="{Binding TextoPrincipal}"
+                                     FontSize="11"
+                                     Classes="muted"
+                                     Margin="6,4" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+              </Border>
+            </Grid>
+          </Border>
+
+          <StackPanel Grid.Row="1" Spacing="0" VerticalAlignment="Center" Margin="2,0,0,0">
+            <TextBlock Text="{Binding ClienteContextoResumo}" FontSize="11" Classes="muted" />
+            <TextBlock Text="Selecione um cliente para filtrar as tarefas e esteiras desse contexto." FontSize="10" Classes="muted" />
+          </StackPanel>
+        </Grid>
+
+        <partes:AcoesSuperioresPainelPrincipalView Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" VerticalAlignment="Top" />
+      </Grid>
+    </Border>
+
+    <!-- ==================== CONTEUDO PRINCIPAL ==================== -->
+    <Grid Grid.Column="1" Grid.Row="1" RowDefinitions="*,Auto">
+      <ScrollViewer Grid.Row="0"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24" Spacing="20">
+          <StackPanel Spacing="20">
+            <!-- KPIs -->
+            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="12" HorizontalAlignment="Stretch">
+              <!-- KPI 1 - Tarefas Hoje -->
+              <Border Grid.Column="0" Classes="card">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Border Width="36" Height="36" CornerRadius="8" Background="#1E3A5F">
+                      <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                            Fill="{DynamicResource AccentBlue}" Width="18" Height="18" Stretch="Uniform"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel>
+                      <TextBlock Text="Tarefas hoje" FontSize="12" Classes="muted" />
+                      <TextBlock Text="{Binding NotasHoje}" FontSize="24" FontWeight="Bold" />
+                    </StackPanel>
+                  </StackPanel>
+                  <Border Background="{DynamicResource AccentTeal}" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left">
+                    <TextBlock Text="XML / PDF" FontSize="10" Foreground="#0B1118" FontWeight="SemiBold" />
+                  </Border>
+                </StackPanel>
+              </Border>
+
+              <!-- KPI 2 - Pendencias Futuras -->
+              <Border Grid.Column="1" Classes="card">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Border Width="36" Height="36" CornerRadius="8" Background="#3D2E0F">
+                      <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17A1.5,1.5 0 0,1 10.5,15.5A1.5,1.5 0 0,1 12,14A1.5,1.5 0 0,1 13.5,15.5A1.5,1.5 0 0,1 12,17M13,11H11V7H13V11Z"
+                            Fill="{DynamicResource AccentOrange}" Width="18" Height="18" Stretch="Uniform"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel>
+                      <TextBlock Text="Pendencias Futuras" FontSize="12" Classes="muted" />
+                      <TextBlock Text="{Binding PendenciasFuturasKpi}" FontSize="24" FontWeight="Bold" />
+                    </StackPanel>
+                  </StackPanel>
+                  <TextBlock Text="Agendadas para o futuro" FontSize="11" Classes="muted" />
+                </StackPanel>
+              </Border>
+
+              <!-- KPI 3 - Erros Criticos -->
+              <Border Grid.Column="2" Classes="card">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Border Width="36" Height="36" CornerRadius="8" Background="#3D1518">
+                      <Path Data="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
+                            Fill="{DynamicResource AccentRed}" Width="18" Height="18" Stretch="Uniform"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel>
+                      <TextBlock Text="Erros Criticos" FontSize="12" Classes="muted" />
+                      <TextBlock Text="{Binding ErrosCriticos}" FontSize="24" FontWeight="Bold" />
+                    </StackPanel>
+                  </StackPanel>
+                  <TextBlock Text="Requer atencao" FontSize="11" Classes="muted" Foreground="{DynamicResource AccentRed}" />
+                </StackPanel>
+              </Border>
+
+              <!-- KPI 4 - Pendencias Atrasadas -->
+              <Border Grid.Column="3" Classes="card">
+                <StackPanel Spacing="8">
+                  <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Border Width="36" Height="36" CornerRadius="8" Background="#3D2E0F">
+                      <Path Data="M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22M18,16V11C18,7.93 16.36,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16Z"
+                            Fill="{DynamicResource AccentOrange}" Width="18" Height="18" Stretch="Uniform"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel>
+                      <TextBlock Text="Pendencias Atrasadas" FontSize="12" Classes="muted" />
+                      <TextBlock Text="{Binding PendenciasAtrasadasKpi}" FontSize="24" FontWeight="Bold" />
+                    </StackPanel>
+                  </StackPanel>
+                  <TextBlock Text="Passou do horario agendado" FontSize="11" Classes="muted" />
+                </StackPanel>
+              </Border>
+            </Grid>
+
+            <funcionalidades:PainelReguaTempoView HorizontalAlignment="Stretch" />
+          </StackPanel>
+        </StackPanel>
+      </ScrollViewer>
+
+      <funcionalidades:HistoricoExecucaoPainelPrincipalView Grid.Row="1"
+                                                            HorizontalAlignment="Stretch"
+                                                            Margin="24,0,24,24" />
+    </Grid>
+
+    <!-- ==================== OVERLAY DRAG GHOST ==================== -->
+    <!-- Canvas fullscreen com ZIndex alto para sobrepor todo o conteudo.
+         IsHitTestVisible="False" garante que o ghost nao interfere nos cliques.
+
+         ATENCAO: A Image.Source NAO usa binding. Em Avalonia 11, binding de
+         string->IImage nao funciona (nem com x:CompileBindings="False").
+         A imagem e carregada via code-behind em PainelView.CarregarGhostImagem().
+         NAO adicionar Source="{Binding ...}" aqui - nao vai funcionar.
+
+         O tamanho de GhostBorda e GhostImagem e definido dinamicamente por
+         PainelView.DefinirTamanhoGhost() conforme o card arrastado. -->
+    <Canvas Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsHitTestVisible="False"
+            ZIndex="95">
+      <Border x:Name="GhostBorda"
+              IsVisible="{Binding DragGhostVisivel}"
+              Canvas.Left="{Binding DragGhostX}"
+              Canvas.Top="{Binding DragGhostY}"
+              CornerRadius="14"
+              Opacity="0.85">
+        <Image x:Name="GhostImagem"
+               Stretch="Uniform" />
+      </Border>
+    </Canvas>
+
+    <!-- ==================== MODAL WIZARD — PAINEL BASICO + CONFIRMACAO (ZIndex 103) ==================== -->
+    <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsVisible="{Binding AgendamentoBasicoAberto}"
+            Background="{DynamicResource OverlayBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="103">
+      <ancorarPdf:AncorarPdfAgendamentoBasicoView
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          DataContext="{Binding AncorarPdfAgendamentoBasico}" />
+    </Border>
+
+    <!-- ==================== MODAL CONFIGURACAO TAREFA (PLACEHOLDER) ==================== -->
+    <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsVisible="{Binding ModalConfiguracaoTarefaVisivel}"
+            Background="{DynamicResource OverlayBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="105">
+      <Border HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="14"
+              CornerRadius="18"
+              Background="{DynamicResource SurfaceElevatedBrush}"
+              BorderBrush="{DynamicResource SurfaceBorderBrush}"
+              BorderThickness="1">
+        <Grid>
+          <ancorarPdf:AncorarPdfConfiguracaoView x:Name="ConfigAncorarPdf"
+                                                 IsVisible="{Binding $parent[UserControl].((vm:PainelViewModel)DataContext).ConfiguracaoTarefaEhAncorarPdf}"
+                                                 DataContext="{Binding AncorarPdfConfiguracao}" />
+          <funcionalidades:ConfiguracaoTarefaPlaceholderView x:Name="ConfigTarefaPlaceholder"
+                                                             IsVisible="{Binding ConfiguracaoTarefaEhGenerica}" />
+        </Grid>
+      </Border>
+    </Border>
+
+    <!-- ==================== WIZARD PASSO 2 — EDITOR DE ÂNCORAS TELA CHEIA (ZIndex 106) ==================== -->
+    <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsVisible="{Binding ConfiguracaoAncorarPdfVisivelWizard}"
+            Background="{DynamicResource BackgroundBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="106">
+      <ancorarPdf:AncorarPdfConfiguracaoView
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          DataContext="{Binding AncorarPdfConfiguracao}" />
+    </Border>
+
+    <!-- ==================== MODAL CADASTRO DE CLIENTES ==================== -->
+    <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsVisible="{Binding CadastroClientesAberto}"
+            Background="{DynamicResource OverlayBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="110">
+      <Border HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Padding="14"
+              CornerRadius="18"
+              Background="{DynamicResource SurfaceElevatedBrush}"
+              BorderBrush="{DynamicResource SurfaceBorderBrush}"
+              BorderThickness="1">
+        <funcionalidadesCadastro:CadastroClientesPainelPrincipalView Width="980"
+                                                                     MaxHeight="760"
+                                                                     HorizontalAlignment="Center"
+                                                                     VerticalAlignment="Center" />
+      </Border>
+    </Border>
+
+    <!-- ==================== MODAL DE NOTIFICACOES ==================== -->
+    <Border Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
+            IsVisible="{Binding NotificacoesAbertas}"
+            Background="{DynamicResource OverlayBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="100">
+      <Border Background="{DynamicResource PanelSurface}" CornerRadius="16" Padding="24"
+              Width="480" HorizontalAlignment="Center" VerticalAlignment="Center"
+              BorderBrush="{DynamicResource PanelBorder}" BorderThickness="1">
+        <StackPanel Spacing="20">
+            <StackPanel Spacing="4">
+              <TextBlock Text="Nova solicitacao de acesso" FontSize="18" FontWeight="Bold" />
+              <TextBlock Text="Revise os dados cadastrais e aprove como usuário, administrador, ou rejeite." FontSize="12" Classes="muted" />
+              <TextBlock Text="Por segurança, senha nunca é exibida neste fluxo." FontSize="11" Classes="muted" />
+            </StackPanel>
+
+          <Border Background="{DynamicResource PanelSurfaceAlt}" CornerRadius="10" Padding="16">
+            <StackPanel Spacing="8">
+              <Grid ColumnDefinitions="100,*">
+                <TextBlock Text="Usuario:" FontSize="12" Classes="muted" />
+                <TextBlock Grid.Column="1" Text="{Binding PendenciaAtual.Nome}" FontSize="12" FontWeight="SemiBold" />
+              </Grid>
+              <Grid ColumnDefinitions="100,*">
+                <TextBlock Text="E-mail:" FontSize="12" Classes="muted" />
+                <TextBlock Grid.Column="1" Text="{Binding PendenciaAtual.Email}" FontSize="12" />
+              </Grid>
+              <Grid ColumnDefinitions="100,*">
+                <TextBlock Text="Empresa:" FontSize="12" Classes="muted" />
+                <TextBlock Grid.Column="1" Text="{Binding PendenciaAtual.Empresa}" FontSize="12" />
+              </Grid>
+              <Grid ColumnDefinitions="100,*">
+                <TextBlock Text="Cargo:" FontSize="12" Classes="muted" />
+                <TextBlock Grid.Column="1" Text="{Binding PendenciaAtual.Cargo}" FontSize="12" />
+              </Grid>
+            </StackPanel>
+          </Border>
+
+          <StackPanel Spacing="10">
+            <Button Classes="btn-primary" Content="Liberar acesso" Command="{Binding LiberarAcessoCommand}" HorizontalAlignment="Stretch" />
+            <Button Classes="btn-primary" Content="Liberar como administrador" Command="{Binding LiberarComoAdministradorCommand}" HorizontalAlignment="Stretch" />
+            <Button Classes="btn-secondary" Content="Nao conheco este usuario" Command="{Binding NaoConhecoCommand}" HorizontalAlignment="Stretch" />
+            <Button Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextMuted}"
+                    Content="Fechar" Command="{Binding FecharNotificacoesCommand}" HorizontalAlignment="Center" Cursor="Hand" />
+          </StackPanel>
+
+          <TextBlock Text="{Binding MensagemPendencias}" Foreground="{DynamicResource AccentOrange}"
+                     TextWrapping="Wrap" FontSize="12" IsVisible="{Binding MensagemPendencias, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+      </Border>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,0 +1,135 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.TarefasRealizadas.PainelReguaTempoView"
+             x:DataType="vm:PainelViewModel">
+
+  <Grid>
+    <Border Background="{DynamicResource SurfaceBrush}"
+            CornerRadius="12"
+            Padding="14"
+            BorderBrush="{DynamicResource PanelBorder}"
+            BorderThickness="1"
+            MinHeight="290">
+      <StackPanel Spacing="10">
+
+        <!-- Cabecalho -->
+        <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+          <TextBlock Text="Esteiras de Tarefas"
+                     FontSize="24"
+                     FontWeight="SemiBold" />
+
+          <Border Grid.Column="1"
+                  Background="{DynamicResource PanelSurfaceAlt}"
+                  CornerRadius="8"
+                  Padding="10,6"
+                  VerticalAlignment="Center">
+            <TextBlock x:Name="ZoomLevelTexto"
+                       Text="Zoom: --"
+                       FontSize="11"
+                       Foreground="{DynamicResource TextMuted}" />
+          </Border>
+
+          <Button Grid.Column="2"
+                  Content="↺ Agora"
+                  Command="{Binding CentralizarAgoraCommand}"
+                  Padding="12,6"
+                  FontSize="12"
+                  Background="{DynamicResource PanelSurfaceAlt}"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Cursor="Hand" />
+        </Grid>
+
+        <!-- Esteiras (cada uma com regua do tempo interna) -->
+        <ScrollViewer MaxHeight="500"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+          <StackPanel x:Name="EsteirasContainer" Spacing="8">
+            <!-- Populado via code-behind -->
+          </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Content="+ Nova Esteira"
+                  Command="{Binding AdicionarEsteiraCommand}"
+                  Padding="10,6"
+                  FontSize="12"
+                  Background="{DynamicResource PanelSurface}"
+                  Foreground="{DynamicResource TextMuted}"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Cursor="Hand"
+                  HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+          <TextBlock Text="{Binding ResumoTarefasCliente}"
+                     FontSize="11"
+                     Foreground="{DynamicResource TextMuted}"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Grid.Column="1"
+                     Text="{Binding UltimaAtualizacaoTarefas}"
+                     FontSize="10"
+                     Foreground="{DynamicResource TextMuted}" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <!-- Confirmacao de remocao de esteira -->
+    <Border IsVisible="{Binding ConfirmacaoRemoverEsteiraAberta}"
+            Background="{DynamicResource OverlayBrush}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="300">
+      <Border HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Width="520"
+              Background="{DynamicResource PanelSurfaceAlt}"
+              BorderBrush="{DynamicResource PanelBorder}"
+              BorderThickness="1"
+              CornerRadius="12"
+              Padding="16">
+        <StackPanel Spacing="12">
+          <TextBlock Text="{Binding ConfirmacaoRemoverEsteiraTitulo}"
+                     FontSize="18"
+                     FontWeight="SemiBold"
+                     Foreground="#E5E7EB" />
+
+          <TextBlock Text="{Binding ConfirmacaoRemoverEsteiraMensagem}"
+                     TextWrapping="Wrap"
+                     Foreground="#CBD5E1"
+                     FontSize="13" />
+
+          <StackPanel Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      Spacing="8">
+            <Button Content="Cancelar"
+                    Command="{Binding CancelarRemoverEsteiraCommand}"
+                    Padding="12,6"
+                    Background="#1F2937"
+                    BorderBrush="#374151"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+
+            <Button Content="Remover Esteira"
+                    Command="{Binding ConfirmarRemoverEsteiraCommand}"
+                    Padding="12,6"
+                    Background="#7F1D1D"
+                    Foreground="#FEE2E2"
+                    BorderBrush="#B91C1C"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+  </Grid>
+</UserControl>

@@ -1,0 +1,247 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             xmlns:funcionalidadesUsuario="using:Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.CartaoUsuario"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Partes.BarraLateralPainelPrincipalView"
+             x:DataType="vm:PainelViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="ItemsControl.tasks-list">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Grid.tool-item">
+      <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+
+    <Style Selector="Image.anchor-tool-image">
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="RenderTransform" Value="scale(1)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.13" />
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Grid.tool-item:pointerover Image.anchor-tool-image">
+      <Setter Property="RenderTransform" Value="scale(1.1)" />
+    </Style>
+
+  </UserControl.Styles>
+
+  <Border Background="{DynamicResource SidebarBrush}"
+          BorderBrush="{DynamicResource SurfaceBorderBrush}"
+          BorderThickness="0,0,1,0">
+    <Grid RowDefinitions="Auto,*,Auto">
+      <StackPanel Margin="20,20,20,24" Orientation="Horizontal" Spacing="12">
+        <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png" Width="32" Height="32" />
+        <TextBlock Text="PROTONS" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+      </StackPanel>
+
+      <Grid Grid.Row="1"
+            Margin="12,0,12,0"
+            RowDefinitions="Auto,Auto,*"
+            RowSpacing="6">
+        <Button x:Name="BotaoNavegacaoCadastrarCliente"
+                Grid.Row="0"
+                Classes="sidebar-btn active"
+                MinHeight="44"
+                Command="{Binding AbrirCadastroClientesCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <Path Data="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"
+                  Width="20" Height="20" Stretch="Uniform" />
+            <TextBlock Text="Cadastrar Cliente" FontWeight="SemiBold" VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+
+        <Button x:Name="BotaoNavegacaoImportar"
+                Grid.Row="1"
+                Classes="sidebar-btn"
+                Command="{Binding AlternarListaTarefasLateralCommand}"
+                ToolTip.Tip="Tarefas">
+          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+            <Path Data="M13.78,15.3L19.78,21.3L21.89,19.14L15.89,13.14L13.78,15.3M17.5,10.1C17.11,10.1 16.69,10.05 16.36,9.91L4.97,21.25L2.86,19.14L10.27,11.74L8.5,10L7.06,11.44L5.64,10.03L7.05,8.6L5.62,7.2L2.38,10.44L7.15,15.21L6.44,16L4,13.5L2.06,15.47L7,20.5L8,19.5L7.5,19L7.75,18.77L15.3,11.22C15.16,10.89 15.11,10.5 15.11,10.1A2.6,2.6 0 0,1 17.71,7.5C18.09,7.5 18.5,7.56 18.8,7.7L16.47,10.03L18,11.5L20.33,9.19C20.47,9.5 20.5,9.81 20.5,10.1A2.6,2.6 0 0,1 17.9,12.7H17.5Z"
+                  Width="20" Height="20" Stretch="Uniform" />
+            <TextBlock Text="Ferramentas"
+                       FontWeight="SemiBold"
+                       VerticalAlignment="Center" />
+          </StackPanel>
+        </Button>
+
+        <StackPanel Grid.Row="2"
+                    Spacing="4"
+                    IsVisible="{Binding MostrarBotoesLateral}">
+          <Border Height="1" Background="{DynamicResource SurfaceBorderBrush}" Opacity="0.5" Margin="4,8" />
+
+          <Button x:Name="BotaoNavegacaoPendencias"
+                  Classes="sidebar-btn"
+                  MinHeight="44"
+                  Command="{Binding NavegarParaPendenciasCommand}"
+                  ToolTip.Tip="Pendências">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <Path Data="M13,13H11V7H13M12,17.3A1.3,1.3 0 0,1 10.7,16A1.3,1.3 0 0,1 12,14.7A1.3,1.3 0 0,1 13.3,16A1.3,1.3 0 0,1 12,17.3M15.73,3H8.27L3,8.27V15.73L8.27,21H15.73L21,15.73V8.27L15.73,3Z"
+                    Width="20" Height="20" Stretch="Uniform" />
+              <TextBlock Text="Pendências" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="BotaoNavegacaoRelatorios"
+                  Classes="sidebar-btn"
+                  MinHeight="44"
+                  Command="{Binding NavegarParaRelatoriosCommand}"
+                  ToolTip.Tip="Relatórios">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <Path Data="M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M9,17H7V10H9V17M13,17H11V7H13V17M17,17H15V13H17V17Z"
+                    Width="20" Height="20" Stretch="Uniform" />
+              <TextBlock Text="Relatórios" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          <Button x:Name="BotaoNavegacaoConfiguracoes"
+                  Classes="sidebar-btn"
+                  MinHeight="44"
+                  Command="{Binding NavegarParaConfiguracoesCommand}"
+                  ToolTip.Tip="Configurações">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"
+                    Width="20" Height="20" Stretch="Uniform" />
+              <TextBlock Text="Configurações" FontWeight="SemiBold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="2"
+                      IsVisible="{Binding ListaTarefasLateralAberta}"
+                      Margin="4,2,4,0"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+          <ItemsControl Classes="tasks-list"
+                        ItemsSource="{Binding FerramentasTarefasLateral}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Vertical" Spacing="0" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:FerramentaTarefaLateralItem">
+                <!-- ═══════════════════════════════════════════════════════════════════
+                     ⚠️  REGRA CRITICA: Background="Transparent" e OBRIGATORIO  ⚠️
+                     ═══════════════════════════════════════════════════════════════════
+
+                     PROBLEMA: Em Avalonia, areas sem Background NAO recebem eventos de ponteiro.
+
+                     SEM Background="Transparent":
+                       ❌ Drag so funciona ao clicar EXATAMENTE sobre Image/TextBlock
+                       ❌ Clicar em margens/cantos do botao = NADA acontece
+                       ❌ Experiencia do usuario HORRIVEL
+
+                     COM Background="Transparent":
+                       ✅ Drag funciona em QUALQUER ponto do card (184x172 pixels)
+                       ✅ Sem impacto visual (ainda transparente)
+                       ✅ Habilita hit testing em toda area do Grid
+
+                     NAO REMOVER Background="Transparent" NUNCA!
+
+                     Documentacao completa: documentacao/painel/drag_drop/PAINEL_DRAG_DROP.md
+                     ═══════════════════════════════════════════════════════════════════ -->
+                <Grid Classes="tool-item"
+                      Width="184"
+                      Height="172"
+                      Background="Transparent"
+                      Cursor="Hand"
+                      PointerPressed="OnFerramentaItemPointerPressed">
+                  <Grid IsVisible="{Binding EhExtratorPdf}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <Image Source="avares://Protons.UI/Assets/UI/Buttons/ancora_pdf_normal.png"
+                           Classes="anchor-tool-image"
+                           Width="162"
+                           Height="162"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                  </Grid>
+
+                  <Border IsVisible="{Binding EhIconeGenerico}"
+                          Width="184"
+                          Height="164"
+                          Padding="12"
+                          CornerRadius="14"
+                          BorderThickness="1.6"
+                          Background="{Binding CorFundo}"
+                          BorderBrush="{Binding CorBorda}">
+                    <Grid ColumnDefinitions="*,Auto"
+                          RowDefinitions="Auto,*,Auto"
+                          RowSpacing="8">
+                      <Border Width="30"
+                              Height="30"
+                              CornerRadius="8"
+                              Background="#0F1826">
+                        <Canvas Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center">
+                          <Path Data="M2,12 L12,2"
+                                Stroke="{Binding CorTexto}"
+                                StrokeThickness="1.8"
+                                StrokeLineCap="Round" />
+                          <Path Data="M2,2 L12,12"
+                                Stroke="{Binding CorTexto}"
+                                StrokeThickness="1.8"
+                                StrokeLineCap="Round" />
+                          <Ellipse Width="3" Height="3" Fill="{Binding CorTexto}" Canvas.Left="0.5" Canvas.Top="0.5" />
+                          <Ellipse Width="3" Height="3" Fill="{Binding CorTexto}" Canvas.Left="10.5" Canvas.Top="10.5" />
+                        </Canvas>
+                      </Border>
+
+                      <Border Grid.Column="1"
+                              CornerRadius="6"
+                              Padding="6,2"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Top"
+                              Background="#0F1826">
+                        <TextBlock Text="{Binding Selo}"
+                                   FontSize="10"
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding CorTexto}" />
+                      </Border>
+
+                      <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Spacing="4">
+                        <TextBlock Text="{Binding Nome}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{Binding CorTexto}"
+                                   TextWrapping="Wrap"
+                                   MaxLines="2" />
+                        <TextBlock Text="{Binding Descricao}"
+                                   FontSize="11"
+                                   Foreground="#DCE9FA"
+                                   TextWrapping="Wrap"
+                                   MaxLines="2" />
+                      </StackPanel>
+
+                      <Grid Grid.Row="2" Grid.ColumnSpan="2" ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                        <Border CornerRadius="6"
+                                Padding="6,2"
+                                HorizontalAlignment="Left"
+                                Background="#0F1826">
+                          <TextBlock Text="Pronto para ligar"
+                                     FontSize="10"
+                                     Foreground="{Binding CorTexto}" />
+                        </Border>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Spacing="3">
+                          <Border Width="14" Height="2" Background="{Binding CorTexto}" Opacity="0.75" />
+                          <Ellipse Width="8" Height="8" Fill="{Binding CorTexto}" />
+                        </StackPanel>
+                      </Grid>
+                    </Grid>
+                  </Border>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Grid>
+
+      <funcionalidadesUsuario:CartaoUsuarioPainelPrincipalView Grid.Row="2" Margin="12,0,12,16" />
+    </Grid>
+  </Border>
+</UserControl>
