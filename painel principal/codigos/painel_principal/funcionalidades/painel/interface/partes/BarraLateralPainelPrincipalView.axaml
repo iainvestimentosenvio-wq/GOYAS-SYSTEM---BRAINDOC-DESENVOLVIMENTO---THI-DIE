@@ -34,9 +34,14 @@
 
   </UserControl.Styles>
 
-  <Border Background="{DynamicResource SidebarBrush}"
-          BorderBrush="{DynamicResource SurfaceBorderBrush}"
+  <Border BorderBrush="{DynamicResource SurfaceBorderBrush}"
           BorderThickness="0,0,1,0">
+    <Border.Background>
+      <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#060D18" Offset="0" />
+        <GradientStop Color="#0A1220" Offset="1" />
+      </LinearGradientBrush>
+    </Border.Background>
     <Grid RowDefinitions="Auto,*,Auto">
       <StackPanel Margin="20,20,20,24" Orientation="Horizontal" Spacing="12">
         <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png" Width="32" Height="32" />
