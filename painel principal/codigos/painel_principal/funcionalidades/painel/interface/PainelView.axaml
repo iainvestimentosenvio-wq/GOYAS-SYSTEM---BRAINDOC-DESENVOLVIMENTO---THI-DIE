@@ -31,7 +31,7 @@
       <Setter Property="Padding" Value="20" />
       <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="BoxShadow" Value="0 4 24 0 #28000000" />
+      <Setter Property="BoxShadow" Value="0 2 12 0 #14000000" />
     </Style>
 
     <!-- Botoes de navegacao da sidebar -->
@@ -51,23 +51,23 @@
       </Setter>
     </Style>
     <Style Selector="Button.sidebar-btn:pointerover">
-      <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
-      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="Background" Value="#F1F5F9" />
+      <Setter Property="Foreground" Value="#1E293B" />
     </Style>
     <Style Selector="Button.sidebar-btn.active">
-      <Setter Property="Background" Value="#1F3B82F6" />
-      <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
-      <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="Background" Value="#CCFBF1" />
+      <Setter Property="Foreground" Value="#0D9488" />
+      <Setter Property="BorderBrush" Value="#0D9488" />
       <Setter Property="BorderThickness" Value="3,0,0,0" />
     </Style>
     <Style Selector="Button.sidebar-btn Path">
-      <Setter Property="Fill" Value="{DynamicResource TextSecondary}" />
+      <Setter Property="Fill" Value="#94A3B8" />
     </Style>
     <Style Selector="Button.sidebar-btn:pointerover Path">
-      <Setter Property="Fill" Value="{DynamicResource TextPrimary}" />
+      <Setter Property="Fill" Value="#1E293B" />
     </Style>
     <Style Selector="Button.sidebar-btn.active Path">
-      <Setter Property="Fill" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="Fill" Value="#0D9488" />
     </Style>
 
     <!-- Botao primario -->
@@ -130,10 +130,10 @@
       </Setter>
     </Style>
     <Style Selector="Button.window-btn:pointerover">
-      <Setter Property="Background" Value="#2D333B" />
+      <Setter Property="Background" Value="#E2E8F0" />
     </Style>
     <Style Selector="Button.window-btn.close:pointerover">
-      <Setter Property="Background" Value="#DA3633" />
+      <Setter Property="Background" Value="#FEE2E2" />
     </Style>
     <Style Selector="Button.window-btn.close:pointerover Path">
       <Setter Property="Stroke" Value="White" />
@@ -143,8 +143,8 @@
   <Grid>
     <Grid.Background>
       <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-        <GradientStop Color="#08111F" Offset="0" />
-        <GradientStop Color="#0C1828" Offset="1" />
+        <GradientStop Color="#EFF6FF" Offset="0" />
+        <GradientStop Color="#F0F9FF" Offset="1" />
       </LinearGradientBrush>
     </Grid.Background>
     <Grid.ColumnDefinitions>
@@ -166,8 +166,8 @@
             Padding="20,10,20,10">
       <Border.Background>
         <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-          <GradientStop Color="#08111F" Offset="0" />
-          <GradientStop Color="#0A1520" Offset="1" />
+          <GradientStop Color="#FFFFFF" Offset="0" />
+          <GradientStop Color="#F8FAFC" Offset="1" />
         </LinearGradientBrush>
       </Border.Background>
       <Grid ColumnDefinitions="Auto,*,Auto"
@@ -325,27 +325,27 @@
             <!-- KPIs -->
             <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="12" HorizontalAlignment="Stretch">
 
-              <!-- KPI 1 - Tarefas Hoje (azul) -->
+              <!-- KPI 1 - Tarefas Hoje (teal) -->
               <Border Grid.Column="0" Classes="card" BorderThickness="0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#0C1E42" Offset="0" />
-                    <GradientStop Color="#183570" Offset="1" />
+                    <GradientStop Color="#F0FDF9" Offset="0" />
+                    <GradientStop Color="#CCFBF1" Offset="1" />
                   </LinearGradientBrush>
                 </Border.Background>
                 <StackPanel Spacing="10">
                   <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#1E40AF">
+                    <Border Width="40" Height="40" CornerRadius="10" Background="#0D9488">
                       <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-                            Fill="#93C5FD" Width="20" Height="20" Stretch="Uniform"
+                            Fill="White" Width="20" Height="20" Stretch="Uniform"
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Tarefas hoje" FontSize="12" Foreground="#7EAED4" />
-                      <TextBlock Text="{Binding NotasHoje}" FontSize="30" FontWeight="Bold" Foreground="White" />
+                      <TextBlock Text="Tarefas hoje" FontSize="12" Foreground="#0F766E" />
+                      <TextBlock Text="{Binding NotasHoje}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
                     </StackPanel>
                   </StackPanel>
-                  <Border Background="#1D4ED8" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
+                  <Border Background="#0D9488" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
                     <TextBlock Text="XML / PDF" FontSize="10" Foreground="White" FontWeight="SemiBold" />
                   </Border>
                 </StackPanel>
@@ -355,23 +355,23 @@
               <Border Grid.Column="1" Classes="card" BorderThickness="0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#261200" Offset="0" />
-                    <GradientStop Color="#3D1E00" Offset="1" />
+                    <GradientStop Color="#FFF7ED" Offset="0" />
+                    <GradientStop Color="#FFEDD5" Offset="1" />
                   </LinearGradientBrush>
                 </Border.Background>
                 <StackPanel Spacing="10">
                   <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#78350F">
+                    <Border Width="40" Height="40" CornerRadius="10" Background="#EA580C">
                       <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17A1.5,1.5 0 0,1 10.5,15.5A1.5,1.5 0 0,1 12,14A1.5,1.5 0 0,1 13.5,15.5A1.5,1.5 0 0,1 12,17M13,11H11V7H13V11Z"
-                            Fill="#FCD34D" Width="20" Height="20" Stretch="Uniform"
+                            Fill="White" Width="20" Height="20" Stretch="Uniform"
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Pendencias Futuras" FontSize="12" Foreground="#C4885A" />
-                      <TextBlock Text="{Binding PendenciasFuturasKpi}" FontSize="30" FontWeight="Bold" Foreground="White" />
+                      <TextBlock Text="Pendencias Futuras" FontSize="12" Foreground="#C2410C" />
+                      <TextBlock Text="{Binding PendenciasFuturasKpi}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
                     </StackPanel>
                   </StackPanel>
-                  <TextBlock Text="Agendadas para o futuro" FontSize="11" Foreground="#C4885A" />
+                  <TextBlock Text="Agendadas para o futuro" FontSize="11" Foreground="#C2410C" />
                 </StackPanel>
               </Border>
 
@@ -379,23 +379,23 @@
               <Border Grid.Column="2" Classes="card" BorderThickness="0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#260A0B" Offset="0" />
-                    <GradientStop Color="#3D1012" Offset="1" />
+                    <GradientStop Color="#FFF1F2" Offset="0" />
+                    <GradientStop Color="#FFE4E6" Offset="1" />
                   </LinearGradientBrush>
                 </Border.Background>
                 <StackPanel Spacing="10">
                   <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#7F1D1D">
+                    <Border Width="40" Height="40" CornerRadius="10" Background="#DC2626">
                       <Path Data="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
-                            Fill="#FCA5A5" Width="20" Height="20" Stretch="Uniform"
+                            Fill="White" Width="20" Height="20" Stretch="Uniform"
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Erros Criticos" FontSize="12" Foreground="#D47A7A" />
-                      <TextBlock Text="{Binding ErrosCriticos}" FontSize="30" FontWeight="Bold" Foreground="White" />
+                      <TextBlock Text="Erros Criticos" FontSize="12" Foreground="#B91C1C" />
+                      <TextBlock Text="{Binding ErrosCriticos}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
                     </StackPanel>
                   </StackPanel>
-                  <TextBlock Text="Requer atencao imediata" FontSize="11" Foreground="#FCA5A5" />
+                  <TextBlock Text="Requer atencao imediata" FontSize="11" Foreground="#B91C1C" />
                 </StackPanel>
               </Border>
 
@@ -403,23 +403,23 @@
               <Border Grid.Column="3" Classes="card" BorderThickness="0">
                 <Border.Background>
                   <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#1A1200" Offset="0" />
-                    <GradientStop Color="#2E2000" Offset="1" />
+                    <GradientStop Color="#FFFBEB" Offset="0" />
+                    <GradientStop Color="#FEF3C7" Offset="1" />
                   </LinearGradientBrush>
                 </Border.Background>
                 <StackPanel Spacing="10">
                   <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#78350F">
+                    <Border Width="40" Height="40" CornerRadius="10" Background="#D97706">
                       <Path Data="M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22M18,16V11C18,7.93 16.36,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16Z"
-                            Fill="#FDE68A" Width="20" Height="20" Stretch="Uniform"
+                            Fill="White" Width="20" Height="20" Stretch="Uniform"
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Pendencias Atrasadas" FontSize="12" Foreground="#C4A84A" />
-                      <TextBlock Text="{Binding PendenciasAtrasadasKpi}" FontSize="30" FontWeight="Bold" Foreground="White" />
+                      <TextBlock Text="Pendencias Atrasadas" FontSize="12" Foreground="#B45309" />
+                      <TextBlock Text="{Binding PendenciasAtrasadasKpi}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
                     </StackPanel>
                   </StackPanel>
-                  <TextBlock Text="Passou do horario agendado" FontSize="11" Foreground="#C4A84A" />
+                  <TextBlock Text="Passou do horario agendado" FontSize="11" Foreground="#B45309" />
                 </StackPanel>
               </Border>
 

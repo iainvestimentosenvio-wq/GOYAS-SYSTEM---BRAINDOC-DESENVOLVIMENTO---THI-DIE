@@ -38,14 +38,14 @@
           BorderThickness="0,0,1,0">
     <Border.Background>
       <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-        <GradientStop Color="#060D18" Offset="0" />
-        <GradientStop Color="#0A1220" Offset="1" />
+        <GradientStop Color="#FFFFFF" Offset="0" />
+        <GradientStop Color="#F8FAFC" Offset="1" />
       </LinearGradientBrush>
     </Border.Background>
     <Grid RowDefinitions="Auto,*,Auto">
       <StackPanel Margin="20,20,20,24" Orientation="Horizontal" Spacing="12">
         <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png" Width="32" Height="32" />
-        <TextBlock Text="PROTONS" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" />
+        <TextBlock Text="PROTONS" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="#1E293B" />
       </StackPanel>
 
       <Grid Grid.Row="1"
@@ -218,7 +218,8 @@
                                    MaxLines="2" />
                         <TextBlock Text="{Binding Descricao}"
                                    FontSize="11"
-                                   Foreground="#DCE9FA"
+                                   Foreground="White"
+                                   Opacity="0.78"
                                    TextWrapping="Wrap"
                                    MaxLines="2" />
                       </StackPanel>

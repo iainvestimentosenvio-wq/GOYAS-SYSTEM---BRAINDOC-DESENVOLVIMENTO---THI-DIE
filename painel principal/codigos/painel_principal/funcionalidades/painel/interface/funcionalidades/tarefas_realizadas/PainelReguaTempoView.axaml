@@ -99,11 +99,11 @@
           <TextBlock Text="{Binding ConfirmacaoRemoverEsteiraTitulo}"
                      FontSize="18"
                      FontWeight="SemiBold"
-                     Foreground="#E5E7EB" />
+                     Foreground="{DynamicResource TextPrimaryBrush}" />
 
           <TextBlock Text="{Binding ConfirmacaoRemoverEsteiraMensagem}"
                      TextWrapping="Wrap"
-                     Foreground="#CBD5E1"
+                     Foreground="{DynamicResource TextSecondaryBrush}"
                      FontSize="13" />
 
           <StackPanel Orientation="Horizontal"
@@ -112,8 +112,8 @@
             <Button Content="Cancelar"
                     Command="{Binding CancelarRemoverEsteiraCommand}"
                     Padding="12,6"
-                    Background="#1F2937"
-                    BorderBrush="#374151"
+                    Background="{DynamicResource SurfaceHoverBrush}"
+                    BorderBrush="{DynamicResource SurfaceBorderBrush}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Cursor="Hand" />
@@ -121,8 +121,8 @@
             <Button Content="Remover Esteira"
                     Command="{Binding ConfirmarRemoverEsteiraCommand}"
                     Padding="12,6"
-                    Background="#7F1D1D"
-                    Foreground="#FEE2E2"
+                    Background="#DC2626"
+                    Foreground="White"
                     BorderBrush="#B91C1C"
                     BorderThickness="1"
                     CornerRadius="8"
