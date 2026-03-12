@@ -1,0 +1,10 @@
+Como rodar (Windows):
+1) Copie a pasta para a Area de Trabalho.
+2) Clique com o botao direito em TESTAR.cmd e escolha "Executar como administrador".
+3) Aguarde o termino.
+4) Pegue a pasta win-test-results\<timestamp> e me envie o log.
+
+Observacoes:
+- Se MSI/EXE nao estiverem em INSTALADOR\saida\windows, o script tenta gerar.
+- Auto-build SO funciona se o repo completo estiver junto (pasta Login\Protons.UI) e com WiX + Inno + .NET SDK instalados.
+- Se o repo nao estiver completo, o teste vai registrar SKIP para MSI/EXE.

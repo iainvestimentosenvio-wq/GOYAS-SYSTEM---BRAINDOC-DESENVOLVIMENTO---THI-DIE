@@ -1,0 +1,218 @@
+name: Painel CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'painel principal/**'
+      - 'Login/**'
+      - '.github/workflows/painel-ci.yml'
+  pull_request:
+    paths:
+      - 'painel principal/**'
+      - 'Login/**'
+      - '.github/workflows/painel-ci.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  checklist01-baseline:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      CI: 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Garantir Xvfb para testes de UI em ambiente headless
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Checklist 01 baseline (bloqueante)
+        run: >-
+          bash Login/scripts/checklist01_ancorar_pdf_validate.sh
+          --profile baseline
+          --ci
+          --write-report
+          --sync-checklist never
+
+      - name: Upload artifacts baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist01-baseline-results
+          path: |
+            Login/testes/TestResults/checklist_ancora_pdf/**
+            Login/testes/TestResults/smoke/**
+            Login/testes/TestResults/regressao_dashboard/**
+
+  checklist01-full:
+    runs-on: ubuntu-latest
+    needs: checklist01-baseline
+    if: >
+      github.actor != 'github-actions[bot]' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' &&
+        (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))))
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      CI: 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Garantir Xvfb para testes de UI em ambiente headless
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Checklist 01 full (bloqueante + sync release)
+        run: >-
+          bash Login/scripts/checklist01_ancorar_pdf_validate.sh
+          --profile full
+          --ci
+          --write-report
+          --sync-checklist release
+
+      - name: Commit automatico do bloco de evidencia
+        if: success() && github.event_name != 'pull_request'
+        run: |
+          CHECKLIST_PATH="painel principal/codigos/painel_principal/funcionalidades/ferramentas/ancorar_pdf/documentacao/CHECKLIST_ANCORA_PDF.md"
+          if git diff --quiet -- "$CHECKLIST_PATH"; then
+            echo "Sem alteracoes no bloco automatico do checklist."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$CHECKLIST_PATH"
+          git commit -m "chore(ci): sync checklist01 ancorar_pdf evidence"
+          git push
+
+      - name: Upload artifacts full
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist01-full-results
+          path: |
+            Login/testes/TestResults/checklist_ancora_pdf/**
+            Login/testes/TestResults/smoke/**
+            Login/testes/TestResults/regressao_dashboard/**
+
+  checklist02-baseline:
+    runs-on: ubuntu-latest
+    needs: checklist01-baseline
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      CI: 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Garantir Xvfb para testes de UI em ambiente headless
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Checklist 02 baseline (bloqueante)
+        run: >-
+          bash Login/scripts/checklist02_ancorar_pdf_validate.sh
+          --profile baseline
+          --ci
+          --write-report
+          --sync-checklist never
+
+      - name: Upload artifacts checklist02 baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist02-baseline-results
+          path: |
+            Login/testes/TestResults/checklist02_ancora_pdf/**
+            Login/testes/TestResults/smoke/**
+            Login/testes/TestResults/regressao_dashboard/**
+
+  checklist02-full:
+    runs-on: ubuntu-latest
+    needs: [checklist01-full, checklist02-baseline]
+    if: >
+      github.actor != 'github-actions[bot]' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event_name == 'push' &&
+        (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/'))))
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      CI: 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Garantir Xvfb para testes de UI em ambiente headless
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
+      - name: Checklist 02 full (bloqueante + sync release)
+        run: >-
+          bash Login/scripts/checklist02_ancorar_pdf_validate.sh
+          --profile full
+          --ci
+          --write-report
+          --sync-checklist release
+
+      - name: Commit automatico do bloco de evidencia C2
+        if: success() && github.event_name != 'pull_request'
+        run: |
+          CHECKLIST_PATH="painel principal/codigos/painel_principal/funcionalidades/ferramentas/ancorar_pdf/documentacao/CHECKLIST_ANCORA_PDF.md"
+          if git diff --quiet -- "$CHECKLIST_PATH"; then
+            echo "Sem alteracoes no bloco automatico do checklist C2."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$CHECKLIST_PATH"
+          git commit -m "chore(ci): sync checklist02 ancorar_pdf evidence"
+          git pull --rebase
+          git push
+
+      - name: Upload artifacts checklist02 full
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checklist02-full-results
+          path: |
+            Login/testes/TestResults/checklist02_ancora_pdf/**
+            Login/testes/TestResults/smoke/**
+            Login/testes/TestResults/regressao_dashboard/**

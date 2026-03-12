@@ -7,6 +7,35 @@
              x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.TarefasRealizadas.HistoricoExecucaoPainelPrincipalView"
              x:DataType="vm:PainelViewModel">
 
+  <UserControl.Styles>
+    <Style Selector="Button.dock-ear-toggle">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="Button.dock-ear-toggle:pointerover">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.dock-ear-toggle:pressed">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.dock-ear-toggle TextBlock">
+      <Setter Property="Foreground" Value="#7B8FA4" />
+    </Style>
+    <Style Selector="Button.dock-ear-toggle:pointerover TextBlock">
+      <Setter Property="Foreground" Value="#4B6278" />
+    </Style>
+    <Style Selector="Button.dock-ear-toggle:pressed TextBlock">
+      <Setter Property="Foreground" Value="#41586D" />
+    </Style>
+  </UserControl.Styles>
+
   <UserControl.Resources>
     <DataTemplate x:Key="HistoricoExecucaoTemplate" x:DataType="vm:HistoricoExecucaoItem">
       <Border BorderBrush="{DynamicResource PanelBorder}"
@@ -38,78 +67,120 @@
     </DataTemplate>
   </UserControl.Resources>
 
-  <Border Background="{DynamicResource SurfaceBrush}"
-          CornerRadius="12"
-          Padding="14"
-          BorderBrush="{DynamicResource PanelBorder}"
-          BorderThickness="1"
-          MinHeight="300">
-    <StackPanel Spacing="10">
-      <TextBlock Text="Historico de Execucao" FontSize="26" FontWeight="SemiBold" />
-
-      <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
-        <Button Content="Global"
-                Command="{Binding SelecionarEscopoHistoricoCommand}"
-                CommandParameter="Global"
-                Padding="12,7"
-                FontSize="12"
-                Background="{DynamicResource PanelSurfaceAlt}"
-                BorderBrush="{DynamicResource PanelBorder}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Cursor="Hand" />
-        <Button Grid.Column="1"
-                Content="Cliente"
-                Command="{Binding SelecionarEscopoHistoricoCommand}"
-                CommandParameter="Cliente"
-                Padding="12,7"
-                FontSize="12"
-                Background="{DynamicResource PanelSurfaceAlt}"
-                BorderBrush="{DynamicResource PanelBorder}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Cursor="Hand" />
-        <TextBlock Grid.Column="2"
-                   Text="{Binding ResumoHistoricoExecucao}"
-                   FontSize="11"
-                   Classes="muted"
+  <Grid RowDefinitions="24,Auto"
+        RowSpacing="0"
+        ClipToBounds="False">
+    <Border Grid.Row="0"
+            Width="88"
+            Height="32"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Margin="0,0,0,-8"
+            Background="Transparent"
+            BorderBrush="Transparent"
+            BorderThickness="0"
+            CornerRadius="0"
+            ZIndex="2">
+      <Button Classes="dock-ear-toggle"
+              Command="{Binding AlternarPainelHistoricoExecucaoDockCommand}"
+              Cursor="Hand"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              ToolTip.Tip="{Binding TooltipPainelHistoricoExecucaoDock}">
+        <TextBlock Text="{Binding IconePainelHistoricoExecucaoDock}"
+                   FontSize="30"
+                   FontWeight="Light"
+                   HorizontalAlignment="Center"
                    VerticalAlignment="Center" />
-        <Button Grid.Column="3"
-                Content="Ver todas"
-                Command="{Binding VerTodasExecucoesCommand}"
-                Padding="16,8"
-                FontSize="14"
-                Background="{DynamicResource PanelSurfaceAlt}"
-                BorderBrush="{DynamicResource PanelBorder}"
-                BorderThickness="1"
-                CornerRadius="8"
-                Cursor="Hand" />
-      </Grid>
+      </Button>
+    </Border>
 
-      <Border Background="{DynamicResource PanelSurfaceAlt}"
+    <Border x:Name="HistoricoExecucaoConteudoHost"
+            Grid.Row="1"
+            Height="0"
+            ClipToBounds="True">
+      <Border.Transitions>
+        <Transitions>
+          <DoubleTransition Property="Height" Duration="0:0:0.22" />
+        </Transitions>
+      </Border.Transitions>
+
+      <Border x:Name="HistoricoExecucaoConteudoCard"
+              Background="{DynamicResource SurfaceBrush}"
+              CornerRadius="12"
+              Padding="14"
               BorderBrush="{DynamicResource PanelBorder}"
               BorderThickness="1"
-              CornerRadius="8"
-              Padding="10,8">
-        <Grid ColumnDefinitions="0.75*,1.5*,2.9*,1.1*,1.1*,1.1*,0.5*" ColumnSpacing="10">
-          <TextBlock Text="ID" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="1" Text="Cliente" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="2" Text="Tarefa" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="3" Text="Usuario" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="4" Text="Status" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="5" Text="Data/Hora" FontSize="11" Classes="muted" />
-          <TextBlock Grid.Column="6" Text="Abrir" FontSize="11" Classes="muted" />
-        </Grid>
-      </Border>
+              MinHeight="300"
+              IsHitTestVisible="{Binding PainelHistoricoExecucaoDockAberto}">
+        <StackPanel Spacing="10">
+          <TextBlock Text="Historico de Execucao" FontSize="26" FontWeight="SemiBold" />
 
-      <Border Background="{DynamicResource BackgroundBrush}"
-              BorderBrush="{DynamicResource PanelBorder}"
-              BorderThickness="1"
-              CornerRadius="8">
-        <ScrollViewer MaxHeight="420" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-          <ItemsControl ItemsSource="{Binding HistoricoExecucao}" ItemTemplate="{StaticResource HistoricoExecucaoTemplate}" />
-        </ScrollViewer>
+          <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="8">
+            <Button Content="Global"
+                    Command="{Binding SelecionarEscopoHistoricoCommand}"
+                    CommandParameter="Global"
+                    Padding="12,7"
+                    FontSize="12"
+                    Background="{DynamicResource PanelSurfaceAlt}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+            <Button Grid.Column="1"
+                    Content="Cliente"
+                    Command="{Binding SelecionarEscopoHistoricoCommand}"
+                    CommandParameter="Cliente"
+                    Padding="12,7"
+                    FontSize="12"
+                    Background="{DynamicResource PanelSurfaceAlt}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+            <TextBlock Grid.Column="2"
+                       Text="{Binding ResumoHistoricoExecucao}"
+                       FontSize="11"
+                       Classes="muted"
+                       VerticalAlignment="Center" />
+            <Button Grid.Column="3"
+                    Content="Ver todas"
+                    Command="{Binding VerTodasExecucoesCommand}"
+                    Padding="16,8"
+                    FontSize="14"
+                    Background="{DynamicResource PanelSurfaceAlt}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+          </Grid>
+
+          <Border Background="{DynamicResource PanelSurfaceAlt}"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="10,8">
+            <Grid ColumnDefinitions="0.75*,1.5*,2.9*,1.1*,1.1*,1.1*,0.5*" ColumnSpacing="10">
+              <TextBlock Text="ID" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="1" Text="Cliente" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="2" Text="Tarefa" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="3" Text="Usuario" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="4" Text="Status" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="5" Text="Data/Hora" FontSize="11" Classes="muted" />
+              <TextBlock Grid.Column="6" Text="Abrir" FontSize="11" Classes="muted" />
+            </Grid>
+          </Border>
+
+          <Border Background="{DynamicResource BackgroundBrush}"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1"
+                  CornerRadius="8">
+            <ScrollViewer MaxHeight="420" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+              <ItemsControl ItemsSource="{Binding HistoricoExecucao}" ItemTemplate="{StaticResource HistoricoExecucaoTemplate}" />
+            </ScrollViewer>
+          </Border>
+        </StackPanel>
       </Border>
-    </StackPanel>
-  </Border>
+    </Border>
+  </Grid>
 </UserControl>

@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Partes.AcoesSuperioresPainelPrincipalView"
+             x:DataType="vm:PainelViewModel">
+
+  <Grid ColumnDefinitions="Auto,10,Auto" VerticalAlignment="Center">
+    <TextBlock FontSize="14"
+               Foreground="{DynamicResource TextSecondary}"
+               VerticalAlignment="Center">
+      <Run Text="Hora Atual do Computador: " />
+      <Run Text="{Binding HoraAtualComputadorValor}" Foreground="{DynamicResource TextPrimary}" FontWeight="Bold" />
+    </TextBlock>
+
+    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="2" VerticalAlignment="Center">
+      <Button Classes="window-btn"
+              ToolTip.Tip="Minimizar"
+              Click="MinimizeButton_Click">
+        <Path Data="M19,13H5V11H19V13Z" Fill="#8B949E" Width="14" Height="14" Stretch="Uniform" />
+      </Button>
+
+      <Button Classes="window-btn"
+              ToolTip.Tip="Maximizar"
+              Click="MaximizeRestoreButton_Click">
+        <Path Data="M4,4H20V20H4V4M6,8V18H18V8H6Z" Fill="#8B949E" Width="14" Height="14" Stretch="Uniform" />
+      </Button>
+
+      <Button Classes="window-btn close"
+              ToolTip.Tip="Fechar"
+              Click="CloseButton_Click">
+        <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+              Fill="#8B949E"
+              Width="14"
+              Height="14"
+              Stretch="Uniform" />
+      </Button>
+    </StackPanel>
+  </Grid>
+</UserControl>

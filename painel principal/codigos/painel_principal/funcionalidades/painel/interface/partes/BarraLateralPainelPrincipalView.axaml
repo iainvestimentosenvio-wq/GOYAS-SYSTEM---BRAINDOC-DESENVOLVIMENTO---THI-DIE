@@ -34,19 +34,52 @@
 
   </UserControl.Styles>
 
-  <Border BorderBrush="{DynamicResource SurfaceBorderBrush}"
+  <Border BorderBrush="#A7B8C8"
           BorderThickness="0,0,1,0">
     <Border.Background>
       <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-        <GradientStop Color="#FFFFFF" Offset="0" />
-        <GradientStop Color="#F8FAFC" Offset="1" />
+        <GradientStop Color="#DCE7F1" Offset="0" />
+        <GradientStop Color="#D3DEE8" Offset="0.46" />
+        <GradientStop Color="#C8D5E0" Offset="1" />
       </LinearGradientBrush>
     </Border.Background>
     <Grid RowDefinitions="Auto,*,Auto">
-      <StackPanel Margin="20,20,20,24" Orientation="Horizontal" Spacing="12">
-        <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png" Width="32" Height="32" />
-        <TextBlock Text="PROTONS" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" Foreground="#1E293B" />
-      </StackPanel>
+      <!-- Região arrastável: clique e arraste no logo para mover a janela entre telas -->
+      <Border Name="DragRegionLogo"
+              Margin="14,16,14,18"
+              Padding="16,16,16,14"
+              BorderBrush="#B6C7D5"
+              BorderThickness="1"
+              CornerRadius="18"
+              BoxShadow="0 10 26 0 #10233A14"
+              Cursor="SizeAll"
+              PointerPressed="OnLogoDragRegionPointerPressed">
+        <Border.Background>
+          <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+            <GradientStop Color="#FCFDFE" Offset="0" />
+            <GradientStop Color="#F3F8FB" Offset="1" />
+          </LinearGradientBrush>
+        </Border.Background>
+        <StackPanel Spacing="10">
+          <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png"
+                 Width="156"
+                 Height="40"
+                 Stretch="Uniform"
+                 HorizontalAlignment="Left" />
+
+          <Border Background="#E7EFF6"
+                  BorderBrush="#CAD8E4"
+                  BorderThickness="1"
+                  CornerRadius="999"
+                  Padding="8,4"
+                  HorizontalAlignment="Left">
+            <TextBlock Text="Painel principal"
+                       FontSize="10"
+                       FontWeight="SemiBold"
+                       Foreground="#4C6278" />
+          </Border>
+        </StackPanel>
+      </Border>
 
       <Grid Grid.Row="1"
             Margin="12,0,12,0"
@@ -54,10 +87,10 @@
             RowSpacing="6">
         <Button x:Name="BotaoNavegacaoCadastrarCliente"
                 Grid.Row="0"
-                Classes="sidebar-btn active"
-                MinHeight="44"
+                Classes="sidebar-btn sidebar-primary active"
+                MinHeight="46"
                 Command="{Binding AbrirCadastroClientesCommand}">
-          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Spacing="9" VerticalAlignment="Center">
             <Path Data="M15,14C12.33,14 7,15.33 7,18V20H23V18C23,15.33 17.67,14 15,14M6,10V7H4V10H1V12H4V15H6V12H9V10M15,12A4,4 0 0,0 19,8A4,4 0 0,0 15,4A4,4 0 0,0 11,8A4,4 0 0,0 15,12Z"
                   Width="20" Height="20" Stretch="Uniform" />
             <TextBlock Text="Cadastrar Cliente" FontWeight="SemiBold" VerticalAlignment="Center" />
@@ -66,22 +99,47 @@
 
         <Button x:Name="BotaoNavegacaoImportar"
                 Grid.Row="1"
-                Classes="sidebar-btn"
+                Classes="sidebar-btn sidebar-section"
+                Classes.open="{Binding ListaTarefasLateralAberta}"
                 Command="{Binding AlternarListaTarefasLateralCommand}"
-                ToolTip.Tip="Tarefas">
-          <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-            <Path Data="M13.78,15.3L19.78,21.3L21.89,19.14L15.89,13.14L13.78,15.3M17.5,10.1C17.11,10.1 16.69,10.05 16.36,9.91L4.97,21.25L2.86,19.14L10.27,11.74L8.5,10L7.06,11.44L5.64,10.03L7.05,8.6L5.62,7.2L2.38,10.44L7.15,15.21L6.44,16L4,13.5L2.06,15.47L7,20.5L8,19.5L7.5,19L7.75,18.77L15.3,11.22C15.16,10.89 15.11,10.5 15.11,10.1A2.6,2.6 0 0,1 17.71,7.5C18.09,7.5 18.5,7.56 18.8,7.7L16.47,10.03L18,11.5L20.33,9.19C20.47,9.5 20.5,9.81 20.5,10.1A2.6,2.6 0 0,1 17.9,12.7H17.5Z"
-                  Width="20" Height="20" Stretch="Uniform" />
-            <TextBlock Text="Ferramentas"
-                       FontWeight="SemiBold"
+                ToolTip.Tip="Ferramentas">
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="11" VerticalAlignment="Center">
+            <Path Classes="section-icon"
+                  Data="M21.71 20.29L20.29 21.71A1 1 0 0 1 18.88 21.71L7 9.85A3.81 3.81 0 0 1 6 10A4 4 0 0 1 2.22 4.7L4.76 7.24L5.29 6.71L6.71 5.29L7.24 4.76L4.7 2.22A4 4 0 0 1 10 6A3.81 3.81 0 0 1 9.85 7L21.71 18.88A1 1 0 0 1 21.71 20.29M2.29 18.88A1 1 0 0 0 2.29 20.29L3.71 21.71A1 1 0 0 0 5.12 21.71L10.59 16.25L7.76 13.42M20 2L16 4V6L13.83 8.17L15.83 10.17L18 8H20L22 4Z"
+                  Width="20"
+                  Height="20"
+                  Stretch="Uniform"
+                  VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1"
+                       Classes="section-label"
+                       Text="Ferramentas"
                        VerticalAlignment="Center" />
-          </StackPanel>
+            <Grid Grid.Column="2"
+                  Width="12"
+                  Height="12"
+                  VerticalAlignment="Center">
+              <Path Classes="section-chevron"
+                    IsVisible="{Binding MostrarBotoesLateral}"
+                    Data="M4.59,16.58L9.17,12L4.59,7.41L6,6L12,12L6,18L4.59,16.58Z"
+                    Width="12"
+                    Height="12"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center" />
+              <Path Classes="section-chevron"
+                    IsVisible="{Binding ListaTarefasLateralAberta}"
+                    Data="M6.41,8.59L12,14.17L17.59,8.59L19,10L12,17L5,10L6.41,8.59Z"
+                    Width="12"
+                    Height="12"
+                    Stretch="Uniform"
+                    VerticalAlignment="Center" />
+            </Grid>
+          </Grid>
         </Button>
 
         <StackPanel Grid.Row="2"
                     Spacing="4"
                     IsVisible="{Binding MostrarBotoesLateral}">
-          <Border Height="1" Background="{DynamicResource SurfaceBorderBrush}" Opacity="0.5" Margin="4,8" />
+          <Border Height="1" Background="#A8BACA" Opacity="0.42" Margin="4,8" />
 
           <Button x:Name="BotaoNavegacaoPendencias"
                   Classes="sidebar-btn"

@@ -1,0 +1,547 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4200" height="2960" viewBox="0 0 4200 2960">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EAF6FF"/>
+      <stop offset="45%" stop-color="#F8FBFF"/>
+      <stop offset="100%" stop-color="#FFF5EA"/>
+    </linearGradient>
+
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0A2A4A"/>
+      <stop offset="55%" stop-color="#0E4C84"/>
+      <stop offset="100%" stop-color="#2B7BB6"/>
+    </linearGradient>
+
+    <filter id="softShadow" x="-20%" y="-20%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="9" flood-color="#12263A" flood-opacity="0.15"/>
+    </filter>
+
+    <style>
+      .fontMain { font-family: "Manrope", "Segoe UI", Arial, sans-serif; }
+      .fontHead { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; }
+
+      .h1 { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 58px; font-weight: 760; fill: #FFFFFF; }
+      .h2 { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 25px; font-weight: 540; fill: #D6E9FF; }
+
+      .topTitle { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 42px; font-weight: 760; fill: #12385D; }
+      .topText { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 22px; font-weight: 560; fill: #285A84; }
+      .qText { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 20px; font-weight: 560; fill: #345E84; }
+
+      .mainTitle { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 46px; font-weight: 760; fill: #123A5F; }
+      .mainSub { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 22px; font-weight: 560; fill: #2E628D; }
+
+      .numb { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 23px; font-weight: 800; fill: #FFFFFF; }
+      .status { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 14px; font-weight: 800; }
+      .cardTitle { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 28px; font-weight: 720; fill: #113557; }
+      .cardBody { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 18px; font-weight: 560; fill: #2F6188; }
+      .miniTitle { font-family: "Space Grotesk", "Manrope", "Segoe UI", Arial, sans-serif; font-size: 20px; font-weight: 730; fill: #173F62; }
+      .miniText { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 16px; font-weight: 560; fill: #3A6488; }
+      .lineText { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 17px; font-weight: 580; fill: #153A5D; }
+      .smallNote { font-family: "Manrope", "Segoe UI", Arial, sans-serif; font-size: 15px; font-weight: 560; fill: #4D7395; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="4200" height="2960" fill="url(#bg)"/>
+  <circle cx="3840" cy="300" r="220" fill="#CDE9FF" opacity="0.45"/>
+  <circle cx="3600" cy="520" r="130" fill="#FFDCC4" opacity="0.45"/>
+  <circle cx="260" cy="2660" r="200" fill="#D7F2FF" opacity="0.45"/>
+
+  <rect x="26" y="20" width="4148" height="126" rx="28" fill="url(#headerGrad)"/>
+  <text x="66" y="92" class="h1">Painel Principal - Mapa Visual por Partes (formato facil de entender)</text>
+  <text x="66" y="128" class="h2">Baloes por modulo para preencher: feito, falta, submetas, meta final e aceite</text>
+
+  <!-- TELA INICIAL COM VISAO GERAL + PERGUNTAS -->
+  <g filter="url(#softShadow)">
+    <rect x="36" y="168" width="4128" height="330" rx="30" fill="#FFFFFF" stroke="#D6E5F3" stroke-width="2"/>
+    <rect x="36" y="168" width="4128" height="14" rx="30" fill="#2F7FBD"/>
+
+    <text x="70" y="226" class="topTitle">Tela Inicial: Visao Geral do Painel Principal</text>
+    <text x="70" y="262" class="topText">Para que serve: centralizar operacao do time (clientes, tarefas, ferramentas, historico, pendencias, conta e relatorios).</text>
+    <text x="70" y="292" class="topText">Como usar este desenho: em cada balao preencha o que JA foi feito, o que FALTA e as SUBMETAS da proxima entrega.</text>
+    <text x="70" y="322" class="topText">Regra simples: nenhum modulo avanca sem aceite tecnico + aceite de uso real.</text>
+
+    <rect x="66" y="348" width="1860" height="132" rx="18" fill="#F4FAFF" stroke="#D7E9F8"/>
+    <text x="86" y="380" class="qText">Perguntas iniciais (somente aqui):</text>
+    <text x="86" y="410" class="qText">1) Qual visao final do painel? __________________  2) Qual prazo da fase atual? __________________</text>
+    <text x="86" y="438" class="qText">3) Qual KPI alvo numerico? _____________________  4) Quem aprova cada modulo? __________________</text>
+    <text x="86" y="466" class="qText">5) O que nao pode quebrar no release? _________________________________________________</text>
+
+    <rect x="1980" y="348" width="2140" height="132" rx="18" fill="#FFF8EF" stroke="#F4DEBF"/>
+    <text x="2002" y="380" class="qText">Gate minimo sugerido por modulo: nota >= 8/10 em Funcionalidade, Teste Auto, Teste Real, UX, Performance e Arquitetura.</text>
+    <text x="2002" y="410" class="qText">Legenda de status: Implementado (verde), Parcial (laranja), Placeholder (cinza).</text>
+    <text x="2002" y="438" class="qText">Obs: este mapa sera atualizado junto com as correcoes que formos fazendo no projeto.</text>
+  </g>
+
+  <!-- CONTAINER MAE -->
+  <g transform="translate(40,528)" filter="url(#softShadow)">
+    <rect x="0" y="0" width="4120" height="2370" rx="34" fill="#FFFFFF" stroke="#D5E5F4" stroke-width="2"/>
+    <rect x="0" y="0" width="4120" height="14" rx="34" fill="#1B5F96"/>
+    <text x="34" y="62" class="mainTitle">TELA PRINCIPAL DO PAINEL (modulo mae)</text>
+    <text x="34" y="95" class="mainSub">Todos os baloes abaixo estao DENTRO da tela principal para preenchermos execucao guiada.</text>
+
+    <!-- GRID 4x3 -->
+
+    <!-- CARD 01 -->
+    <g transform="translate(40,132)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#2F80ED"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">01</text>
+      <text x="72" y="56" class="cardTitle">Tela principal do painel</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#FDE68A"/>
+      <text x="750" y="49" class="status" fill="#92400E">PARCIAL (C01)</text>
+      <text x="26" y="96" class="cardBody">Base pronta; RBAC de tarefas ajustado. Falta fechar aceite E2E multiusuario e auditoria final.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- layout principal ativo</text>
+      <text x="40" y="206" class="miniText">- selecao de cliente funcionando</text>
+      <text x="40" y="232" class="miniText">- RBAC tarefas por perfil aplicado</text>
+      <text x="40" y="258" class="miniText">- filtro !IsAdmin para usuario comum</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Regras aplicadas C01</text>
+      <text x="360" y="180" class="miniText">- Usuario comum: ve/edita so o proprio.</text>
+      <text x="360" y="206" class="miniText">- Admin: proprio + subordinados aprovados.</text>
+      <text x="360" y="232" class="miniText">- Supremo: ve/edita todas as tarefas.</text>
+      <text x="360" y="258" class="miniText">- ClienteService: Supremo com acesso global.</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas restantes</text>
+      <text x="680" y="180" class="miniText">1) Validar E2E Thiago x Leonardo.</text>
+      <text x="680" y="206" class="miniText">2) Fechar trilha de auditoria alteracoes.</text>
+      <text x="680" y="232" class="miniText">3) Revisar edge cases de subordinacao.</text>
+      <text x="680" y="258" class="miniText">4) Assinar aceite operacional.</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral: painel aprovado com esteira igual referencia e acesso correto por perfil.</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Perguntas abertas: qual ponto da referencia e obrigatorio no MVP? __________________</text>
+      <text x="28" y="687" class="smallNote">Controle de acesso/perfis e padrao visual da esteira ficam dentro deste modulo 01.</text>
+    </g>
+
+    <!-- CARD 02 -->
+    <g transform="translate(1056,132)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#00A3A3"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">02</text>
+      <text x="72" y="56" class="cardTitle">Cadastro + pesquisa de clientes</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#DCFCE7"/>
+      <text x="750" y="49" class="status" fill="#166534">IMPLEMENTADO</text>
+      <text x="26" y="96" class="cardBody">Ja temos: cadastro completo, lista paginada, busca e seletor por contexto.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- modal de cadastro pronto</text>
+      <text x="40" y="206" class="miniText">- validacoes de campos</text>
+      <text x="40" y="232" class="miniText">- busca por cliente/grupo</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- ajustes finos de fluxo</text>
+      <text x="360" y="206" class="miniText">- revisar mensagens ao user</text>
+      <text x="360" y="232" class="miniText">- testes de carga da busca</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Checar segregacao correta por usuario e cliente.</text>
+    </g>
+
+    <!-- CARD 03 -->
+    <g transform="translate(2072,132)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#6366F1"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">03</text>
+      <text x="72" y="56" class="cardTitle">Botao Ferramentas (lateral)</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#DCFCE7"/>
+      <text x="750" y="49" class="status" fill="#166534">IMPLEMENTADO</text>
+      <text x="26" y="96" class="cardBody">Ja temos: abre lista de ferramentas, drag/drop e ghost visual.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- menu Ferramentas ativo</text>
+      <text x="40" y="206" class="miniText">- drag da ferramenta</text>
+      <text x="40" y="232" class="miniText">- ghost de arraste</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- validar UX com equipe</text>
+      <text x="360" y="206" class="miniText">- revisar novos cards</text>
+      <text x="360" y="232" class="miniText">- melhorar feedback visual</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Nao quebrar area clicavel do drag.</text>
+    </g>
+
+    <!-- CARD 04 -->
+    <g transform="translate(3088,132)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#2563EB"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">04</text>
+      <text x="72" y="56" class="cardTitle">Ancorar PDF (funcao completa)</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#FFEDD5"/>
+      <text x="750" y="49" class="status" fill="#9A3412">PARCIAL</text>
+      <text x="26" y="96" class="cardBody">Ja temos: wizard, editor de ancoras, preview, validacoes e erro tipado.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- fluxo de criacao pronto</text>
+      <text x="40" y="206" class="miniText">- modo avancado de config</text>
+      <text x="40" y="232" class="miniText">- robustez de validacao</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- fechar scheduler final</text>
+      <text x="360" y="206" class="miniText">- testes de stress real</text>
+      <text x="360" y="232" class="miniText">- medicao de performance</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Prioridade alta para robustez de producao.</text>
+    </g>
+
+    <!-- CARD 05 -->
+    <g transform="translate(40,862)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#0EA5E9"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">05</text>
+      <text x="72" y="56" class="cardTitle">Historico de execucao</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#DCFCE7"/>
+      <text x="750" y="49" class="status" fill="#166534">IMPLEMENTADO</text>
+      <text x="26" y="96" class="cardBody">Ja temos: painel historico global/cliente e navegacao por item.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- lista de execucoes ativa</text>
+      <text x="40" y="206" class="miniText">- filtros por escopo</text>
+      <text x="40" y="232" class="miniText">- resumo por cliente</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- melhorar leitura visual</text>
+      <text x="360" y="206" class="miniText">- teste volume maior</text>
+      <text x="360" y="232" class="miniText">- filtros extras, se preciso</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Garantir historico util para auditoria e operacao.</text>
+    </g>
+
+    <!-- CARD 06 -->
+    <g transform="translate(1056,862)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#10B981"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">06</text>
+      <text x="72" y="56" class="cardTitle">Area do usuario logado</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#FFEDD5"/>
+      <text x="750" y="49" class="status" fill="#9A3412">PARCIAL</text>
+      <text x="26" y="96" class="cardBody">Ja temos: cartao de usuario com nome/perfil e botao sair.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- cartao de usuario ativo</text>
+      <text x="40" y="206" class="miniText">- perfil visivel</text>
+      <text x="40" y="232" class="miniText">- logout funcionando</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- mover para topo</text>
+      <text x="360" y="206" class="miniText">- menu de conta</text>
+      <text x="360" y="232" class="miniText">- mais funcoes de perfil</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Alinhar com design enterprise de avatar no topo.</text>
+    </g>
+
+    <!-- CARD 07 -->
+    <g transform="translate(2072,862)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#F59E0B"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">07</text>
+      <text x="72" y="56" class="cardTitle">Esteira de tarefas</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#FDE68A"/>
+      <text x="750" y="49" class="status" fill="#92400E">PARCIAL (C7)</text>
+      <text x="26" y="96" class="cardBody">Motor evoluido: card avatar, zoom por esteira e colisao por minuto. Falta refinamento visual final.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- ponteiro central e regua temporal</text>
+      <text x="40" y="206" class="miniText">- slider de zoom individual por esteira</text>
+      <text x="40" y="232" class="miniText">- card claro nome + avatar por agendador</text>
+      <text x="40" y="258" class="miniText">- colisao lateral: mais antiga a direita</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta p/ igualar imagem</text>
+      <text x="360" y="180" class="miniText">- ajuste fino de tipografia e espacamento</text>
+      <text x="360" y="206" class="miniText">- botao Nova Esteira estilo referencia</text>
+      <text x="360" y="232" class="miniText">- confirmar paleta final dos cards</text>
+      <text x="360" y="258" class="miniText">- validar usabilidade com usuario real</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas tecnicas</text>
+      <text x="680" y="180" class="miniText">1) Confirmacao de conflito no wizard.</text>
+      <text x="680" y="206" class="miniText">2) Testes de colisao e zoom fixo.</text>
+      <text x="680" y="232" class="miniText">3) Homologar fluxo com dados reais.</text>
+      <text x="680" y="258" class="miniText">4) Fechar checklist de performance.</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral: esteira clara e didatica, visualmente igual a referencia, sem perder robustez.</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Arquivos-chave: PainelReguaTempoView, EsteiraTarefasControl, BotaoTarefaReguaControl.</text>
+      <text x="28" y="687" class="smallNote">Referencia visual: IMAGENS_INSPIRACAO/esteira de tarefas.png</text>
+    </g>
+
+    <!-- CARD 08 -->
+    <g transform="translate(3088,862)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#8B5CF6"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">08</text>
+      <text x="72" y="56" class="cardTitle">Login e segregacao por usuario</text>
+      <rect x="696" y="28" width="268" height="32" rx="16" fill="#DBEAFE"/>
+      <text x="708" y="49" class="status" fill="#1D4ED8">PARCIAL (DEPENDENCIA)</text>
+      <text x="26" y="96" class="cardBody">Ja temos: filtro por userId nos dados do painel e retorno ao login no sair.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- sessao no painel</text>
+      <text x="40" y="206" class="miniText">- isolamento base de dados</text>
+      <text x="40" y="232" class="miniText">- logout navegando login</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- teste E2E multi-user</text>
+      <text x="360" y="206" class="miniText">- validar regras por cliente</text>
+      <text x="360" y="232" class="miniText">- casos limite de sessao</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Modulo critico para aprovacao final do painel.</text>
+    </g>
+
+    <!-- CARD 09 -->
+    <g transform="translate(40,1592)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#F97316"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">09</text>
+      <text x="72" y="56" class="cardTitle">Botoes informativos superiores</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#DCFCE7"/>
+      <text x="750" y="49" class="status" fill="#166534">IMPLEMENTADO</text>
+      <text x="26" y="96" class="cardBody">Ja temos: KPIs Tarefas Hoje, Futuras, Erros Criticos e Atrasadas.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- cards KPI renderizando</text>
+      <text x="40" y="206" class="miniText">- cores por criticidade</text>
+      <text x="40" y="232" class="miniText">- bind com tarefas cliente</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- validar formula KPI</text>
+      <text x="360" y="206" class="miniText">- revisar atualizacao tempo</text>
+      <text x="360" y="232" class="miniText">- ajuste visual final</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">KPI bom precisa ser confiavel e simples de ler.</text>
+    </g>
+
+    <!-- CARD 10 -->
+    <g transform="translate(1056,1592)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#EF4444"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">10</text>
+      <text x="72" y="56" class="cardTitle">Botoes de pendencias</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#FFEDD5"/>
+      <text x="750" y="49" class="status" fill="#9A3412">PARCIAL</text>
+      <text x="26" y="96" class="cardBody">Ja temos: aprovar, promover admin, rejeitar e painel de notificacoes.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- acoes de aprovacao</text>
+      <text x="40" y="206" class="miniText">- fluxos de orfaos admin</text>
+      <text x="40" y="232" class="miniText">- mensagens de retorno</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- central de pendencias full</text>
+      <text x="360" y="206" class="miniText">- metricas operacionais</text>
+      <text x="360" y="232" class="miniText">- simplificar decisao UX</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Fluxo critico para governanca de acesso.</text>
+    </g>
+
+    <!-- CARD 11 -->
+    <g transform="translate(2072,1592)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#14B8A6"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">11</text>
+      <text x="72" y="56" class="cardTitle">Botao Configuracao + perfil topo</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#E2E8F0"/>
+      <text x="750" y="49" class="status" fill="#334155">PLACEHOLDER</text>
+      <text x="26" y="96" class="cardBody">Ja temos: ponto de navegacao preparado; fluxo final ainda nao implementado.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- rota de configuracao</text>
+      <text x="40" y="206" class="miniText">- base de navegacao pronta</text>
+      <text x="40" y="232" class="miniText">- estrutura para evoluir</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- tela de configuracao real</text>
+      <text x="360" y="206" class="miniText">- perfil/conta no topo</text>
+      <text x="360" y="232" class="miniText">- permissoes de alteracao</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Aqui voce decide como sera a experiencia enterprise de conta.</text>
+    </g>
+
+    <!-- CARD 12 -->
+    <g transform="translate(3088,1592)">
+      <rect x="0" y="0" width="992" height="706" rx="28" fill="#FFFFFF" stroke="#D7E6F5" stroke-width="2"/>
+      <rect x="0" y="0" width="992" height="12" rx="28" fill="#64748B"/>
+      <circle cx="38" cy="46" r="22" fill="#0F172A"/>
+      <text x="38" y="54" text-anchor="middle" class="numb">12</text>
+      <text x="72" y="56" class="cardTitle">Relatorios</text>
+      <rect x="738" y="28" width="226" height="32" rx="16" fill="#E2E8F0"/>
+      <text x="750" y="49" class="status" fill="#334155">PLACEHOLDER</text>
+      <text x="26" y="96" class="cardBody">Ja temos: destino de navegacao preparado, modulo funcional ainda pendente.</text>
+
+      <rect x="24" y="124" width="306" height="192" rx="20" fill="#F1FAF4" stroke="#CFEAD6"/>
+      <text x="40" y="152" class="miniTitle">Feito (agora)</text>
+      <text x="40" y="180" class="miniText">- entrada no menu pronta</text>
+      <text x="40" y="206" class="miniText">- estrutura inicial aberta</text>
+      <text x="40" y="232" class="miniText">- pode receber backlog</text>
+
+      <rect x="344" y="124" width="306" height="192" rx="20" fill="#FFF8EF" stroke="#F2DDC0"/>
+      <text x="360" y="152" class="miniTitle">Falta (proximo)</text>
+      <text x="360" y="180" class="miniText">- modelo de relatorio</text>
+      <text x="360" y="206" class="miniText">- filtros e exportacao</text>
+      <text x="360" y="232" class="miniText">- validacao de negocio</text>
+
+      <rect x="664" y="124" width="306" height="192" rx="20" fill="#F2F7FF" stroke="#D7E6FA"/>
+      <text x="680" y="152" class="miniTitle">Submetas</text>
+      <text x="680" y="180" class="miniText">1) __________________</text>
+      <text x="680" y="206" class="miniText">2) __________________</text>
+      <text x="680" y="232" class="miniText">3) __________________</text>
+
+      <line x1="22" y1="334" x2="970" y2="334" stroke="#D7E6F5" stroke-width="2"/>
+      <text x="28" y="365" class="lineText">Meta geral do modulo: ________________________________________________</text>
+      <text x="28" y="394" class="lineText">Aceite: Func [ ] Auto [ ] Real [ ] UX [ ] Perf [ ] Arq [ ]</text>
+      <text x="28" y="423" class="lineText">Notas: Func __ UX __ Perf __ Arq __ Geral __</text>
+      <text x="28" y="452" class="lineText">Dono: _______________________  Prazo: _______________________</text>
+      <text x="28" y="481" class="lineText">Observacoes: _________________________________________________</text>
+      <text x="28" y="687" class="smallNote">Fechamento executivo do painel passa por este modulo.</text>
+    </g>
+
+  </g>
+</svg>

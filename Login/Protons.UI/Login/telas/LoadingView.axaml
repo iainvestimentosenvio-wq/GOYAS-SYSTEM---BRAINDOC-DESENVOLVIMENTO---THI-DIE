@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Login.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Login.Views.LoadingView"
+             x:DataType="vm:LoadingViewModel">
+
+  <Grid>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+
+      <!-- Logotipo + nome da marca -->
+      <StackPanel Spacing="10" HorizontalAlignment="Center">
+        <Image Source="avares://Protons.UI/Assets/Brand/logo_protons.png"
+               MaxHeight="72"
+               Stretch="Uniform"
+               HorizontalAlignment="Center" />
+        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+          <Border Width="4" Height="22"
+                  Background="{DynamicResource AccentPrimaryBrush}"
+                  CornerRadius="2"
+                  VerticalAlignment="Center" />
+          <TextBlock Text="PRÓTONS"
+                     FontSize="20"
+                     FontWeight="Bold"
+                     Foreground="{DynamicResource TextPrimaryBrush}"
+                     VerticalAlignment="Center" />
+        </StackPanel>
+      </StackPanel>
+
+      <!-- Indicador de carregamento -->
+      <StackPanel Spacing="10" HorizontalAlignment="Center" MinWidth="260">
+        <ProgressBar IsIndeterminate="True"
+                     Height="3"
+                     Foreground="{DynamicResource AccentPrimaryBrush}"
+                     Background="{DynamicResource SurfaceBorderBrush}"
+                     CornerRadius="2" />
+        <TextBlock Text="{Binding Message}"
+                   FontSize="13"
+                   FontWeight="SemiBold"
+                   Foreground="{DynamicResource TextPrimaryBrush}"
+                   HorizontalAlignment="Center" />
+        <TextBlock Text="Aguarde a inicialização..."
+                   FontSize="12"
+                   Foreground="{DynamicResource TextMutedBrush}"
+                   HorizontalAlignment="Center" />
+      </StackPanel>
+
+    </StackPanel>
+  </Grid>
+</UserControl>

@@ -1,0 +1,44 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.CartaoUsuario.CartaoUsuarioPainelPrincipalView"
+             x:DataType="vm:PainelViewModel">
+
+  <Border CornerRadius="14"
+          Padding="14"
+          BorderBrush="#B8CAD8"
+          BorderThickness="1"
+          BoxShadow="0 8 22 0 #10233A12">
+    <Border.Background>
+      <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#FCFDFE" Offset="0" />
+        <GradientStop Color="#F4F8FB" Offset="1" />
+      </LinearGradientBrush>
+    </Border.Background>
+    <StackPanel Spacing="8">
+      <StackPanel Orientation="Horizontal" Spacing="10">
+        <Border Width="36" Height="36" CornerRadius="18" Background="#2A6670">
+          <TextBlock Text="{Binding NomeInicial}"
+                     FontSize="14"
+                     FontWeight="Bold"
+                     Foreground="White"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" />
+        </Border>
+
+        <StackPanel Spacing="2" VerticalAlignment="Center">
+          <TextBlock Text="{Binding Nome}" FontSize="13" FontWeight="SemiBold" Foreground="#1A2A3A" />
+          <TextBlock Text="{Binding Perfil}" FontSize="11" Foreground="#6A7E91" />
+        </StackPanel>
+      </StackPanel>
+
+      <Button Classes="btn-logout"
+              Content="Sair"
+              Command="{Binding SairCommand}"
+              HorizontalAlignment="Stretch" />
+    </StackPanel>
+  </Border>
+</UserControl>

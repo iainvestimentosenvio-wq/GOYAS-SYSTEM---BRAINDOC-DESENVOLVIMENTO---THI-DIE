@@ -1,0 +1,270 @@
+INSTALADOR : 
+
+Plano Final de Hardening Pré-Teste Pesado (Enterprise, Fail-Fast)
+Resumo
+Objetivo: eliminar as falhas residuais com maior probabilidade de quebrar a próxima validação e deixar o fluxo robusto, rastreável e previsível antes do seu teste manual longo.
+Decisões já fechadas nesta conversa:
+
+Política de transporte: iso-strict (sem fallback silencioso para QGA).
+Tratamento de warnings WiX: corrigir agora.
+Canário: automático antes da rodada longa, mas o teste pesado final continua manual por você.
+Fatos confirmados na análise (estado atual)
+Os 8 FAIL da última rodada (BASE-GATE-20260221205925) vieram de invoke_regressao/artifact_set/result/result_snapshot nas duas VMs.
+Causa raiz histórica comprovada: bundle sem installer-contract.json + queda para QGA por falha de ISO (bundle_not_found_on_iso).
+Correções já presentes no código atual: inclusão de installer-contract.json no bundle, validação de conteúdo do bundle e robustez extra em test-msi.ps1/test-inno.ps1 para sempre gerar resultado em falha fatal.
+test-installer-contract-static.sh e test-artifact-freshness.sh já passam localmente.
+Ainda existem riscos operacionais reais:
+Comandos de rebuild em mensagens/docs ainda mostram powershell fixo (quebra em Linux sem alias).
+Scripts principais ainda aceitam fallback QGA no modo iso, então ISO pode falhar sem bloquear.
+Risco de path ambíguo /home/... vs /srv/... no build host (já causou CS0006 e MSB3030).
+Warnings de build MSI ainda não tratados na fonte (WIX1118, WIX1077, WIX1076; plus versões WiX antigas 4.0.0).
+latest-status.json reflete rodada antiga; sem nova rodada/canário ele fica operacionalmente desatualizado.
+Mudanças de interface pública (contratos e comandos)
+Novo modo de transporte: QGA_PAYLOAD_TRANSPORT_MODE=iso-strict.
+Novo script de canário: run-windows-canary.sh.
+Novo env de controle: PROTONS_SKIP_CANARY=1 (escape de emergência, default 0).
+Ajuste de status canônico: latest-status.json passa a incluir status_stale e code_revision.
+Mensagens operacionais de rebuild passam a usar resolvedor pwsh|powershell automaticamente.
+Plano de implementação (decision-complete)
+Hardening de path canônico e execução (bloqueador de build intermitente)
+Aplicar resolução canônica por Git root em scripts ativos:
+build-and-run-windows-gate.sh, run-windows-base-gate.sh, run-windows-p10-gate.sh, run-windows-ux-p10-gate.sh, windows-autonomous-round.sh, windows-e2e-sequencial.sh, troubleshoot-upload.sh.
+Regra: PROJECT_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"; fallback para lógica atual se Git indisponível.
+Trocar chamadas diretas virsh por execução via sg libvirt nos entrypoints para evitar falha de permissão por ambiente.
+Transporte à prova de falha silenciosa (ISO strict)
+Em windows-autonomous-round.sh, ampliar parser de modo para aceitar iso-strict.
+Semântica final:
+iso-strict: se ISO falhar em qualquer etapa (build/stage/attach/copy), registrar FAIL e abortar sem fallback QGA.
+iso: mantém fallback QGA (legado).
+qga: QGA direto.
+auto: alias explícito para iso (ou removido; escolher iso para compatibilidade).
+Ajustar logs e transport_mode para evidenciar claramente quando houve fallback ou bloqueio por strict.
+Resolver comandos de rebuild cross-platform (Linux/Windows)
+Criar helper shell comum para detectar comando PowerShell (pwsh preferencial, fallback powershell).
+Atualizar mensagens de erro/preflight em:
+run-windows-base-gate.sh, run-windows-p10-gate.sh, run-windows-ux-p10-gate.sh, README-SCRIPTS-AUTOMATICOS.md.
+Mensagem padrão deve sempre mostrar:
+comando local (pwsh|powershell) + caminho automático Linux->VM (bash build-and-run-windows-gate.sh).
+Robustez do publish host (eliminar CS0006/MSB3030 intermitente)
+Em build-and-run-windows-gate.sh:
+forçar uso de root canônico,
+limpeza determinística de bin/obj/publish dos 3 projetos antes do retry,
+fallback interno de publish sem --no-build quando detectar erro de runtimeconfig/ref assembly,
+mensagem final de diagnóstico com causa classificada.
+Critério técnico: erro de publish só deve ocorrer por dependência real ausente (ex.: SDK), não por path alias/montagem.
+Correção dos warnings WiX na origem (padrão enterprise)
+Em build-msi.ps1 (geração de Variables.wxi e Protons.wixproj):
+atualizar WiX packages para 4.0.6 (Heat + Util.wixext) no template gerado.
+Em Variables.wxi + template:
+remover definição duplicada de PublishDir em Variables.wxi e manter fonte única em .wixproj (DefineConstants) para eliminar WIX1118.
+Em Product.wxs:
+remover valor default inválido de INSTALLFOLDER_PATH com referência proibida e manter busca por registro.
+Em Product.wxs:
+ajustar MajorUpgrade para eliminar warning ICE61/WIX1076 sem quebrar cenário de reinstall (se necessário, ajustar test-upgrade-reinstall.ps1 para fluxo de manutenção explícito).
+Aceite: build MSI em VM sem WIX1118, sem WIX1077, sem WIX1076 no log.
+Canário automático curto antes da rodada longa
+Criar run-windows-canary.sh com escopo padrão win10-lite.
+Fluxo canário:
+test-artifact-freshness.sh PASS,
+windows-autonomous-round.sh bootstrap-qga PASS (win10),
+windows-autonomous-round.sh run-regressao com QGA_PAYLOAD_TRANSPORT_MODE=iso-strict PASS,
+transport_mode=iso obrigatório,
+artefatos mínimos obrigatórios presentes,
+test-installer-contract-static.sh PASS,
+windows_e2e_orchestrator.py PASS.
+Integrar no build-and-run-windows-gate.sh antes do gate base completo.
+Default: canário ligado; bypass só com PROTONS_SKIP_CANARY=1.
+Observabilidade: status canônico protegido contra “stale”
+Em windows_e2e_orchestrator.py:
+adicionar code_revision (commit + dirty flag),
+adicionar status_stale quando houver alteração de fontes críticas após a rodada,
+adicionar blocker automático de stale no ready_for_real_test.
+Atualizar latest-status.md/csv com esses campos resumidos.
+Não mudar histórico extenso; apenas notas operacionais ativas em CHECKLIST.md e PLANO-7-DIAS-GO.md para não contradizer o status canônico.
+Testes e cenários de aceite
+bash run-windows-base-gate.sh --help não executa nada e mostra uso correto.
+Preflight falhando exibe comando pwsh quando disponível; fallback para powershell quando não.
+QGA_PAYLOAD_TRANSPORT_MODE=iso-strict falha imediatamente se ISO copy falhar, sem tentar QGA.
+Canário (bash run-windows-canary.sh) passa em win10-lite e grava evidências.
+Build-and-run com canário ligado bloqueia cedo se canário falhar.
+Build MSI na VM sem warnings-alvo (WIX1118, WIX1077, WIX1076).
+test-installer-contract-static.sh PASS.
+test-artifact-freshness.sh PASS.
+latest-status.json contém status_stale=false após nova rodada válida.
+Rodada longa manual posterior usa artefatos e status coerentes, sem regressão dos 8 FAIL anteriores.
+Critério final para liberar seu teste manual pesado
+Canário automático PASS.
+Freshness PASS.
+Static contract PASS.
+Transporte em canário confirmado como iso (não fallback).
+Build MSI sem warnings-alvo.
+latest-status.json atualizado na rodada nova com ready_for_real_test=true para escopo base técnico.
+Assunções e defaults
+Você continuará executando manualmente a rodada pesada final (90 min).
+Perfil de assinatura padrão permanece technical nesta etapa.
+production continua reservado para gate comercial/release com assinatura válida obrigatória.
+Não haverá limpeza de histórico narrativo amplo; só correções operacionais para evitar ambiguidade.
+Implement plan
+
+Vou começar pelas mudanças estruturais de shell (root canônico, resolvedor pwsh|powershell, virsh via sg libvirt e novo canário), depois aplico hardening de iso-strict e por fim WiX/orquestrador/docs. Vou editar em blocos para manter baixo risco de regressão.
+
+Created file
+powershell-resolver.sh
++17
+-0
+
+#!/usr/bin/env bash
+set -euo pipefail
+
+resolve_powershell_cmd() {
+  if command -v pwsh >/dev/null 2>&1; then
+    printf '%s' "pwsh"
+    return 0
+  fi
+
+  if command -v powershell >/dev/null 2>&1; then
+    printf '%s' "powershell"
+    return 0
+  fi
+
+  # Fallback textual for instructions on hosts where PowerShell is not installed.
+  printf '%s' "pwsh"
+}
+Edited file
+run-windows-base-gate.sh
++24
+-5
+
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+if PROJECT_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"; then
+  :
+else
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+fi
+INSTALADOR_ROOT="$PROJECT_ROOT/INSTALADOR"
+POWERSHELL_RESOLVER="$INSTALADOR_ROOT/comum/scripts/powershell-resolver.sh"
+[ -f "$POWERSHELL_RESOLVER" ] || { echo "ERRO: helper ausente: $POWERSHELL_RESOLVER" >&2; exit 1; }
+source "$POWERSHELL_RESOLVER"
+
+cd "$INSTALADOR_ROOT"
+
+virsh_domstate() {
+  local vm="$1"
+  sg libvirt -c "virsh domstate $vm" 2>/dev/null | tr -d '\r'
+}
+
+usage() {
+if ! bash testes/windows/test-artifact-freshness.sh; then
+  PS_CMD="$(resolve_powershell_cmd)"
+  echo ""
+  echo "Rebuild obrigatorio antes do gate base:"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  Ou fluxo automatico Linux->VM:"
+  echo "  bash build-and-run-windows-gate.sh"
+  exit 1
+for vm in win10-lite win11-lite; do
+  state=$(virsh domstate "$vm" 2>/dev/null || echo "undefined")
+  state="$(virsh_domstate "$vm" || true)"
+  [ -n "$state" ] || state="undefined"
+  echo "   $vm: $state"
+Edited file
+run-windows-p10-gate.sh
++25
+-6
+
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+if PROJECT_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"; then
+  :
+else
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+fi
+INSTALADOR_ROOT="$PROJECT_ROOT/INSTALADOR"
+POWERSHELL_RESOLVER="$INSTALADOR_ROOT/comum/scripts/powershell-resolver.sh"
+[ -f "$POWERSHELL_RESOLVER" ] || { echo "ERRO: helper ausente: $POWERSHELL_RESOLVER" >&2; exit 1; }
+source "$POWERSHELL_RESOLVER"
+
+cd "$INSTALADOR_ROOT"
+
+virsh_domstate() {
+  local vm="$1"
+  sg libvirt -c "virsh domstate $vm" 2>/dev/null | tr -d '\r'
+}
+
+usage() {
+Variaveis de ambiente:
+  QGA_PAYLOAD_TRANSPORT_MODE    iso|qga|auto (default: iso)
+  QGA_PAYLOAD_TRANSPORT_MODE    iso-strict|iso|qga|auto (default: iso)
+  PROTONS_SIGNATURE_PROFILE     technical|production (default: technical)
+if ! bash testes/windows/test-artifact-freshness.sh; then
+  PS_CMD="$(resolve_powershell_cmd)"
+  echo ""
+  echo "Comandos de rebuild:"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  Ou fluxo automatico Linux->VM:"
+  echo "  bash build-and-run-windows-gate.sh"
+  exit 1
+for vm in win10-lite win11-lite; do
+  state=$(virsh domstate "$vm" 2>/dev/null || echo "undefined")
+  state="$(virsh_domstate "$vm" || true)"
+  [ -n "$state" ] || state="undefined"
+  echo "VM $vm: $state"
+Edited file
+run-windows-ux-p10-gate.sh
++25
+-6
+
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+if PROJECT_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel 2>/dev/null)"; then
+  :
+else
+  PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd -P)"
+fi
+INSTALADOR_ROOT="$PROJECT_ROOT/INSTALADOR"
+POWERSHELL_RESOLVER="$INSTALADOR_ROOT/comum/scripts/powershell-resolver.sh"
+[ -f "$POWERSHELL_RESOLVER" ] || { echo "ERRO: helper ausente: $POWERSHELL_RESOLVER" >&2; exit 1; }
+source "$POWERSHELL_RESOLVER"
+
+cd "$INSTALADOR_ROOT"
+
+virsh_domstate() {
+  local vm="$1"
+  sg libvirt -c "virsh domstate $vm" 2>/dev/null | tr -d '\r'
+}
+
+usage() {
+Variaveis de ambiente:
+  QGA_PAYLOAD_TRANSPORT_MODE    iso|qga|auto (default: iso)
+  QGA_PAYLOAD_TRANSPORT_MODE    iso-strict|iso|qga|auto (default: iso)
+  PROTONS_SIGNATURE_PROFILE     technical|production (default: technical)
+if ! bash testes/windows/test-artifact-freshness.sh; then
+  PS_CMD="$(resolve_powershell_cmd)"
+  echo ""
+  echo "Comandos de rebuild:"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  powershell -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-msi.ps1"
+  echo "  $PS_CMD -ExecutionPolicy Bypass -File windows/scripts/build-inno.ps1"
+  echo "  Ou fluxo automatico Linux->VM:"
+  echo "  bash build-and-run-windows-gate.sh"
+  exit 1
+for vm in win10-lite win11-lite; do
+  state=$(virsh domstate "$vm" 2>/dev/null || echo "undefined")
+  state="$(virsh_domstate "$vm" || true)"
+  [ -n "$state" ] || state="undefined"
+  echo "VM $vm: $state"
+Agora vou atacar o build-and-run-windows-gate.sh: canonicidade de path, robustez do dotnet publish (CS0006/MSB3030), integração do canário e ajuste final para fluxo fail-fast. Em seguida eu fecho iso-strict no orquestrador autônomo.

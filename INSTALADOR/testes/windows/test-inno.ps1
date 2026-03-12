@@ -1,0 +1,228 @@
+# Automated Inno Setup validation for Protons installer.
+
+[CmdletBinding()]
+param(
+    [string]$ProjectRoot,
+    [string]$Version,
+    [string]$ArtifactsDir,
+    [string]$LogDir,
+    [string]$RunId,
+    [switch]$InteractiveInstall,
+    [switch]$SkipUninstall,
+    [switch]$RequireManualAppOpen,
+    [switch]$AllowManual
+)
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+
+. (Join-Path $PSScriptRoot 'Test-Common.ps1')
+
+$suiteName = 'INNO-E2E'
+$ctx = $null
+$store = $null
+
+try {
+    if (-not (Test-IsAdmin)) {
+        Write-Host 'ERROR: run this script in an elevated PowerShell session.' -ForegroundColor Red
+        exit 1
+    }
+
+    $ctx = Get-ProjectContext -ProjectRoot $ProjectRoot -Version $Version -ArtifactsDir $ArtifactsDir -LogDir $LogDir -RunId $RunId
+    Ensure-File -Path $ctx.ExePath -Label 'Inno artifact'
+    $contract = Get-InstallerContract
+    $paths = $contract.paths
+
+    $store = New-ResultStore -Suite $suiteName -Version $ctx.Version -Timestamp $ctx.Timestamp
+
+    $installLog = Join-Path $ctx.LogDir ("inno-install-{0}.log" -f $ctx.Timestamp)
+    $uninstallLog = Join-Path $ctx.LogDir ("inno-uninstall-{0}.log" -f $ctx.Timestamp)
+    $installDuration = 0.0
+    $uninstallDuration = 0.0
+
+    Write-Host ("=== {0} ===" -f $suiteName) -ForegroundColor Cyan
+    Write-Host ("Version: {0}" -f $ctx.Version) -ForegroundColor Gray
+    Write-Host ("EXE: {0}" -f $ctx.ExePath) -ForegroundColor Gray
+
+    $installArgs = if ($InteractiveInstall) {
+        "/LOG=`"$installLog`""
+    } else {
+        "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /LOG=`"$installLog`""
+    }
+
+    $installDuration = Get-CommandDuration {
+        $proc = Start-Process -FilePath $ctx.ExePath -ArgumentList $installArgs -Wait -PassThru
+        if ($proc.ExitCode -ne 0) {
+            throw "Inno install failed with exit code $($proc.ExitCode)"
+        }
+    }
+    Add-Result -Store $store -Id 'INNO-INSTALL-CMD' -Status 'PASS' -Details "Install command succeeded in ${installDuration}s" -Evidence $installLog
+
+    $installDir = [Environment]::ExpandEnvironmentVariables([string]$paths.install_dir)
+    $exePath = Join-Path $installDir ([string]$paths.main_executable)
+    Add-Result -Store $store -Id 'INNO-01-EXE' -Status ($(if (Test-Path $exePath) { 'PASS' } else { 'FAIL' })) -Details "Executable check: $exePath"
+
+    $desktopShortcut = [Environment]::ExpandEnvironmentVariables([string]$paths.desktop_shortcut)
+    Add-Result -Store $store -Id 'INNO-02-DESKTOP' -Status ($(if (Test-Path $desktopShortcut) { 'PASS' } else { 'FAIL' })) -Details "Desktop shortcut check: $desktopShortcut"
+
+    $startMenuShortcut = [Environment]::ExpandEnvironmentVariables([string]$paths.start_menu_shortcut)
+    Add-Result -Store $store -Id 'INNO-03-STARTMENU' -Status ($(if (Test-Path $startMenuShortcut) { 'PASS' } else { 'FAIL' })) -Details "Start menu shortcut check: $startMenuShortcut"
+
+    $regPath = [string]$paths.registry_hklm
+    $legacyRegPath = [string]$paths.registry_hkcu_legacy
+    $regStatus = 'FAIL'
+    $regDetails = 'Registry key not found in HKLM'
+    if (Test-Path $regPath) {
+        try {
+            $regValues = Get-ItemProperty -Path $regPath -ErrorAction Stop
+            if ($regValues.InstallPath -and $regValues.Version) {
+                $regStatus = 'PASS'
+                $regDetails = "HKLM InstallPath=$($regValues.InstallPath); Version=$($regValues.Version)"
+            } else {
+                $regDetails = 'HKLM registry key exists but required values are missing'
+            }
+        } catch {
+            $regDetails = "HKLM registry read failed: $($_.Exception.Message)"
+        }
+    } elseif (Test-Path $legacyRegPath) {
+        $regDetails = 'HKLM missing; legacy HKCU key exists (diagnostic fallback only)'
+    }
+    Add-Result -Store $store -Id 'INNO-04-REGISTRY' -Status $regStatus -Details $regDetails
+
+    $appDataPath = [Environment]::ExpandEnvironmentVariables([string]$paths.appdata_dir)
+    Add-Result -Store $store -Id 'INNO-05-APPDATA' -Status ($(if (Test-Path $appDataPath) { 'PASS' } else { 'FAIL' })) -Details "AppData path check: $appDataPath"
+
+    if ($RequireManualAppOpen) {
+        Add-Result -Store $store -Id 'INNO-06-APP-OPEN' -Status 'MANUAL' -Details 'Manual app open verification requested'
+    } else {
+        if (Test-Path $exePath) {
+            $proc = Start-Process -FilePath $exePath -PassThru
+            Start-Sleep -Seconds 4
+            if (-not $proc.HasExited) {
+                Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
+                Add-Result -Store $store -Id 'INNO-06-APP-OPEN' -Status 'PASS' -Details 'App process started successfully'
+            } elseif ($proc.ExitCode -eq 0) {
+                Add-Result -Store $store -Id 'INNO-06-APP-OPEN' -Status 'PASS' -Details 'App started and exited with code 0'
+            } else {
+                Add-Result -Store $store -Id 'INNO-06-APP-OPEN' -Status 'FAIL' -Details "App exited with code $($proc.ExitCode)"
+            }
+        } else {
+            Add-Result -Store $store -Id 'INNO-06-APP-OPEN' -Status 'FAIL' -Details 'Executable is missing, app launch skipped'
+        }
+    }
+
+    $sentinelPath = Join-Path $appDataPath ("sentinel-inno-{0}.txt" -f $ctx.Timestamp)
+    if (Test-Path $appDataPath) {
+        "sentinel:$($ctx.Timestamp)" | Set-Content -Path $sentinelPath -Encoding ASCII
+    }
+
+    if (-not $SkipUninstall) {
+        $uninstallerPath = [Environment]::ExpandEnvironmentVariables([string]$paths.uninstaller_exe)
+        if (-not (Test-Path $uninstallerPath)) {
+            Add-Result -Store $store -Id 'INNO-UNINSTALL-CMD' -Status 'FAIL' -Details "Uninstaller not found: $uninstallerPath"
+        } else {
+            $uninstallArgs = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /LOG=`"$uninstallLog`""
+            $uninstallDuration = Get-CommandDuration {
+                $proc = Start-Process -FilePath $uninstallerPath -ArgumentList $uninstallArgs -Wait -PassThru
+                if ($proc.ExitCode -ne 0) {
+                    throw "Inno uninstall failed with exit code $($proc.ExitCode)"
+                }
+            }
+            Add-Result -Store $store -Id 'INNO-UNINSTALL-CMD' -Status 'PASS' -Details "Uninstall command succeeded in ${uninstallDuration}s" -Evidence $uninstallLog
+        }
+
+        $programFilesWait = Wait-Condition -Description 'Program Files cleanup' -TimeoutSeconds 30 -PollIntervalMilliseconds 1000 -Condition {
+            -not (Test-Path $installDir)
+        }
+        $programFilesStatus = if ($programFilesWait.Satisfied) { 'PASS' } else { 'FAIL' }
+        $registryLegacyExists = Test-Path $legacyRegPath
+        $registryMachineExists = Test-Path $regPath
+        $programFilesDetails = "Program Files cleanup: $installDir | waited=$($programFilesWait.ElapsedSeconds)s | exists=$((Test-Path $installDir)); HKLM registry exists=$registryMachineExists; HKCU(legacy) exists=$registryLegacyExists"
+        if (-not $programFilesWait.Satisfied -and $programFilesWait.LastError) {
+            $programFilesDetails = "$programFilesDetails; lastError=$($programFilesWait.LastError)"
+        }
+        Add-Result -Store $store -Id 'INNO-UNINST-01-PROGRAMFILES' -Status $programFilesStatus -Details $programFilesDetails
+        Add-Result -Store $store -Id 'INNO-UNINST-02-APPDATA-PRESERVED' -Status ($(if (Test-Path $appDataPath) { 'PASS' } else { 'FAIL' })) -Details "AppData preserved: $appDataPath"
+    }
+
+    $resultBase = Join-Path $ctx.LogDir ("inno-results-{0}" -f $ctx.Timestamp)
+    $files = Write-ResultFiles -Store $store -OutputBasePath $resultBase
+
+    $metrics = [ordered]@{
+        suite = $suiteName
+        version = $ctx.Version
+        run_id = $ctx.RunId
+        timestamp_utc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+        artifact = [ordered]@{
+            path = $ctx.ExePath
+            size_bytes = (Get-Item $ctx.ExePath).Length
+        }
+        duration_seconds = [ordered]@{
+            install = $installDuration
+            uninstall = $(if ($SkipUninstall -or -not $uninstallDuration) { 0 } else { $uninstallDuration })
+        }
+    }
+    $metricsPath = Join-Path $ctx.LogDir ("inno-metrics-{0}.json" -f $ctx.Timestamp)
+    Write-JsonNoBom -Value $metrics -Path $metricsPath -Depth 6
+
+    Write-Host "Result JSON: $($files.Json)"
+    Write-Host "Result MD:   $($files.Markdown)"
+    Write-Host "Metrics:     $metricsPath"
+
+    $failCount = $files.Summary.FAIL
+    $manualCount = $files.Summary.MANUAL
+
+    if ($failCount -gt 0) {
+        exit 1
+    }
+
+    if ($manualCount -gt 0 -and -not $AllowManual) {
+        exit 2
+    }
+
+    exit 0
+} catch {
+    $fatalMessage = $_.Exception.Message
+    Write-Host "FATAL: $fatalMessage" -ForegroundColor Red
+
+    try {
+        if ($null -eq $ctx) {
+            $ctx = Get-ProjectContext -ProjectRoot $ProjectRoot -Version $Version -ArtifactsDir $ArtifactsDir -LogDir $LogDir -RunId $RunId
+        }
+        if ($null -eq $store) {
+            $store = New-ResultStore -Suite $suiteName -Version $ctx.Version -Timestamp $ctx.Timestamp
+        }
+
+        Add-Result -Store $store -Id 'INNO-FATAL' -Status 'FAIL' -Details $fatalMessage
+        $resultBase = Join-Path $ctx.LogDir ("inno-results-{0}" -f $ctx.Timestamp)
+        $files = Write-ResultFiles -Store $store -OutputBasePath $resultBase
+
+        $metricsPath = Join-Path $ctx.LogDir ("inno-metrics-{0}.json" -f $ctx.Timestamp)
+        if (-not (Test-Path $metricsPath)) {
+            $metrics = [ordered]@{
+                suite = $suiteName
+                version = $ctx.Version
+                run_id = $ctx.RunId
+                timestamp_utc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
+                fatal_error = $fatalMessage
+                artifact = [ordered]@{
+                    path = $ctx.ExePath
+                    size_bytes = $(if (Test-Path $ctx.ExePath) { (Get-Item $ctx.ExePath).Length } else { 0 })
+                }
+                duration_seconds = [ordered]@{
+                    install = 0
+                    uninstall = 0
+                }
+            }
+            Write-JsonNoBom -Value $metrics -Path $metricsPath -Depth 6
+        }
+
+        Write-Host "Result JSON: $($files.Json)"
+        Write-Host "Result MD:   $($files.Markdown)"
+        Write-Host "Metrics:     $metricsPath"
+    } catch {
+        Write-Host "FATAL: unable to emit fallback INNO result: $($_.Exception.Message)" -ForegroundColor Red
+    }
+
+    exit 1
+}

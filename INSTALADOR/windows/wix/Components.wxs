@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <?include Variables.wxi ?>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+
+      <!-- Atalhos (apontam para o executável em INSTALLFOLDER) -->
+      <Component Id="Shortcuts" Guid="F1E2D3C4-B5A6-4789-A1B2-C3D4E5F6A7B8">
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="Protons Login"
+                  Description="Sistema de Login Protons"
+                  Icon="ProductIcon"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Target="[INSTALLFOLDER]Protons.UI.exe"
+                  Advertise="no" />
+
+        <Shortcut Id="StartMenuShortcut"
+                  Directory="ProtonsProgramMenuFolder"
+                  Name="Protons Login"
+                  Description="Sistema de Login Protons"
+                  Icon="ProductIcon"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Target="[INSTALLFOLDER]Protons.UI.exe"
+                  Advertise="no" />
+
+        <RemoveFolder Id="RemoveStartMenuFolder" Directory="ProtonsProgramMenuFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\Protons" Name="Shortcuts" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+      <!-- Limpeza forçada do INSTALLFOLDER via Remember Property -->
+      <Component Id="FolderCleanup" Guid="B1C2D3E4-F5A6-4B7C-8D9E-0F1A2B3C4D5E" Condition="NOT UPGRADINGPRODUCTCODE">
+        <util:RemoveFolderEx Property="INSTALLFOLDER_PATH" On="uninstall" />
+        <RemoveFolder Id="RemoveInstallDir" Directory="INSTALLFOLDER" On="uninstall" />
+        <RegistryValue Root="HKLM" Key="Software\Protons" Name="Cleanup" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+
+    </ComponentGroup>
+
+    <!-- Registro per-machine em HKLM -->
+    <Component Id="RegistryEntries" Directory="INSTALLFOLDER" Guid="3C4D5E6F-7A8B-4C5D-9E0F-1A2B3C4D5E6F" Bitness="always64">
+      <RegistryKey Root="HKLM" Key="Software\Protons">
+        <RegistryValue Name="InstallPath" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <RegistryValue Name="Version" Type="string" Value="$(var.Version)" />
+        <RegistryValue Name="InstallScope" Type="string" Value="perMachine" />
+      </RegistryKey>
+      <RemoveRegistryKey Root="HKLM" Key="Software\Protons" Action="removeOnUninstall" />
+    </Component>
+
+  </Fragment>
+
+  <!-- Criar diretório de dados no AppData (Roaming) -->
+  <Fragment>
+    <Component Id="CreateAppDataFolder" Directory="AppDataProtons"
+               Guid="4D5E6F7A-8B9C-4D5E-0F1A-2B3C4D5E6F7A">
+      <CreateFolder />
+      <RemoveFolder Id="RemoveAppDataFolderIfEmpty"
+                    Directory="AppDataProtons" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\Protons"
+                     Name="DataPathPolicy" Type="string"
+                     Value="%APPDATA%\Protons" KeyPath="yes" />
+      <RemoveRegistryKey Root="HKCU" Key="Software\Protons"
+                         Action="removeOnUninstall" />
+    </Component>
+  </Fragment>
+</Wix>

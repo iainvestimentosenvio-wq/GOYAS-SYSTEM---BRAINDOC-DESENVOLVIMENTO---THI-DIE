@@ -1,0 +1,52 @@
+name: Lint Scripts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'INSTALADOR/**/*.sh'
+      - 'INSTALADOR/**/*.ps1'
+      - '.github/workflows/lint.yml'
+  pull_request:
+    paths:
+      - 'INSTALADOR/**/*.sh'
+      - 'INSTALADOR/**/*.ps1'
+      - '.github/workflows/lint.yml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+
+      - name: ShellCheck (.sh)
+        run: |
+          mapfile -d '' files < <(find INSTALADOR -type f -name '*.sh' -print0)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No shell scripts found"
+            exit 0
+          fi
+          shellcheck "${files[@]}"
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
+
+      - name: PSScriptAnalyzer (.ps1)
+        shell: pwsh
+        run: |
+          $files = Get-ChildItem -Path "INSTALADOR" -Recurse -Filter "*.ps1"
+          if ($files.Count -eq 0) { Write-Host "No PowerShell scripts found."; exit 0 }
+          $results = Invoke-ScriptAnalyzer -Path $files.FullName -Recurse -Severity Warning,Error
+          if ($results.Count -gt 0) {
+            $results | Format-Table -AutoSize | Out-String | Write-Host
+            Write-Error "PSScriptAnalyzer found issues."
+          }
+
+      - name: Project Lint (lint-build.sh)
+        run: bash INSTALADOR/comum/scripts/lint-build.sh

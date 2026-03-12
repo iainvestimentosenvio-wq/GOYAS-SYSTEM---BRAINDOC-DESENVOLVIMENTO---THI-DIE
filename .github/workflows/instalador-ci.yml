@@ -1,0 +1,65 @@
+name: Instalador CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "INSTALADOR/**"
+      - ".github/workflows/instalador-ci.yml"
+  pull_request:
+    paths:
+      - "INSTALADOR/**"
+      - ".github/workflows/instalador-ci.yml"
+
+jobs:
+  validate-instalador:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Prepare logs dir
+        run: mkdir -p INSTALADOR/saida/ci-logs
+
+      - name: Validate prohibited terms
+        run: bash INSTALADOR/comum/scripts/validate-prohibited-terms.sh | tee INSTALADOR/saida/ci-logs/01-validate-prohibited-terms.log
+
+      - name: Lint build
+        run: bash INSTALADOR/comum/scripts/lint-build.sh | tee INSTALADOR/saida/ci-logs/02-lint-build.log
+
+      - name: Validate version
+        run: bash INSTALADOR/comum/scripts/validate-version.sh | tee INSTALADOR/saida/ci-logs/03-validate-version.log
+
+      - name: Validate script comments
+        run: bash INSTALADOR/comum/scripts/validate-script-comments.sh | tee INSTALADOR/saida/ci-logs/04-validate-script-comments.log
+
+      - name: Validate SBOM
+        run: bash INSTALADOR/comum/scripts/validate-sbom.sh | tee INSTALADOR/saida/ci-logs/05-validate-sbom.log
+
+      - name: Validate update manifest (strict)
+        run: bash INSTALADOR/comum/scripts/validate-update-manifest.sh --manifest INSTALADOR/saida/update/update-manifest.json --strict-signature | tee INSTALADOR/saida/ci-logs/06-validate-update-manifest.log
+
+      - name: Test update manifest
+        run: bash INSTALADOR/comum/scripts/test-update-manifest.sh | tee INSTALADOR/saida/ci-logs/07-test-update-manifest.log
+
+      - name: Test AppImage
+        run: bash INSTALADOR/testes/linux/test-appimage.sh | tee INSTALADOR/saida/ci-logs/08-test-appimage.log
+
+      - name: Test installer contract static
+        run: bash INSTALADOR/testes/windows/test-installer-contract-static.sh | tee INSTALADOR/saida/ci-logs/09-test-installer-contract.log
+
+      - name: Test checklist charts
+        run: bash INSTALADOR/testes/meta/test-checklist-graficos.sh | tee INSTALADOR/saida/ci-logs/10-test-checklist-graficos.log
+
+      - name: Test checklist score/evidence
+        run: bash INSTALADOR/testes/meta/test-checklist-score-evidence.sh | tee INSTALADOR/saida/ci-logs/11-test-checklist-score-evidence.log
+
+      - name: Upload CI logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-ci-logs
+          path: INSTALADOR/saida/ci-logs/*

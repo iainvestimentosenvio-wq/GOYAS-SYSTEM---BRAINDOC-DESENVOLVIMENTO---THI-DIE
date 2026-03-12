@@ -1,0 +1,221 @@
+name: CI - Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+env:
+  # Versão do Node.js (se necessário)
+  NODE_VERSION: '18.x'
+
+jobs:
+  # Job 1: Validações estáticas (lint, termos proibidos)
+  static-validation:
+    name: Validações Estáticas
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Validar termos proibidos
+        run: |
+          if [[ -x "comum/scripts/validate-prohibited-terms.sh" ]]; then
+            bash comum/scripts/validate-prohibited-terms.sh
+          else
+            echo "SKIP: validate-prohibited-terms.sh não encontrado"
+          fi
+
+      - name: Lint de build
+        run: |
+          if [[ -x "comum/scripts/lint-build.sh" ]]; then
+            bash comum/scripts/lint-build.sh
+          else
+            echo "SKIP: lint-build.sh não encontrado"
+          fi
+
+      - name: Validar comentários em scripts
+        run: |
+          if [[ -x "comum/scripts/validate-script-comments.sh" ]]; then
+            bash comum/scripts/validate-script-comments.sh
+          else
+            echo "SKIP: validate-script-comments.sh não encontrado"
+          fi
+
+      - name: Validar versão
+        run: |
+          if [[ -x "comum/scripts/validate-version.sh" ]]; then
+            bash comum/scripts/validate-version.sh
+          else
+            echo "SKIP: validate-version.sh não encontrado"
+          fi
+
+  # Job 2: Validação de SBOM e manifesto de update
+  security-validation:
+    name: Validações de Segurança
+    runs-on: ubuntu-22.04
+    needs: static-validation
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Validar SBOM
+        run: |
+          if [[ -x "comum/scripts/validate-sbom.sh" ]]; then
+            bash comum/scripts/validate-sbom.sh
+          else
+            echo "SKIP: validate-sbom.sh não encontrado"
+          fi
+
+      - name: Validar update manifest (strict)
+        run: |
+          if [[ -x "comum/scripts/validate-update-manifest.sh" ]]; then
+            bash comum/scripts/validate-update-manifest.sh --strict-signature
+          else
+            echo "SKIP: validate-update-manifest.sh não encontrado"
+          fi
+
+      - name: Testar update manifest
+        run: |
+          if [[ -x "comum/scripts/test-update-manifest.sh" ]]; then
+            bash comum/scripts/test-update-manifest.sh
+          else
+            echo "SKIP: test-update-manifest.sh não encontrado"
+          fi
+
+  # Job 3: Testes meta (changelog, checklist, evidências)
+  meta-tests:
+    name: Testes Meta e Governança
+    runs-on: ubuntu-22.04
+    needs: static-validation
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Validar formato do changelog
+        run: |
+          if [[ -x "testes/meta/test-changelog-format.sh" ]]; then
+            bash testes/meta/test-changelog-format.sh
+          else
+            echo "SKIP: test-changelog-format.sh não encontrado"
+          fi
+
+      - name: Validar gráficos do checklist
+        run: |
+          if [[ -x "testes/meta/test-checklist-graficos.sh" ]]; then
+            bash testes/meta/test-checklist-graficos.sh
+          else
+            echo "SKIP: test-checklist-graficos.sh não encontrado"
+          fi
+
+      - name: Validar evidências do checklist
+        run: |
+          if [[ -x "testes/meta/test-checklist-score-evidence.sh" ]]; then
+            bash testes/meta/test-checklist-score-evidence.sh
+          else
+            echo "SKIP: test-checklist-score-evidence.sh não encontrado"
+          fi
+
+  # Job 4: Testes Linux (matriz Ubuntu 20.04/22.04)
+  test-linux:
+    name: Testes Linux - Ubuntu ${{ matrix.ubuntu-version }}
+    runs-on: ubuntu-${{ matrix.ubuntu-version }}
+    needs: [static-validation, security-validation]
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu-version: ['20.04', '22.04']
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar dependências Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y file binutils coreutils
+
+      - name: Testar AppImage
+        run: |
+          if [[ -x "testes/linux/test-appimage.sh" ]]; then
+            bash testes/linux/test-appimage.sh
+          else
+            echo "SKIP: test-appimage.sh não encontrado"
+          fi
+
+      - name: Testar contrato estático do instalador
+        run: |
+          if [[ -x "testes/windows/test-installer-contract-static.sh" ]]; then
+            bash testes/windows/test-installer-contract-static.sh
+          else
+            echo "SKIP: test-installer-contract-static.sh não encontrado"
+          fi
+
+      - name: Upload de logs (em caso de falha)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs-ubuntu-${{ matrix.ubuntu-version }}
+          path: |
+            saida/test-logs/
+            saida/validacao-*/
+          retention-days: 7
+
+  # Job 5: Auditoria de estado do host (opcional, só em main)
+  audit-host:
+    name: Auditoria de Estado do Host
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs: [test-linux]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Executar auditoria de host
+        run: |
+          if [[ -x "comum/scripts/audit-host-state.sh" ]]; then
+            bash comum/scripts/audit-host-state.sh
+          else
+            echo "SKIP: audit-host-state.sh não encontrado"
+          fi
+
+      - name: Upload de evidências de auditoria
+        uses: actions/upload-artifact@v4
+        with:
+          name: host-audit
+          path: saida/host-audit/
+          retention-days: 30
+
+  # Job 6: Resumo final (badge de status)
+  summary:
+    name: Resumo do CI
+    runs-on: ubuntu-22.04
+    if: always()
+    needs: [static-validation, security-validation, meta-tests, test-linux]
+    steps:
+      - name: Verificar status de todos os jobs
+        run: |
+          echo "## Resumo do CI"
+          echo "- Validações estáticas: ${{ needs.static-validation.result }}"
+          echo "- Validações de segurança: ${{ needs.security-validation.result }}"
+          echo "- Testes meta: ${{ needs.meta-tests.result }}"
+          echo "- Testes Linux: ${{ needs.test-linux.result }}"
+
+          if [[ "${{ needs.static-validation.result }}" == "success" ]] && \
+             [[ "${{ needs.security-validation.result }}" == "success" ]] && \
+             [[ "${{ needs.meta-tests.result }}" == "success" ]] && \
+             [[ "${{ needs.test-linux.result }}" == "success" ]]; then
+            echo "✅ CI PASSOU - Todos os testes em PASS"
+            exit 0
+          else
+            echo "❌ CI FALHOU - Verifique os logs acima"
+            exit 1
+          fi

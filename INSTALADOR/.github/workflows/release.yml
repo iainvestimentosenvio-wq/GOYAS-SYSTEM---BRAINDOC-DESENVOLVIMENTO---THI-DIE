@@ -1,0 +1,309 @@
+name: Release - Build e Publicação
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Versão para release (ex: 1.0.0)'
+        required: true
+        type: string
+
+env:
+  RELEASE_VERSION: ${{ github.event.inputs.version || github.ref_name }}
+
+jobs:
+  # Job 1: Validação pré-release
+  pre-release-validation:
+    name: Validação Pré-Release
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
+      go-nogo: ${{ steps.check-criteria.outputs.verdict }}
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Extrair versão do tag
+        id: extract-version
+        run: |
+          VERSION="${{ env.RELEASE_VERSION }}"
+          VERSION="${VERSION#v}" # Remove 'v' prefix se existir
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Versão detectada: ${VERSION}"
+
+      - name: Validar critérios GO/NO-GO
+        id: check-criteria
+        run: |
+          echo "Verificando critérios de release..."
+
+          # Verificar se CHANGELOG.md existe e tem a versão
+          if ! grep -q "\[${VERSION}\]" CHANGELOG.md; then
+            echo "❌ FAIL: Versão ${VERSION} não encontrada no CHANGELOG.md"
+            echo "verdict=NO-GO" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          # Executar validações obrigatórias
+          FAILED=0
+
+          if [[ -x "comum/scripts/validate-prohibited-terms.sh" ]]; then
+            bash comum/scripts/validate-prohibited-terms.sh || FAILED=1
+          fi
+
+          if [[ -x "comum/scripts/validate-sbom.sh" ]]; then
+            bash comum/scripts/validate-sbom.sh || FAILED=1
+          fi
+
+          if [[ -x "comum/scripts/validate-update-manifest.sh" ]]; then
+            bash comum/scripts/validate-update-manifest.sh --strict-signature || FAILED=1
+          fi
+
+          if [[ -x "testes/meta/test-changelog-format.sh" ]]; then
+            bash testes/meta/test-changelog-format.sh || FAILED=1
+          fi
+
+          if [[ ${FAILED} -eq 1 ]]; then
+            echo "❌ NO-GO: Validações obrigatórias falharam"
+            echo "verdict=NO-GO" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "✅ GO: Validações obrigatórias em PASS"
+          echo "verdict=GO" >> $GITHUB_OUTPUT
+
+      - name: Verificar RELEASE_APPROVAL.md
+        run: |
+          if ! grep -q "SECAO \[FINAL\]" documentos/RELEASE_APPROVAL.md; then
+            echo "⚠️ WARN: RELEASE_APPROVAL.md não tem seção [FINAL]"
+          fi
+
+  # Job 2: Build de artefatos Linux
+  build-linux:
+    name: Build Linux - ${{ matrix.format }}
+    runs-on: ubuntu-22.04
+    needs: pre-release-validation
+    if: needs.pre-release-validation.outputs.go-nogo == 'GO'
+    strategy:
+      matrix:
+        format: ['appimage', 'deb']
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Instalar dependências de build
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential dpkg-dev fakeroot file
+
+      - name: Build ${{ matrix.format }}
+        run: |
+          cd linux/${{ matrix.format }}
+          if [[ -f build.sh ]]; then
+            bash build.sh
+          else
+            echo "SKIP: build.sh não encontrado para ${{ matrix.format }}"
+          fi
+
+      - name: Calcular checksums
+        run: |
+          mkdir -p checksums
+          if [[ "${{ matrix.format }}" == "appimage" ]]; then
+            ARTIFACT="linux/appimage/Protons-*.AppImage"
+          else
+            ARTIFACT="linux/deb/*.deb"
+          fi
+
+          for FILE in ${ARTIFACT}; do
+            if [[ -f "${FILE}" ]]; then
+              sha256sum "${FILE}" > "checksums/$(basename ${FILE}).sha256"
+              echo "✓ Checksum gerado para $(basename ${FILE})"
+            fi
+          done
+
+      - name: Upload artefato ${{ matrix.format }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.format }}
+          path: |
+            linux/${{ matrix.format }}/*.AppImage
+            linux/${{ matrix.format }}/*.deb
+            checksums/*.sha256
+          retention-days: 90
+
+  # Job 3: Build de artefatos Windows (mock por enquanto)
+  build-windows:
+    name: Build Windows - ${{ matrix.installer }}
+    runs-on: windows-latest
+    needs: pre-release-validation
+    if: needs.pre-release-validation.outputs.go-nogo == 'GO'
+    strategy:
+      matrix:
+        installer: ['msi', 'inno']
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Build ${{ matrix.installer }} (mock)
+        shell: bash
+        run: |
+          echo "⚠️ BUILD WINDOWS MOCK - Implementar build real"
+          echo "Installer: ${{ matrix.installer }}"
+          echo "Versão: ${{ needs.pre-release-validation.outputs.version }}"
+
+          # TODO: Implementar build real
+          # - MSI: usar WiX Toolset ou Advanced Installer
+          # - Inno: usar Inno Setup Compiler (iscc.exe)
+
+      - name: Calcular checksums (mock)
+        shell: bash
+        run: |
+          mkdir -p checksums
+          echo "Mock checksum para ${{ matrix.installer }}" > checksums/protons-${{ matrix.installer }}.sha256
+
+      - name: Upload artefato ${{ matrix.installer }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.installer }}
+          path: |
+            windows/${{ matrix.installer }}/*.msi
+            windows/${{ matrix.installer }}/*.exe
+            checksums/*.sha256
+          retention-days: 90
+
+  # Job 4: Assinatura de código (mock, aguardando certificado .pfx)
+  sign-artifacts:
+    name: Assinatura de Código
+    runs-on: ubuntu-22.04
+    needs: [build-linux, build-windows]
+    if: needs.pre-release-validation.outputs.go-nogo == 'GO'
+    steps:
+      - name: Download de todos os artefatos
+        uses: actions/download-artifact@v4
+
+      - name: Verificar certificado corporativo
+        run: |
+          if [[ -z "${{ secrets.CODE_SIGNING_CERT }}" ]]; then
+            echo "⚠️ BLOQUEADO: Certificado .pfx não disponível em secrets"
+            echo "Assinatura de código será SKIP nesta rodada"
+            exit 0
+          fi
+
+      - name: Assinar artefatos (mock)
+        run: |
+          echo "⚠️ ASSINATURA MOCK - Aguardando certificado corporativo"
+          echo "TODO: Implementar assinatura real com signtool/osslsigncode"
+          echo "TODO: Timestamp RFC3161"
+
+  # Job 5: Publicar SBOM e checksums
+  publish-metadata:
+    name: Publicar Metadados de Release
+    runs-on: ubuntu-22.04
+    needs: [build-linux, build-windows]
+    if: needs.pre-release-validation.outputs.go-nogo == 'GO'
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Download de todos os artefatos
+        uses: actions/download-artifact@v4
+
+      - name: Consolidar checksums
+        run: |
+          mkdir -p release-metadata
+          cat checksums/*.sha256 > release-metadata/SHA256SUMS.txt || true
+          echo "Checksums consolidados:"
+          cat release-metadata/SHA256SUMS.txt
+
+      - name: Copiar SBOM
+        run: |
+          if [[ -f comum/sbom/sbom.cdx.json ]]; then
+            cp comum/sbom/sbom.cdx.json release-metadata/
+          fi
+          if [[ -f comum/sbom/sbom.spdx.json ]]; then
+            cp comum/sbom/sbom.spdx.json release-metadata/
+          fi
+
+      - name: Copiar CHANGELOG
+        run: |
+          cp CHANGELOG.md release-metadata/
+
+      - name: Upload metadados consolidados
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-metadata
+          path: release-metadata/
+          retention-days: 365
+
+  # Job 6: Criar GitHub Release (draft)
+  create-release:
+    name: Criar GitHub Release
+    runs-on: ubuntu-22.04
+    needs: [pre-release-validation, publish-metadata, sign-artifacts]
+    if: |
+      always() &&
+      needs.pre-release-validation.outputs.go-nogo == 'GO' &&
+      (needs.publish-metadata.result == 'success' || needs.publish-metadata.result == 'skipped')
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Download de todos os artefatos
+        uses: actions/download-artifact@v4
+
+      - name: Extrair notas de release do CHANGELOG
+        id: extract-notes
+        run: |
+          VERSION="${{ needs.pre-release-validation.outputs.version }}"
+          echo "Extraindo notas de release para versão ${VERSION}..."
+
+          # Extrai seção da versão do CHANGELOG
+          awk "/^## \[${VERSION}\]/,/^## \[/" CHANGELOG.md | \
+            sed '$d' > release-notes.md || echo "Sem notas disponíveis" > release-notes.md
+
+          echo "Notas de release:"
+          cat release-notes.md
+
+      - name: Criar GitHub Release (draft)
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.pre-release-validation.outputs.version }}
+          name: Protons v${{ needs.pre-release-validation.outputs.version }}
+          body_path: release-notes.md
+          draft: true
+          prerelease: false
+          files: |
+            linux-appimage/*.AppImage
+            linux-deb/*.deb
+            windows-msi/*.msi
+            windows-inno/*.exe
+            release-metadata/SHA256SUMS.txt
+            release-metadata/sbom.cdx.json
+            release-metadata/sbom.spdx.json
+            release-metadata/CHANGELOG.md
+
+      - name: Resumo de release
+        run: |
+          echo "## 🎉 Release criada com sucesso!"
+          echo "Versão: ${{ needs.pre-release-validation.outputs.version }}"
+          echo "Status: Draft (requer aprovação manual para publicar)"
+          echo "Veredito: ${{ needs.pre-release-validation.outputs.go-nogo }}"
+
+  # Job 7: Notificação de falha (se NO-GO)
+  notify-failure:
+    name: Notificar Falha de Release
+    runs-on: ubuntu-22.04
+    needs: pre-release-validation
+    if: failure() || needs.pre-release-validation.outputs.go-nogo == 'NO-GO'
+    steps:
+      - name: Resumo de bloqueio
+        run: |
+          echo "## ❌ Release BLOQUEADA"
+          echo "Veredito: NO-GO"
+          echo "Verifique os logs de pre-release-validation para detalhes."
+          echo "Critérios não atendidos impedem a criação da release."
+          exit 1

@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Controles.BotaoTarefaReguaControl"
+             x:DataType="vm:TarefaReguaItem"
+             Width="212" Height="46">
+
+  <Border x:Name="CardBorda"
+          Background="#F8FAFC"
+          CornerRadius="14"
+          BorderThickness="0,0,0,2"
+          BorderBrush="{Binding CorStatus}"
+          Padding="10,6"
+          Cursor="Hand">
+
+    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+      <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6" VerticalAlignment="Center">
+        <TextBlock Text="{Binding Titulo}"
+                   FontSize="13"
+                   FontWeight="SemiBold"
+                   Foreground="#0F172A"
+                   TextTrimming="CharacterEllipsis"
+                   MaxLines="1"
+                   VerticalAlignment="Center" />
+
+        <Border Grid.Column="1"
+                IsVisible="{Binding EhRecorrente}"
+                Background="#E0ECFF"
+                BorderBrush="#BBD3FF"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="4,1"
+                VerticalAlignment="Center">
+          <TextBlock Text="↻" FontSize="9" Foreground="#2563EB" />
+        </Border>
+      </Grid>
+
+      <Border Grid.Column="1"
+              Width="26"
+              Height="26"
+              CornerRadius="13"
+              Background="{Binding AvatarCorHex}"
+              VerticalAlignment="Center"
+              ToolTip.Tip="{Binding AvatarNome}">
+        <TextBlock Text="{Binding AvatarIniciais}"
+                   Foreground="White"
+                   FontSize="10"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+      </Border>
+
+      <!-- Indicador de erro pulsante -->
+      <Border Width="10" Height="10"
+              Background="#EF4444"
+              CornerRadius="5"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              Margin="0,-3,-2,0"
+              IsVisible="{Binding TemErro}">
+        <Border.Styles>
+          <Style Selector="Border">
+            <Style.Animations>
+              <Animation Duration="0:0:1" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                  <Setter Property="Opacity" Value="1.0"/>
+                </KeyFrame>
+                <KeyFrame Cue="50%">
+                  <Setter Property="Opacity" Value="0.3"/>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                  <Setter Property="Opacity" Value="1.0"/>
+                </KeyFrame>
+              </Animation>
+            </Style.Animations>
+          </Style>
+        </Border.Styles>
+      </Border>
+    </Grid>
+  </Border>
+</UserControl>

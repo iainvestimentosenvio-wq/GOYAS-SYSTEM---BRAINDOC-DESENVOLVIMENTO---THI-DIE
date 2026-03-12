@@ -1,0 +1,29 @@
+<Project Sdk="WixToolset.Sdk/4.0.6">
+  <!-- ARQUIVO GERADO AUTOMATICAMENTE - NAO EDITAR -->
+  <!-- Versao centralizada em: INSTALADOR\comum\version.env -->
+  <PropertyGroup>
+    <OutputName>Protons-1.0.0-x64</OutputName>
+    <OutputType>Package</OutputType>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <Platform>x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <PublishDir>$(MSBuildProjectDirectory)\..\..\..\Login\Protons.UI\bin\Release\net8.0\win-x64\publish</PublishDir>
+    <EnableProjectHarvesting>false</EnableProjectHarvesting>
+    <DefineConstants>PublishDir=$(PublishDir)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="4.0.6" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="4.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <HarvestDirectory Include="$(PublishDir)">
+      <ComponentGroupName>HarvestedFiles</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <PreprocessorVariable>var.PublishDir</PreprocessorVariable>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+    </HarvestDirectory>
+  </ItemGroup>
+</Project>

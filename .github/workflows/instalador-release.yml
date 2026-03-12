@@ -1,0 +1,67 @@
+name: Instalador Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+    paths:
+      - "INSTALADOR/**"
+      - ".github/workflows/instalador-release.yml"
+
+jobs:
+  release-prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Prepare release logs dir
+        run: mkdir -p INSTALADOR/saida/release-logs
+
+      - name: Validate update manifest (strict)
+        run: bash INSTALADOR/comum/scripts/validate-update-manifest.sh --manifest INSTALADOR/saida/update/update-manifest.json --strict-signature | tee INSTALADOR/saida/release-logs/01-validate-update-manifest.log
+
+      - name: Test update manifest
+        run: bash INSTALADOR/comum/scripts/test-update-manifest.sh | tee INSTALADOR/saida/release-logs/02-test-update-manifest.log
+
+      - name: Validate release hashes
+        run: bash INSTALADOR/testes/meta/test-release-hashes.sh | tee INSTALADOR/saida/release-logs/03-test-release-hashes.log
+
+      - name: Validate no debug symbols
+        run: bash INSTALADOR/testes/meta/test-no-debug-symbols.sh | tee INSTALADOR/saida/release-logs/04-test-no-debug-symbols.log
+
+      - name: Generate SBOM
+        run: bash INSTALADOR/comum/scripts/generate-sbom.sh | tee INSTALADOR/saida/release-logs/05-generate-sbom.log
+
+      - name: Validate SBOM
+        run: bash INSTALADOR/comum/scripts/validate-sbom.sh | tee INSTALADOR/saida/release-logs/06-validate-sbom.log
+
+      - name: Stage release artifacts
+        run: |
+          mkdir -p INSTALADOR/saida/release-artifacts
+          cp -f INSTALADOR/saida/windows/*.msi INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/windows/*.exe INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/windows/*.sha256 INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/appimage/*.AppImage INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/appimage/*.sha256 INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/deb/*.deb INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/deb/*.sha256 INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          cp -f INSTALADOR/saida/sbom/* INSTALADOR/saida/release-artifacts/ 2>/dev/null || true
+          find INSTALADOR/saida/release-artifacts -maxdepth 1 -type f | sort | tee INSTALADOR/saida/release-logs/07-release-artifacts-inventory.log
+
+      - name: Upload release artifacts bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-release-artifacts
+          path: INSTALADOR/saida/release-artifacts/*
+
+      - name: Upload release logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: instalador-release-logs
+          path: INSTALADOR/saida/release-logs/*

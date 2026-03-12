@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <?include Variables.wxi ?>
+
+  <Package Name="$(var.ProductName)"
+           Manufacturer="$(var.Publisher)"
+           Version="$(var.Version)"
+           UpgradeCode="$(var.UpgradeCode)"
+           Language="1033"
+           Scope="perMachine">
+
+    <MajorUpgrade
+      DowngradeErrorMessage="Uma versão mais recente já está instalada." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="ProductIcon" SourceFile="..\ativos\logo_protons.ico" />
+    <Property Id="ARPPRODUCTICON" Value="ProductIcon" />
+    <Property Id="PROTONS_ROLLBACK_TEST" Secure="yes" Value="0" />
+
+    <!-- Failpoint de teste para validar rollback transacional do MSI -->
+    <CustomAction Id="FailRollbackTest" Error="PROTONS_ROLLBACK_TEST triggered (expected in rollback tests)." />
+    <InstallExecuteSequence>
+      <Custom Action="FailRollbackTest" After="InstallFiles" Condition="NOT Installed AND PROTONS_ROLLBACK_TEST = &quot;1&quot;" />
+    </InstallExecuteSequence>
+
+    <!-- Remember Property: ler caminho de instalação do registro per-machine para uninstall -->
+    <Property Id="INSTALLFOLDER_PATH" Secure="yes">
+      <RegistrySearch Id="FindInstallPath"
+                      Root="HKLM"
+                      Key="Software\Protons"
+                      Name="InstallPath"
+                      Type="directory" />
+    </Property>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Protons" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="DesktopFolder" />
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="ProtonsProgramMenuFolder" Name="Protons" />
+    </StandardDirectory>
+
+    <!-- Diretório AppData para dados do usuário -->
+    <StandardDirectory Id="AppDataFolder">
+      <Directory Id="AppDataProtons" Name="Protons" />
+    </StandardDirectory>
+
+    <FeatureRef Id="ProductFeature" />
+  </Package>
+</Wix>

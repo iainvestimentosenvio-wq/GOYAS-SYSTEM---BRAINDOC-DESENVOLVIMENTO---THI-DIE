@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+# Atualizar desktop database
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications || true
+fi
+
+# Atualizar icon cache
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor || true
+fi
+
+# Remover atalho duplicado do usuário (se existir)
+if [ -n "${SUDO_USER:-}" ]; then
+    USER_HOME="$(getent passwd "$SUDO_USER" | cut -d: -f6)"
+    if [ -n "$USER_HOME" ]; then
+        USER_DESKTOP="$USER_HOME/.local/share/applications/protons-login.desktop"
+        if [ -f "$USER_DESKTOP" ]; then
+            rm -f "$USER_DESKTOP" || true
+        fi
+    fi
+fi
+
+# Nota: Diretório de dados (~/.local/share/Protons) será criado
+# pela aplicação no primeiro launch (runtime)
+
+exit 0

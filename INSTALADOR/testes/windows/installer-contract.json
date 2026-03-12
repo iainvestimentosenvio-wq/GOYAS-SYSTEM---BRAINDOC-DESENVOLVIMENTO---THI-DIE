@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "contract_name": "protons-installer-contract",
+  "paths": {
+    "install_dir": "%ProgramFiles%\\Protons",
+    "main_executable": "Protons.UI.exe",
+    "desktop_shortcut": "%Public%\\Desktop\\Protons Login.lnk",
+    "start_menu_shortcut": "%ProgramData%\\Microsoft\\Windows\\Start Menu\\Programs\\Protons\\Protons Login.lnk",
+    "start_menu_dir": "%ProgramData%\\Microsoft\\Windows\\Start Menu\\Programs\\Protons",
+    "uninstaller_exe": "%ProgramFiles%\\Protons\\unins000.exe",
+    "registry_hklm": "HKLM:\\Software\\Protons",
+    "registry_hkcu_legacy": "HKCU:\\Software\\Protons",
+    "appdata_dir": "%APPDATA%\\Protons",
+    "localappdata_dir": "%LOCALAPPDATA%\\Protons"
+  },
+  "expectations": {
+    "desktop_shortcut_required": true,
+    "start_menu_shortcut_required": true,
+    "registry_hklm_required": true,
+    "registry_values_required": [
+      "InstallPath",
+      "Version"
+    ],
+    "preserve_appdata_on_uninstall": true,
+    "legacy_hkcu_cleanup_on_uninstall": true
+  },
+  "parity_assertions": [
+    "desktop_shortcut",
+    "start_menu_shortcut",
+    "registry_hklm_presence",
+    "rollback_cleanup_programfiles",
+    "cancel_cleanup_programfiles",
+    "transactional_cleanup_programfiles"
+  ]
+}

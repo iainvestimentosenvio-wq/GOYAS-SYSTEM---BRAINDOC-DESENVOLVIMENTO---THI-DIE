@@ -1,0 +1,31 @@
+<Project>
+  <!--
+    Directory.Build.props — herdado por TODOS os projetos da solução Login
+    ═══════════════════════════════════════════════════════════════════════
+    Supply chain:
+    • RestorePackagesWithLockFile: gera packages.lock.json no restore
+    • RestoreLockedMode: ativado em CI via env var NUGET_RESTORE_LOCKED=true
+      (ou passar -p:RestoreLockedMode=true no dotnet restore da pipeline)
+    • NuGetAuditMode: erros de segurança viram avisos visíveis no build
+  -->
+  <PropertyGroup>
+    <!-- Desabilitar telemetria Avalonia.BuildServices (evita Collector.dll rodando em background) -->
+    <AvaloniaMainPackageVersion/>
+    <UsedAvaloniaProducts/>
+  </PropertyGroup>
+
+  <!-- Override no-op do target de telemetria Avalonia (suprime AvaloniaStatsTask) -->
+  <Target Name="AvaloniaStats"/>
+
+  <PropertyGroup>
+    <!-- Sempre gerar/atualizar packages.lock.json -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+    <!-- Em CI (env var definida), travar no lock file (falha se divergir) -->
+    <RestoreLockedMode Condition="'$(NUGET_RESTORE_LOCKED)' == 'true'">true</RestoreLockedMode>
+
+    <!-- Auditoria de segurança — reportar CVEs como warning (não erro, para não bloquear build em pacotes sem CVE) -->
+    <NuGetAuditMode>all</NuGetAuditMode>
+    <NuGetAuditLevel>moderate</NuGetAuditLevel>
+  </PropertyGroup>
+</Project>

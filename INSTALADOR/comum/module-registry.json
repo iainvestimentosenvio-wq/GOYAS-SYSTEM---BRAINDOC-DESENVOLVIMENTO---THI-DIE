@@ -1,0 +1,20 @@
+{
+  "modules": [
+    {
+      "id": "login",
+      "name": "Login Module",
+      "version": "1.0.0",
+      "assemblies": [
+        "Protons.Core.dll",
+        "Protons.Infrastructure.dll",
+        "Protons.UI.dll"
+      ],
+      "dataPath": "Login",
+      "features": ["authentication", "user-management", "audit-logging"]
+    }
+  ],
+  "dataDirectory": {
+    "windows": "%AppData%\\Protons",
+    "linux": "~/.local/share/Protons"
+  }
+}

@@ -1,0 +1,155 @@
+# PROJETO PROTONS - Development Rules for AI Assistants
+# Version: 2.0
+# Last Updated: 2026-02-27
+
+## Project Context
+project_type: "Avalonia Desktop Application (cross-platform)"
+framework: ".NET 8.0"
+ui_toolkit: "Avalonia 11.x"
+platform: "Linux, Windows"
+architecture: "MVVM (CommunityToolkit.Mvvm)"
+persistence: "SQLite local + PostgreSQL"
+language: "C#"
+markup: "AXAML (Avalonia XAML)"
+
+## COMO RODAR O PAINEL DIRETO (UNICO COMANDO)
+
+O sistema tem um modo de bypass que pula o login e abre direto o painel principal.
+Use APENAS este comando. Nao invente outro.
+
+### A partir da pasta Login/:
+```bash
+bash scripts/hot_reload_painel_direto.sh
+```
+
+### A partir da pasta "painel principal/" (workspace Cursor):
+```bash
+cd "../Login" && bash scripts/hot_reload_painel_direto.sh
+```
+
+### Sem hot reload (mais estavel):
+```bash
+cd "../Login" && bash scripts/hot_reload_painel_direto.sh no-hot-reload
+```
+
+### Build e testes:
+```bash
+cd "../Login" && dotnet build Protons.sln -c Debug
+cd "../Login" && dotnet test Protons.sln -c Debug
+```
+
+### Variaveis de ambiente (ja configuradas pelo script):
+- PROTONS_PAINEL_DIRETO=1
+- PROTONS_PAINEL_DIRETO_HABILITADO=1
+- PROTONS_ENVIRONMENT=Development
+
+NUNCA sugira "dotnet run" direto ou outros comandos inventados.
+O script hot_reload_painel_direto.sh ja configura tudo automaticamente.
+
+## Critical Rules (MANDATORY)
+
+### Architecture Rules (STRICT)
+architecture:
+  pattern: "MVVM"
+  layers:
+    - name: "UI"
+      path: "Protons.UI/"
+      allowed_dependencies: ["Core"]
+      forbidden: ["Direct database access", "SQLite references"]
+
+    - name: "Core"
+      path: "Protons.Core/"
+      allowed_dependencies: ["Infrastructure interfaces"]
+      forbidden: ["Avalonia references", "AXAML dependencies"]
+
+    - name: "Infrastructure"
+      path: "Protons.Infrastructure/"
+      allowed_dependencies: ["SQLite", "Npgsql", "System.Data"]
+      forbidden: ["UI references", "ViewModel access"]
+
+  flow: "UI -> Core -> Infrastructure (one-way only)"
+
+  validation:
+    - "ViewModels must NOT access SQLite directly"
+    - "Services (Core) must NOT reference Avalonia"
+    - "Repositories (Infrastructure) must NOT reference UI"
+
+  painel_principal:
+    - "Codigo do painel fica em: painel principal/codigos/painel_principal/"
+    - "Linkado no Protons.UI.csproj via Compile Include"
+    - "Ferramentas ficam em: funcionalidades/ferramentas/<nome>/"
+
+### Security Rules (NON-NEGOTIABLE)
+security:
+  password_storage:
+    - "NEVER store passwords in plaintext"
+    - "MUST use PBKDF2 + salt"
+
+  lockout:
+    - "5 failed attempts -> 30 second lockout"
+    - "All lockout events MUST be audited"
+
+  error_messages:
+    - "Never reveal if email exists"
+    - "Use generic messages: 'Invalid credentials'"
+
+  logging:
+    - "NEVER log passwords"
+    - "NEVER log full CPF"
+    - "Sanitize sensitive data in logs"
+
+### Documentation Rules
+documentation:
+  rules:
+    - "Arquivo de codigo novo exige doc espelho com mesmo caminho relativo e sufixo .md"
+    - "Nao criar docs duplicadas para o mesmo assunto"
+    - "Se uma doc ficar obsoleta, corrigir ou remover no mesmo ciclo"
+  indices:
+    - "documentacao/painel/INDICE.md"
+    - "documentacao/README.md"
+
+### Terminal Safety Rules (CRITICAL)
+terminal_safety:
+  forbidden_without_confirmation:
+    - "rm -rf"
+    - "git reset --hard"
+    - "git push --force"
+    - "Deleting files"
+    - "Overwriting files without reading first"
+
+## Project Structure
+structure:
+  solution: "Login/Protons.sln"
+  code_ui: "Login/Protons.UI/"
+  code_core: "Login/Protons.Core/"
+  code_infra: "Login/Protons.Infrastructure/"
+  painel_codigo: "painel principal/codigos/painel_principal/"
+  painel_docs: "painel principal/documentacao/"
+  tests_core: "Login/testes/Protons.Core.Tests/"
+  tests_infra: "Login/testes/Protons.Infrastructure.Tests/"
+
+## Code Style
+code_style:
+  naming:
+    - "PascalCase for classes, methods, properties"
+    - "camelCase for local variables"
+    - "Private fields: _camelCase with underscore"
+  organization:
+    - "One class per file"
+    - "Interfaces in separate files"
+    - "Group usings by: System, external, internal"
+
+## AI Assistant Behavior
+assistant_behavior:
+  approach: "Conservative and verification-focused"
+  language: "Responder sempre em portugues"
+  priorities:
+    1: "Safety (no destructive operations)"
+    2: "Architecture compliance"
+    3: "Security rules adherence"
+    4: "Code functionality"
+  forbidden:
+    - "Creating code without documentation"
+    - "Breaking layer dependencies"
+    - "Using destructive commands without approval"
+    - "Inventing dotnet run commands - use ONLY the script documented above"

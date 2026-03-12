@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+    "ms-dotnettools.xaml",
+    "alexcvzz.vscode-sqlite",
+    "qwtel.sqlite-viewer",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "editorconfig.editorconfig",
+    "aaron-bond.better-comments",
+    "gruntfuggly.todo-tree",
+    "pkief.material-icon-theme"
+  ],
+  "unwantedRecommendations": [
+    "ms-dotnettools.dotnet-interactive-vscode",
+    "davidanson.vscode-markdownlint",
+    "yzhang.markdown-all-in-one",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Protons - Login
+GenericName=Sistema de Login
+Comment=Autenticação e gerenciamento de usuários
+Exec=/usr/bin/protons %F
+Icon=protons
+Terminal=false
+Categories=Office;Utility;System;
+Keywords=login;auth;authentication;users;
+StartupNotify=true
+StartupWMClass=Protons.UI

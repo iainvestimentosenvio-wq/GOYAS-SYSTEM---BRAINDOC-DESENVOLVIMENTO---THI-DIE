@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Partes.BotaoSininhoNotificacoesView"
+             x:DataType="vm:PainelViewModel">
+
+  <Button Background="{DynamicResource PanelSurfaceAlt}"
+          BorderBrush="{DynamicResource PanelBorder}"
+          BorderThickness="1"
+          Padding="10,8"
+          CornerRadius="8"
+          Cursor="Hand"
+          ToolTip.Tip="Abrir notificações"
+          Command="{Binding AbrirNotificacoesCommand}">
+    <Grid>
+      <Path Data="M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22M18,16V11C18,7.93 16.36,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16Z"
+            Fill="{DynamicResource TextSecondary}"
+            Width="18"
+            Height="18"
+            Stretch="Uniform" />
+
+      <Border Background="{DynamicResource AccentRed}"
+              CornerRadius="6"
+              Width="12"
+              Height="12"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Top"
+              Margin="0,-4,-4,0"
+              IsVisible="{Binding TemPendencias}">
+        <TextBlock Text="{Binding QuantidadePendencias}"
+                   FontSize="8"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+      </Border>
+    </Grid>
+  </Button>
+</UserControl>

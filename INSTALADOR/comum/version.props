@@ -1,0 +1,9 @@
+<Project>
+  <!-- IMPORTANTE: Manter sincronizado com version.env -->
+  <!-- Versao centralizada: INSTALADOR/comum/version.env -->
+  <PropertyGroup>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <ProductName>Protons</ProductName>
+    <CompanyName>Protons Team</CompanyName>
+  </PropertyGroup>
+</Project>

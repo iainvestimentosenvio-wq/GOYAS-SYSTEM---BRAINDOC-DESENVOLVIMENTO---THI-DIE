@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.TarefasRealizadas.ConfiguracaoTarefaPlaceholderView"
+             x:DataType="vm:PainelViewModel"
+             Width="560"
+             Height="360">
+
+  <Border x:Name="PainelCard"
+          Width="560"
+          Height="360"
+          Background="{DynamicResource SurfaceBrush}"
+          CornerRadius="16"
+          Padding="18"
+          BorderBrush="{DynamicResource PanelBorder}"
+          BorderThickness="1"
+          Opacity="1"
+          RenderTransformOrigin="50%,50%"
+          BoxShadow="0 4 6 0 #0D000000, 0 16 48 0 #14000000">
+    <Border.RenderTransform>
+      <ScaleTransform ScaleX="1" ScaleY="1">
+        <ScaleTransform.Transitions>
+          <Transitions>
+            <DoubleTransition Property="ScaleX" Duration="0:0:0.18" />
+            <DoubleTransition Property="ScaleY" Duration="0:0:0.18" />
+          </Transitions>
+        </ScaleTransform.Transitions>
+      </ScaleTransform>
+    </Border.RenderTransform>
+    <Border.Transitions>
+      <Transitions>
+        <DoubleTransition Property="Opacity" Duration="0:0:0.18" />
+      </Transitions>
+    </Border.Transitions>
+
+    <Grid RowDefinitions="Auto,*,Auto"
+          RowSpacing="14">
+      <Grid Grid.Row="0"
+            ColumnDefinitions="*,Auto"
+            ColumnSpacing="10">
+        <StackPanel Spacing="2">
+          <TextBlock Text="{Binding ConfiguracaoTarefaTitulo}"
+                     FontSize="22"
+                     FontWeight="Bold"
+                     MaxLines="1"
+                     TextTrimming="CharacterEllipsis" />
+          <TextBlock Text="{Binding ConfiguracaoTarefaSubtitulo}"
+                     FontSize="12"
+                     Foreground="{DynamicResource TextSecondary}"
+                     MaxLines="1"
+                     TextTrimming="CharacterEllipsis" />
+        </StackPanel>
+
+        <Button Grid.Column="1"
+                Content="✕"
+                Command="{Binding FecharConfigTarefaCommand}"
+                Width="32"
+                Height="32"
+                Padding="0"
+                Background="{DynamicResource PanelSurfaceAlt}"
+                BorderBrush="{DynamicResource PanelBorder}"
+                BorderThickness="1"
+                CornerRadius="8"
+                FontWeight="SemiBold"
+                Cursor="Hand"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top" />
+      </Grid>
+
+      <Border Grid.Row="1"
+              Background="{DynamicResource PanelSurfaceAlt}"
+              CornerRadius="12"
+              Padding="16"
+              BorderBrush="{DynamicResource PanelBorder}"
+              BorderThickness="1">
+        <Grid RowDefinitions="Auto,Auto,*"
+              RowSpacing="10">
+          <TextBlock Text="Solte a ferramenta na esteira para iniciar a configuracao."
+                     FontSize="13"
+                     TextWrapping="Wrap" />
+
+          <Border Grid.Row="1"
+                  Background="#EFF6FF"
+                  BorderBrush="#93C5FD"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="10,8"
+                  HorizontalAlignment="Left">
+            <TextBlock Text="{Binding ConfiguracaoTarefaDetalhes}"
+                       FontSize="12"
+                       Foreground="#1D4ED8" />
+          </Border>
+
+          <TextBlock Grid.Row="2"
+                     Text="Fechar ou cancelar nao salva alteracoes neste momento."
+                     FontSize="12"
+                     Foreground="{DynamicResource TextMuted}"
+                     VerticalAlignment="Bottom"
+                     TextWrapping="Wrap" />
+        </Grid>
+      </Border>
+
+      <StackPanel Grid.Row="2"
+                  Orientation="Horizontal"
+                  HorizontalAlignment="Right"
+                  Spacing="10">
+        <Button Content="Cancelar"
+                Command="{Binding FecharConfigTarefaCommand}"
+                Classes="btn-secondary"
+                Padding="18,10"
+                FontWeight="SemiBold"
+                Cursor="Hand" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</UserControl>

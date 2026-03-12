@@ -24,20 +24,103 @@
       <Setter Property="Foreground" Value="{DynamicResource TextMuted}" />
     </Style>
 
-    <!-- Card base -->
+    <!-- Deck premium dos KPIs -->
     <Style Selector="Border.card">
-      <Setter Property="Background" Value="{DynamicResource PanelSurface}" />
-      <Setter Property="CornerRadius" Value="14" />
-      <Setter Property="Padding" Value="20" />
-      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
+      <Setter Property="CornerRadius" Value="24" />
+      <Setter Property="Padding" Value="0" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="BoxShadow" Value="0 2 12 0 #14000000" />
+      <Setter Property="ClipToBounds" Value="True" />
+      <Setter Property="BoxShadow" Value="0 18 42 0 #26030A17, 0 3 12 0 #18000000" />
+    </Style>
+    <Style Selector="Border.kpi-deck">
+      <Setter Property="CornerRadius" Value="30" />
+      <Setter Property="Padding" Value="10" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="BorderBrush" Value="#58677B" />
+      <Setter Property="BoxShadow" Value="0 24 52 0 #20040B15" />
+    </Style>
+    <Style Selector="Border.kpi-shell">
+      <Setter Property="CornerRadius" Value="20" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="MinHeight" Value="176" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="ClipToBounds" Value="True" />
+      <Setter Property="UseLayoutRounding" Value="True" />
+    </Style>
+    <Style Selector="Border.kpi-icon-shell">
+      <Setter Property="Width" Value="42" />
+      <Setter Property="Height" Value="42" />
+      <Setter Property="CornerRadius" Value="21" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+    <Style Selector="Border.kpi-chip">
+      <Setter Property="CornerRadius" Value="999" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="10,4" />
+      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+    <Style Selector="Border.kpi-metric-badge">
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="MinWidth" Value="92" />
+      <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+    <Style Selector="TextBlock.kpi-title">
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontWeight" Value="Medium" />
+      <Setter Property="Foreground" Value="#F5F8FD" />
+    </Style>
+    <Style Selector="TextBlock.kpi-meta">
+      <Setter Property="FontSize" Value="10" />
+      <Setter Property="Foreground" Value="#CBDBEA" />
+    </Style>
+    <Style Selector="TextBlock.kpi-copy">
+      <Setter Property="FontSize" Value="10.5" />
+      <Setter Property="Foreground" Value="#F1F6FD" />
+    </Style>
+    <Style Selector="TextBlock.kpi-copy-secondary">
+      <Setter Property="FontSize" Value="9.5" />
+      <Setter Property="Foreground" Value="#C7D6E5" />
+    </Style>
+    <Style Selector="TextBlock.kpi-chip-text">
+      <Setter Property="FontSize" Value="8.5" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="TextBlock.kpi-badge-caption">
+      <Setter Property="FontSize" Value="8.5" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#EAF2FF" />
+    </Style>
+    <Style Selector="TextBlock.kpi-badge-value">
+      <Setter Property="FontSize" Value="30" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="TextBlock.kpi-graphic-label">
+      <Setter Property="FontSize" Value="9.5" />
+      <Setter Property="Foreground" Value="#D9E6F1" />
+    </Style>
+    <Style Selector="TextBlock.kpi-graphic-count">
+      <Setter Property="FontSize" Value="9.5" />
+      <Setter Property="Foreground" Value="#EEF6FF" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+    <Style Selector="TextBlock.kpi-panel-caption">
+      <Setter Property="FontSize" Value="9.5" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Foreground" Value="#DDE8F6" />
+      <Setter Property="TextAlignment" Value="Center" />
     </Style>
 
     <!-- Botoes de navegacao da sidebar -->
     <Style Selector="Button.sidebar-btn">
       <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+      <Setter Property="Foreground" Value="#3D5368" />
       <Setter Property="BorderThickness" Value="0" />
       <Setter Property="Padding" Value="12,10" />
       <Setter Property="CornerRadius" Value="8" />
@@ -50,24 +133,246 @@
         </Transitions>
       </Setter>
     </Style>
+    <Style Selector="Button.sidebar-btn /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="Padding" Value="12,10" />
+    </Style>
+    <Style Selector="Button.sidebar-btn TextBlock">
+      <Setter Property="Foreground" Value="#3D5368" />
+    </Style>
     <Style Selector="Button.sidebar-btn:pointerover">
-      <Setter Property="Background" Value="#F1F5F9" />
-      <Setter Property="Foreground" Value="#1E293B" />
+      <Setter Property="Background" Value="#F4F8FB" />
+      <Setter Property="Foreground" Value="#142638" />
+    </Style>
+    <Style Selector="Button.sidebar-btn:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#F4F8FB" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.sidebar-btn:pointerover TextBlock">
+      <Setter Property="Foreground" Value="#142638" />
     </Style>
     <Style Selector="Button.sidebar-btn.active">
-      <Setter Property="Background" Value="#CCFBF1" />
-      <Setter Property="Foreground" Value="#0D9488" />
-      <Setter Property="BorderBrush" Value="#0D9488" />
-      <Setter Property="BorderThickness" Value="3,0,0,0" />
+      <Setter Property="Background" Value="#295D8E" />
+      <Setter Property="Foreground" Value="#F7FBFF" />
+      <Setter Property="BorderBrush" Value="#214A72" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#295D8E" />
+      <Setter Property="BorderBrush" Value="#214A72" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active TextBlock">
+      <Setter Property="Foreground" Value="#F7FBFF" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active:pointerover">
+      <Setter Property="Background" Value="#295D8E" />
+      <Setter Property="Foreground" Value="#F7FBFF" />
+      <Setter Property="BorderBrush" Value="#214A72" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#295D8E" />
+      <Setter Property="BorderBrush" Value="#214A72" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.active:pointerover TextBlock">
+      <Setter Property="Foreground" Value="#F7FBFF" />
     </Style>
     <Style Selector="Button.sidebar-btn Path">
-      <Setter Property="Fill" Value="#94A3B8" />
+      <Setter Property="Fill" Value="#7288A0" />
     </Style>
     <Style Selector="Button.sidebar-btn:pointerover Path">
-      <Setter Property="Fill" Value="#1E293B" />
+      <Setter Property="Fill" Value="#142638" />
     </Style>
     <Style Selector="Button.sidebar-btn.active Path">
-      <Setter Property="Fill" Value="#0D9488" />
+      <Setter Property="Fill" Value="#F7FBFF" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary">
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="14,10" />
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="RenderTransform" Value="translateY(0px)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.16" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.16" />
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="14,10" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary Path">
+      <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+      <Setter Property="RenderTransform" Value="translateX(0px) scale(1)" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.16" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active">
+      <Setter Property="BorderBrush" Value="#1B4264" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#3A74A2" Offset="0" />
+          <GradientStop Color="#2D628F" Offset="0.48" />
+          <GradientStop Color="#224D74" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#3A74A2" Offset="0" />
+          <GradientStop Color="#2D628F" Offset="0.48" />
+          <GradientStop Color="#224D74" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="BorderBrush" Value="#1B4264" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="14,10" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pointerover">
+      <Setter Property="BorderBrush" Value="#183B59" />
+      <Setter Property="RenderTransform" Value="translateY(-2px) scale(1.01)" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#4385B7" Offset="0" />
+          <GradientStop Color="#3571A3" Offset="0.48" />
+          <GradientStop Color="#295B86" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#4385B7" Offset="0" />
+          <GradientStop Color="#3571A3" Offset="0.48" />
+          <GradientStop Color="#295B86" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="BorderBrush" Value="#183B59" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pointerover Path">
+      <Setter Property="RenderTransform" Value="translateX(1px) scale(1.08)" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pressed">
+      <Setter Property="RenderTransform" Value="translateY(0px) scale(0.995)" />
+      <Setter Property="BorderBrush" Value="#173752" />
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#356C99" Offset="0" />
+          <GradientStop Color="#2A5D88" Offset="0.48" />
+          <GradientStop Color="#214B71" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+          <GradientStop Color="#356C99" Offset="0" />
+          <GradientStop Color="#2A5D88" Offset="0.48" />
+          <GradientStop Color="#214B71" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="BorderBrush" Value="#173752" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-primary.active:pressed Path">
+      <Setter Property="RenderTransform" Value="translateX(0px) scale(0.98)" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section">
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="13,11" />
+      <Setter Property="MinHeight" Value="46" />
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.14" />
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.14" />
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="13,11" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section TextBlock.section-label">
+      <Setter Property="Foreground" Value="#2E455A" />
+      <Setter Property="FontSize" Value="14" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section Path.section-icon">
+      <Setter Property="Fill" Value="#546C82" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section Path.section-chevron">
+      <Setter Property="Fill" Value="#71879B" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section:pointerover">
+      <Setter Property="Background" Value="#E1EDF9" />
+      <Setter Property="Foreground" Value="#245F90" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#E1EDF9" />
+      <Setter Property="BorderBrush" Value="#BCD2E7" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section:pointerover TextBlock.section-label">
+      <Setter Property="Foreground" Value="#2B6799" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section:pointerover Path.section-icon">
+      <Setter Property="Fill" Value="#2D6B9F" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section:pointerover Path.section-chevron">
+      <Setter Property="Fill" Value="#4E7AA2" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open">
+      <Setter Property="Background" Value="#D5E7F8" />
+      <Setter Property="Foreground" Value="#245F90" />
+      <Setter Property="BorderBrush" Value="#2B6798" />
+      <Setter Property="BorderThickness" Value="3,0,0,0" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#D5E7F8" />
+      <Setter Property="BorderBrush" Value="#2B6798" />
+      <Setter Property="BorderThickness" Value="3,0,0,0" />
+      <Setter Property="CornerRadius" Value="11" />
+      <Setter Property="Padding" Value="13,11" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open TextBlock.section-label">
+      <Setter Property="Foreground" Value="#245F90" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open Path.section-icon">
+      <Setter Property="Fill" Value="#25669B" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open Path.section-chevron">
+      <Setter Property="Fill" Value="#356B96" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open:pointerover">
+      <Setter Property="Background" Value="#C8DFF5" />
+      <Setter Property="Foreground" Value="#1F5A88" />
+      <Setter Property="BorderBrush" Value="#245F90" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#C8DFF5" />
+      <Setter Property="BorderBrush" Value="#245F90" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open:pointerover TextBlock.section-label">
+      <Setter Property="Foreground" Value="#1F5A88" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open:pointerover Path.section-icon">
+      <Setter Property="Fill" Value="#215E90" />
+    </Style>
+    <Style Selector="Button.sidebar-btn.sidebar-section.open:pointerover Path.section-chevron">
+      <Setter Property="Fill" Value="#2E6189" />
     </Style>
 
     <!-- Botao primario -->
@@ -100,18 +405,20 @@
 
     <!-- Botao de logout -->
     <Style Selector="Button.btn-logout">
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Foreground" Value="{DynamicResource AccentRed}" />
+      <Setter Property="Background" Value="#FFFBFB" />
+      <Setter Property="Foreground" Value="#B64E4E" />
       <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="BorderBrush" Value="{DynamicResource AccentRed}" />
+      <Setter Property="BorderBrush" Value="#D7A3A3" />
       <Setter Property="Padding" Value="12,8" />
-      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="CornerRadius" Value="10" />
       <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
       <Setter Property="Cursor" Value="Hand" />
     </Style>
     <Style Selector="Button.btn-logout:pointerover">
-      <Setter Property="Background" Value="{DynamicResource AccentRed}" />
-      <Setter Property="Foreground" Value="White" />
+      <Setter Property="Background" Value="#FDF1F1" />
+      <Setter Property="Foreground" Value="#A94444" />
+      <Setter Property="BorderBrush" Value="#CC8B8B" />
     </Style>
 
     <!-- Botoes de controle da janela -->
@@ -130,7 +437,7 @@
       </Setter>
     </Style>
     <Style Selector="Button.window-btn:pointerover">
-      <Setter Property="Background" Value="#E2E8F0" />
+      <Setter Property="Background" Value="#E4EBF2" />
     </Style>
     <Style Selector="Button.window-btn.close:pointerover">
       <Setter Property="Background" Value="#FEE2E2" />
@@ -138,13 +445,41 @@
     <Style Selector="Button.window-btn.close:pointerover Path">
       <Setter Property="Stroke" Value="White" />
     </Style>
+    <Style Selector="Button.kpis-ear-toggle">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="CornerRadius" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="MinWidth" Value="0" />
+      <Setter Property="MinHeight" Value="0" />
+    </Style>
+    <Style Selector="Button.kpis-ear-toggle:pointerover">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.kpis-ear-toggle:pressed">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.kpis-ear-toggle TextBlock">
+      <Setter Property="Foreground" Value="#F3F7FD" />
+    </Style>
+    <Style Selector="Button.kpis-ear-toggle:pointerover TextBlock">
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.kpis-ear-toggle:pressed TextBlock">
+      <Setter Property="Foreground" Value="#E1ECF8" />
+    </Style>
+
   </UserControl.Styles>
 
   <Grid>
     <Grid.Background>
       <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-        <GradientStop Color="#EFF6FF" Offset="0" />
-        <GradientStop Color="#F0F9FF" Offset="1" />
+        <GradientStop Color="#E1E8F0" Offset="0" />
+        <GradientStop Color="#E8EEF5" Offset="0.55" />
+        <GradientStop Color="#EEF3F7" Offset="1" />
       </LinearGradientBrush>
     </Grid.Background>
     <Grid.ColumnDefinitions>
@@ -163,22 +498,30 @@
     <Border Grid.Column="1" Grid.Row="0"
             BorderBrush="{DynamicResource PanelBorder}"
             BorderThickness="0,0,0,1"
-            Padding="20,10,20,10">
+            Padding="24,13,20,13">
       <Border.Background>
         <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-          <GradientStop Color="#FFFFFF" Offset="0" />
-          <GradientStop Color="#F8FAFC" Offset="1" />
+          <GradientStop Color="#FAFBFD" Offset="0" />
+          <GradientStop Color="#EEF3F7" Offset="1" />
         </LinearGradientBrush>
       </Border.Background>
       <Grid ColumnDefinitions="Auto,*,Auto"
             RowDefinitions="Auto,Auto"
             ColumnSpacing="22"
             RowSpacing="6">
-        <StackPanel Grid.RowSpan="2" VerticalAlignment="Center" Spacing="2" MinWidth="130">
-          <TextBlock Text="Dashboard" FontSize="18" FontWeight="SemiBold" />
-          <TextBlock Text="Visao para cada sistema" FontSize="11" Classes="muted" />
-          <TextBlock Text="{Binding StatusNavegacao}" FontSize="10" Classes="muted" />
-        </StackPanel>
+        <!-- Região arrastável: clique e arraste aqui para mover a janela entre telas -->
+        <Border Name="DragRegionTopBar"
+                Grid.RowSpan="2"
+                VerticalAlignment="Stretch"
+                Background="Transparent"
+                Cursor="SizeAll"
+                PointerPressed="OnTopBarDragRegionPointerPressed">
+          <StackPanel VerticalAlignment="Center" Spacing="2" MinWidth="130">
+            <TextBlock Text="Dashboard" FontSize="18" FontWeight="SemiBold" />
+            <TextBlock Text="Visao para cada sistema" FontSize="11" Classes="muted" />
+            <TextBlock Text="{Binding StatusNavegacao}" FontSize="10" Classes="muted" />
+          </StackPanel>
+        </Border>
 
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" RowDefinitions="Auto,Auto" RowSpacing="6">
           <Border x:Name="SeletorClientesContainer"
@@ -316,119 +659,746 @@
     </Border>
 
     <!-- ==================== CONTEUDO PRINCIPAL ==================== -->
-    <Grid Grid.Column="1" Grid.Row="1" RowDefinitions="*,Auto">
-      <ScrollViewer Grid.Row="0"
-                    HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24" Spacing="20">
-          <StackPanel Spacing="20">
-            <!-- KPIs -->
-            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="12" HorizontalAlignment="Stretch">
+    <Grid Grid.Column="1"
+          Grid.Row="1"
+          RowDefinitions="*,Auto">
+      <Grid Grid.Row="0"
+            ClipToBounds="False">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+          <StackPanel Margin="24" Spacing="20">
+            <StackPanel Spacing="20">
+              <!-- KPIs -->
+              <Grid x:Name="PainelKpisInlineSlot"
+                    ClipToBounds="False">
+                <Border x:Name="PainelKpisInlineHost"
+                        Width="24"
+                        IsVisible="True"
+                        IsHitTestVisible="True"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        ClipToBounds="True">
+                  <Border.Transitions>
+                    <Transitions>
+                      <DoubleTransition Property="Width" Duration="0:0:0.22" />
+                    </Transitions>
+                  </Border.Transitions>
 
-              <!-- KPI 1 - Tarefas Hoje (teal) -->
-              <Border Grid.Column="0" Classes="card" BorderThickness="0">
-                <Border.Background>
-                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#F0FDF9" Offset="0" />
-                    <GradientStop Color="#CCFBF1" Offset="1" />
-                  </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel Spacing="10">
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#0D9488">
-                      <Path Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
-                            Fill="White" Width="20" Height="20" Stretch="Uniform"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  <Grid ClipToBounds="False">
+                    <Grid Margin="24,0,0,0"
+                          HorizontalAlignment="Stretch"
+                          IsHitTestVisible="{Binding PainelKpisDockAberto}">
+                      <Border Classes="kpi-deck">
+                        <Border.Background>
+                          <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                            <GradientStop Color="#344455" Offset="0" />
+                            <GradientStop Color="#29384A" Offset="0.52" />
+                            <GradientStop Color="#1D2A39" Offset="1" />
+                          </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid>
+                          <Ellipse Width="460"
+                                   Height="260"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Margin="-150,-150,0,0"
+                                   Fill="#FFFFFF"
+                                   Opacity="0.035" />
+                          <Ellipse Width="460"
+                                   Height="260"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"
+                                   Margin="0,0,-180,-150"
+                                   Fill="#7CB5FF"
+                                   Opacity="0.05" />
+
+                          <Grid ColumnDefinitions="*,*,*,*"
+                                ColumnSpacing="12">
+
+                            <!-- KPI 1 — Realizadas hoje -->
+                            <Border Grid.Column="0"
+                                    Classes="card kpi-shell"
+                                    BorderBrush="#3EA76C">
+                              <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                  <GradientStop Color="#0E4B2C" Offset="0" />
+                                  <GradientStop Color="#106438" Offset="0.54" />
+                                  <GradientStop Color="#0F5A35" Offset="1" />
+                                </LinearGradientBrush>
+                              </Border.Background>
+                              <Grid>
+                                <Ellipse Width="176"
+                                         Height="132"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="-54,-48,0,0"
+                                         Fill="#8DF4AE"
+                                         Opacity="0.08" />
+                                <Ellipse Width="156"
+                                         Height="112"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,-54,-42"
+                                         Fill="#31C46E"
+                                         Opacity="0.12" />
+
+                                <StackPanel Margin="14,12,14,12" Spacing="10">
+                                  <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                                    <Border Classes="kpi-icon-shell"
+                                            Background="#2C6A46"
+                                            BorderBrush="#8CD5A8">
+                                      <Path Data="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M11,16.5L6.5,12L7.91,10.59L11,13.67L16.59,8.08L18,9.5L11,16.5Z"
+                                            Fill="#E9FFF1"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                      <TextBlock Text="Realizadas hoje"
+                                                 Classes="kpi-title" />
+                                      <TextBlock Text="{Binding ExecucoesHojeEscopoTexto}"
+                                                 Classes="kpi-meta" />
+                                    </StackPanel>
+                                    <Border Grid.Column="2"
+                                            Classes="kpi-chip"
+                                            Background="#2C6A46"
+                                            BorderBrush="#8BD1A7">
+                                      <TextBlock Text="{Binding ExecucoesHojePercentualTexto}"
+                                                 Classes="kpi-chip-text"
+                                                 Foreground="#E9FFF1" />
+                                    </Border>
+                                  </Grid>
+
+                                  <Border Height="1"
+                                          Background="#91C9A7"
+                                          Opacity="0.22" />
+
+                                  <Grid ColumnDefinitions="*,Auto"
+                                        ColumnSpacing="8">
+                                    <StackPanel VerticalAlignment="Bottom"
+                                                Margin="0,0,0,2"
+                                                Spacing="2">
+                                      <TextBlock Text="{Binding ExecucoesHojeMetaTexto}"
+                                                 Classes="kpi-copy"
+                                                 TextWrapping="Wrap" />
+                                      <TextBlock Text="{Binding ExecucoesHojeStatusTexto}"
+                                                 Classes="kpi-copy-secondary"
+                                                 TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                    <Grid Grid.Column="1"
+                                          Width="136"
+                                          RowDefinitions="Auto,Auto"
+                                          HorizontalAlignment="Right">
+                                      <Canvas Width="136"
+                                              Height="78">
+                                        <Path Data="M18,62 A50,50 0 0 1 118,62"
+                                              Stroke="#D4E0D4"
+                                              Opacity="0.18"
+                                              StrokeThickness="12"
+                                              StrokeLineCap="Round" />
+                                        <Path Data="M18,62 A50,50 0 0 1 118,62"
+                                              Stroke="#EDF1EB"
+                                              Opacity="0.56"
+                                              StrokeThickness="12"
+                                              StrokeDashArray="1.3,0.18,1.3,0.18,1.3,5"
+                                              StrokeLineCap="Round" />
+                                        <Canvas Width="136"
+                                                Height="78">
+                                          <Canvas.RenderTransform>
+                                            <RotateTransform Angle="{Binding ExecucoesHojePonteiroAngulo}"
+                                                             CenterX="68"
+                                                             CenterY="62" />
+                                          </Canvas.RenderTransform>
+                                          <Path Data="M68,62 L104,54"
+                                                Stroke="#7AF490"
+                                                StrokeThickness="3"
+                                                StrokeLineCap="Round" />
+                                          <Ellipse Width="12"
+                                                   Height="12"
+                                                   Canvas.Left="98"
+                                                   Canvas.Top="48"
+                                                   Fill="#5AE07C"
+                                                   Stroke="#DBFFE5"
+                                                   StrokeThickness="1.5" />
+                                        </Canvas>
+                                        <TextBlock Text="Concluídas"
+                                                   Classes="kpi-panel-caption"
+                                                   Width="70"
+                                                   Canvas.Left="33"
+                                                   Canvas.Top="34" />
+                                      </Canvas>
+
+                                      <StackPanel Grid.Row="1"
+                                                  Margin="0,-8,0,0"
+                                                  HorizontalAlignment="Center"
+                                                  Spacing="0">
+                                        <TextBlock Text="{Binding RealizadasHojeKpi}"
+                                                   FontSize="22"
+                                                   FontWeight="Medium"
+                                                   Foreground="#ECFFF3"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Text="CONCLUÍDAS"
+                                                   FontSize="9"
+                                                   Foreground="#D4E9D8"
+                                                   HorizontalAlignment="Center" />
+                                      </StackPanel>
+                                    </Grid>
+                                  </Grid>
+                                </StackPanel>
+                              </Grid>
+                            </Border>
+
+                            <!-- KPI 2 — Agendadas para hoje -->
+                            <Border Grid.Column="1"
+                                    Classes="card kpi-shell"
+                                    BorderBrush="#3387D8">
+                              <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                  <GradientStop Color="#0D4F9A" Offset="0" />
+                                  <GradientStop Color="#0E5FAA" Offset="0.54" />
+                                  <GradientStop Color="#0C4D90" Offset="1" />
+                                </LinearGradientBrush>
+                              </Border.Background>
+                              <Grid>
+                                <Ellipse Width="170"
+                                         Height="128"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="-52,-46,0,0"
+                                         Fill="#A4CDFF"
+                                         Opacity="0.08" />
+                                <Ellipse Width="150"
+                                         Height="108"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,-52,-40"
+                                         Fill="#5FB6FF"
+                                         Opacity="0.12" />
+
+                                <StackPanel Margin="14,12,14,12" Spacing="10">
+                                  <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                                    <Border Classes="kpi-icon-shell"
+                                            Background="#295D96"
+                                            BorderBrush="#8ABAF2">
+                                      <Path Data="M19,4H18V2H16V4H8V2H6V4H5A2,2 0 0,0 3,6V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V6A2,2 0 0,0 19,4M19,20H5V10H19V20"
+                                            Fill="#EDF6FF"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                      <TextBlock Text="Agendadas para hoje"
+                                                 Classes="kpi-title" />
+                                      <TextBlock Text="Carteira operacional do dia"
+                                                 Classes="kpi-meta" />
+                                    </StackPanel>
+                                    <Border Grid.Column="2"
+                                            Classes="kpi-chip"
+                                            Background="#295D96"
+                                            BorderBrush="#8ABAF2">
+                                      <TextBlock Text="EM CURSO"
+                                                 Classes="kpi-chip-text"
+                                                 Foreground="#EDF6FF" />
+                                    </Border>
+                                  </Grid>
+
+                                  <Border Height="1"
+                                          Background="#91BFF0"
+                                          Opacity="0.22" />
+
+                                  <Grid RowDefinitions="Auto,Auto"
+                                        RowSpacing="8">
+                                    <Grid ColumnDefinitions="1.42*,Auto"
+                                          ColumnSpacing="8">
+                                      <StackPanel Spacing="5">
+                                        <Grid ColumnDefinitions="60,*,12"
+                                              ColumnSpacing="6">
+                                          <TextBlock Text="Tipo"
+                                                     Classes="kpi-graphic-label" />
+                                          <Border Grid.Column="1"
+                                                  Height="7"
+                                                  CornerRadius="999"
+                                                  Background="#2A5788">
+                                            <Border Width="{Binding OperacaoHojeConcluidasBarraLargura}"
+                                                    Height="7"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="999"
+                                                    Background="#8CC6FF" />
+                                          </Border>
+                                          <TextBlock Grid.Column="2"
+                                                     Text="{Binding RealizadasHojeKpi}"
+                                                     Classes="kpi-graphic-count" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="60,*,12"
+                                              ColumnSpacing="6">
+                                          <TextBlock Text="Qualificado"
+                                                     Classes="kpi-graphic-label" />
+                                          <Border Grid.Column="1"
+                                                  Height="7"
+                                                  CornerRadius="999"
+                                                  Background="#2A5788">
+                                            <Border Width="{Binding OperacaoHojePendentesBarraLargura}"
+                                                    Height="7"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="999"
+                                                    Background="#6DAEFF" />
+                                          </Border>
+                                          <TextBlock Grid.Column="2"
+                                                     Text="{Binding PendentesHojeKpi}"
+                                                     Classes="kpi-graphic-count" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="60,*,12"
+                                              ColumnSpacing="6">
+                                          <TextBlock Text="Tarefa"
+                                                     Classes="kpi-graphic-label" />
+                                          <Border Grid.Column="1"
+                                                  Height="7"
+                                                  CornerRadius="999"
+                                                  Background="#2A5788">
+                                            <Border Width="{Binding OperacaoHojeAtrasadasBarraLargura}"
+                                                    Height="7"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="999"
+                                                    Background="#A0CBFF" />
+                                          </Border>
+                                          <TextBlock Grid.Column="2"
+                                                     Text="{Binding AtrasadasHojeKpi}"
+                                                     Classes="kpi-graphic-count" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="60,*,12"
+                                              ColumnSpacing="6">
+                                          <TextBlock Text="Proposta"
+                                                     Classes="kpi-graphic-label" />
+                                          <Border Grid.Column="1"
+                                                  Height="7"
+                                                  CornerRadius="999"
+                                                  Background="#2A5788">
+                                            <Border Width="{Binding OperacaoHojeAmanhaBarraLargura}"
+                                                    Height="7"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="999"
+                                                    Background="#93BCF2" />
+                                          </Border>
+                                          <TextBlock Grid.Column="2"
+                                                     Text="{Binding PendenciasProgramadasAmanhaKpi}"
+                                                     Classes="kpi-graphic-count" />
+                                        </Grid>
+                                        <Grid ColumnDefinitions="60,*,12"
+                                              ColumnSpacing="6">
+                                          <TextBlock Text="Esteira"
+                                                     Classes="kpi-graphic-label" />
+                                          <Border Grid.Column="1"
+                                                  Height="7"
+                                                  CornerRadius="999"
+                                                  Background="#2A5788">
+                                            <Border Width="{Binding OperacaoHojeDepoisBarraLargura}"
+                                                    Height="7"
+                                                    HorizontalAlignment="Left"
+                                                    CornerRadius="999"
+                                                    Background="#7BA2D6" />
+                                          </Border>
+                                          <TextBlock Grid.Column="2"
+                                                     Text="{Binding PendenciasProgramadasDepoisKpi}"
+                                                     Classes="kpi-graphic-count" />
+                                        </Grid>
+                                      </StackPanel>
+
+                                      <StackPanel Grid.Column="1"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Right"
+                                                  Margin="2,0,0,0"
+                                                  Spacing="0">
+                                        <TextBlock Text="{Binding PendentesHojeKpi}"
+                                                   FontSize="28"
+                                                   FontWeight="Medium"
+                                                   Foreground="#F3F9FF"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Text="PENDENTES"
+                                                   FontSize="9"
+                                                   Foreground="#D0E3F6"
+                                                   HorizontalAlignment="Center" />
+                                      </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="1"
+                                                Spacing="2">
+                                      <TextBlock Text="{Binding AgendadasHojeSubtexto}"
+                                                 Classes="kpi-copy"
+                                                 TextWrapping="Wrap" />
+                                      <TextBlock Text="{Binding ExecucoesHojeStatusTexto}"
+                                                 Classes="kpi-copy-secondary"
+                                                 TextWrapping="Wrap" />
+                                    </StackPanel>
+                                  </Grid>
+                                </StackPanel>
+                              </Grid>
+                            </Border>
+
+                            <!-- KPI 3 — Total agendadas -->
+                            <Border Grid.Column="2"
+                                    Classes="card kpi-shell"
+                                    BorderBrush="#7B57C8">
+                              <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                  <GradientStop Color="#4B1E7F" Offset="0" />
+                                  <GradientStop Color="#572691" Offset="0.58" />
+                                  <GradientStop Color="#4A1C79" Offset="1" />
+                                </LinearGradientBrush>
+                              </Border.Background>
+                              <Grid>
+                                <Ellipse Width="168"
+                                         Height="124"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="-54,-48,0,0"
+                                         Fill="#D3B7FF"
+                                         Opacity="0.08" />
+                                <Ellipse Width="150"
+                                         Height="108"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,-50,-40"
+                                         Fill="#A067F9"
+                                         Opacity="0.12" />
+
+                                <StackPanel Margin="14,12,14,12" Spacing="10">
+                                  <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                                    <Border Classes="kpi-icon-shell"
+                                            Background="#6A3BA1"
+                                            BorderBrush="#B894EA">
+                                      <Path Data="M12,2L21,7L12,12L3,7L12,2M12,14L21,9V11L12,16L3,11V9L12,14M12,18L21,13V15L12,20L3,15V13L12,18Z"
+                                            Fill="#F5EFFF"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                      <TextBlock Text="Total agendadas"
+                                                 Classes="kpi-title" />
+                                      <TextBlock Text="{Binding PendenciasProgramadasDistribuicaoTexto}"
+                                                 Classes="kpi-meta" />
+                                    </StackPanel>
+                                    <Border Grid.Column="2"
+                                            Classes="kpi-chip"
+                                            Background="#6A3BA1"
+                                            BorderBrush="#B894EA">
+                                      <TextBlock Text="FLUXO"
+                                                 Classes="kpi-chip-text"
+                                                 Foreground="#F5EFFF" />
+                                    </Border>
+                                  </Grid>
+
+                                  <Border Height="1"
+                                          Background="#C7A7ED"
+                                          Opacity="0.22" />
+
+                                  <Grid RowDefinitions="Auto,Auto"
+                                        RowSpacing="8">
+                                    <Grid ColumnDefinitions="1.38*,Auto"
+                                          ColumnSpacing="8">
+                                      <Grid ColumnDefinitions="Auto,*"
+                                            ColumnSpacing="8">
+                                        <StackPanel VerticalAlignment="Center"
+                                                    Spacing="6">
+                                          <TextBlock Text="Potenciais Clientes"
+                                                     Classes="kpi-graphic-label" />
+                                          <TextBlock Text="Qualificados"
+                                                     Classes="kpi-graphic-label" />
+                                          <TextBlock Text="Propostas"
+                                                     Classes="kpi-graphic-label" />
+                                          <TextBlock Text="Negócios Ganhos / Esteira"
+                                                     Classes="kpi-graphic-label" />
+                                        </StackPanel>
+
+                                        <Canvas Grid.Column="1"
+                                                Width="114"
+                                                Height="74"
+                                                HorizontalAlignment="Left">
+                                          <Polygon Points="2,0 112,0 94,16 20,16"
+                                                   Fill="#E9D6FF"
+                                                   Opacity="0.95" />
+                                          <Polygon Points="14,20 100,20 86,35 28,35"
+                                                   Fill="#D8BAFB"
+                                                   Opacity="0.9" />
+                                          <Polygon Points="28,39 86,39 74,52 40,52"
+                                                   Fill="#C394F2"
+                                                   Opacity="0.88" />
+                                          <Polygon Points="40,56 76,56 72,68 44,68"
+                                                   Fill="#A66BE0"
+                                                   Opacity="0.92" />
+                                          <Border Width="28"
+                                                  Height="14"
+                                                  Canvas.Left="44"
+                                                  Canvas.Top="58"
+                                                  CornerRadius="4"
+                                                  Background="#8455C4"
+                                                  BorderBrush="#C5A6EF"
+                                                  BorderThickness="1">
+                                            <TextBlock Text="{Binding PendenciasFuturasKpi}"
+                                                       FontSize="8"
+                                                       Foreground="#FBF5FF"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center" />
+                                          </Border>
+                                        </Canvas>
+                                      </Grid>
+
+                                      <StackPanel Grid.Column="1"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Right"
+                                                  Spacing="0">
+                                        <TextBlock Text="{Binding PendenciasFuturasKpi}"
+                                                   FontSize="28"
+                                                   FontWeight="Medium"
+                                                   Foreground="#FAF4FF"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Text="NA ESTEIRA"
+                                                   FontSize="9"
+                                                   Foreground="#DCCAF1"
+                                                   HorizontalAlignment="Center" />
+                                      </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel Grid.Row="1"
+                                                Spacing="2">
+                                      <TextBlock Text="{Binding PendenciasProgramadasResumoTexto}"
+                                                 Classes="kpi-copy"
+                                                 TextWrapping="Wrap" />
+                                      <TextBlock Text="{Binding TotalAgendadasSubtexto}"
+                                                 Classes="kpi-copy-secondary"
+                                                 TextWrapping="Wrap" />
+                                    </StackPanel>
+                                  </Grid>
+                                </StackPanel>
+                              </Grid>
+                            </Border>
+
+                            <!-- KPI 4 — Erros -->
+                            <Border Grid.Column="3"
+                                    Classes="card kpi-shell"
+                                    BorderBrush="#BA4A4A"
+                                    Cursor="Hand">
+                              <Border.Background>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                  <GradientStop Color="#881313" Offset="0" />
+                                  <GradientStop Color="#A11212" Offset="0.56" />
+                                  <GradientStop Color="#8A1111" Offset="1" />
+                                </LinearGradientBrush>
+                              </Border.Background>
+                              <Grid>
+                                <Ellipse Width="170"
+                                         Height="126"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Top"
+                                         Margin="-54,-48,0,0"
+                                         Fill="#FFC2C2"
+                                         Opacity="0.08" />
+                                <Ellipse Width="160"
+                                         Height="114"
+                                         HorizontalAlignment="Right"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,-54,-42"
+                                         Fill="#FF8C8C"
+                                         Opacity="0.11" />
+
+                                <StackPanel Margin="14,12,14,12" Spacing="10">
+                                  <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
+                                    <Border Classes="kpi-icon-shell"
+                                            Background="#A42A2A"
+                                            BorderBrush="#DB8F8F"
+                                            IsVisible="{Binding NaoTemErrosCriticos}">
+                                      <Path Data="M12,13.41L6.41,19L5,17.59L10.59,12L5,6.41L6.41,5L12,10.59L17.59,5L19,6.41L13.41,12L19,17.59L17.59,19L12,13.41Z"
+                                            Fill="#FFF2F2"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Classes="kpi-icon-shell"
+                                            Background="#A42A2A"
+                                            BorderBrush="#F1AAAA"
+                                            IsVisible="{Binding TemErrosCriticos}">
+                                      <Path Data="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                                            Fill="#FFF2F2"
+                                            Width="20"
+                                            Height="20"
+                                            Stretch="Uniform"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Spacing="2">
+                                      <TextBlock Text="Erros"
+                                                 Classes="kpi-title" />
+                                      <TextBlock Text="Nenhuma falha nas últimas sincronizações"
+                                                 Classes="kpi-meta"
+                                                 IsVisible="{Binding NaoTemErrosCriticos}" />
+                                      <TextBlock Text="Falhas exigem triagem imediata"
+                                                 Classes="kpi-meta"
+                                                 IsVisible="{Binding TemErrosCriticos}" />
+                                    </StackPanel>
+                                    <Ellipse Grid.Column="2"
+                                             Width="5"
+                                             Height="5"
+                                             Fill="#FF7A7A"
+                                             VerticalAlignment="Center"
+                                             Margin="0,0,2,0" />
+                                    <Border Grid.Column="3"
+                                            Classes="kpi-chip"
+                                            Background="#A42A2A"
+                                            BorderBrush="#DB8F8F"
+                                            IsVisible="{Binding NaoTemErrosCriticos}">
+                                      <TextBlock Text="ESTÁVEL"
+                                                 Classes="kpi-chip-text"
+                                                 Foreground="#FFF2F2" />
+                                    </Border>
+                                    <Border Grid.Column="3"
+                                            Classes="kpi-chip"
+                                            Background="#B82D2D"
+                                            BorderBrush="#F1AAAA"
+                                            IsVisible="{Binding TemErrosCriticos}">
+                                      <TextBlock Text="CRÍTICO"
+                                                 Classes="kpi-chip-text"
+                                                 Foreground="#FFF2F2" />
+                                    </Border>
+                                  </Grid>
+
+                                  <Border Height="1"
+                                          Background="#F0AAAA"
+                                          Opacity="0.22" />
+
+                                  <Grid ColumnDefinitions="Auto,*"
+                                        ColumnSpacing="8">
+                                    <Border Classes="kpi-metric-badge"
+                                            Width="94"
+                                            Height="72"
+                                            Background="#C43A3A"
+                                            BorderBrush="#D97474"
+                                            BorderThickness="1">
+                                      <StackPanel VerticalAlignment="Center"
+                                                  Spacing="0">
+                                        <TextBlock Text="{Binding ErrosCriticos}"
+                                                   Classes="kpi-badge-value"
+                                                   HorizontalAlignment="Center" />
+                                        <TextBlock Text="ERROS"
+                                                   Classes="kpi-badge-caption"
+                                                   HorizontalAlignment="Center" />
+                                      </StackPanel>
+                                    </Border>
+
+                                    <Grid Grid.Column="1"
+                                          RowDefinitions="Auto,Auto"
+                                          RowSpacing="8">
+                                      <Border Height="50"
+                                              CornerRadius="10"
+                                              Background="#B82929"
+                                              BorderBrush="#D37C7C"
+                                              BorderThickness="1">
+                                        <Canvas Width="116"
+                                                Height="50"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center">
+                                          <Polyline Points="0,30 8,29 16,29 24,28 32,27 40,26 48,27 56,25 64,26 72,24 80,26 88,23 96,25 104,22 116,23"
+                                                    Stroke="#FFDCDC"
+                                                    StrokeThickness="1.8" />
+                                          <Polyline Points="0,31 8,30 16,30 24,29 32,28 40,27 48,28 56,26 64,27 72,25 80,27 88,24 96,26 104,23 116,24"
+                                                    Stroke="#FFBABA"
+                                                    StrokeThickness="0.9"
+                                                    Opacity="0.55" />
+                                        </Canvas>
+                                      </Border>
+
+                                      <StackPanel Grid.Row="1"
+                                                  Spacing="2">
+                                        <TextBlock Text="{Binding ErrosSubtexto}"
+                                                   Classes="kpi-copy"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="Monitoramento contínuo das esteiras."
+                                                   Classes="kpi-copy-secondary"
+                                                   TextWrapping="Wrap"
+                                                   IsVisible="{Binding NaoTemErrosCriticos}" />
+                                        <TextBlock Text="Abra a fila crítica para tratar a causa raiz."
+                                                   Classes="kpi-copy-secondary"
+                                                   TextWrapping="Wrap"
+                                                   IsVisible="{Binding TemErrosCriticos}" />
+                                      </StackPanel>
+                                    </Grid>
+                                  </Grid>
+                                </StackPanel>
+                              </Grid>
+                            </Border>
+
+                          </Grid>
+                        </Grid>
+                      </Border>
+                    </Grid>
+
+                    <Border Width="32"
+                            Height="88"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Margin="-4,0,0,0"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="0"
+                            ZIndex="2">
+                      <Button Classes="kpis-ear-toggle"
+                              Command="{Binding AlternarPainelKpisDockCommand}"
+                              Cursor="Hand"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              ToolTip.Tip="{Binding TooltipPainelKpisDock}">
+                        <TextBlock Text="{Binding IconePainelKpisDock}"
+                                   FontSize="32"
+                                   FontWeight="Light"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                      </Button>
                     </Border>
-                    <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Tarefas hoje" FontSize="12" Foreground="#0F766E" />
-                      <TextBlock Text="{Binding NotasHoje}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
-                    </StackPanel>
-                  </StackPanel>
-                  <Border Background="#0D9488" CornerRadius="6" Padding="10,4" HorizontalAlignment="Left">
-                    <TextBlock Text="XML / PDF" FontSize="10" Foreground="White" FontWeight="SemiBold" />
-                  </Border>
-                </StackPanel>
-              </Border>
+                  </Grid>
+                </Border>
+              </Grid>
+            </StackPanel>
 
-              <!-- KPI 2 - Pendencias Futuras (laranja) -->
-              <Border Grid.Column="1" Classes="card" BorderThickness="0">
-                <Border.Background>
-                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#FFF7ED" Offset="0" />
-                    <GradientStop Color="#FFEDD5" Offset="1" />
-                  </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel Spacing="10">
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#EA580C">
-                      <Path Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17A1.5,1.5 0 0,1 10.5,15.5A1.5,1.5 0 0,1 12,14A1.5,1.5 0 0,1 13.5,15.5A1.5,1.5 0 0,1 12,17M13,11H11V7H13V11Z"
-                            Fill="White" Width="20" Height="20" Stretch="Uniform"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Pendencias Futuras" FontSize="12" Foreground="#C2410C" />
-                      <TextBlock Text="{Binding PendenciasFuturasKpi}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
-                    </StackPanel>
-                  </StackPanel>
-                  <TextBlock Text="Agendadas para o futuro" FontSize="11" Foreground="#C2410C" />
-                </StackPanel>
+            <Grid x:Name="PainelEsteirasInlineSlot"
+                  ClipToBounds="False">
+              <Border x:Name="PainelEsteirasInlineHost"
+                      Width="24"
+                      IsVisible="True"
+                      IsHitTestVisible="True"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      Background="Transparent"
+                      ClipToBounds="True">
+                <Border.Transitions>
+                <Transitions>
+                  <DoubleTransition Property="Width" Duration="0:0:0.22" />
+                </Transitions>
+                </Border.Transitions>
+                <funcionalidades:PainelReguaTempoView HorizontalAlignment="Stretch"
+                                                      VerticalAlignment="Top" />
               </Border>
-
-              <!-- KPI 3 - Erros Criticos (vermelho) -->
-              <Border Grid.Column="2" Classes="card" BorderThickness="0">
-                <Border.Background>
-                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#FFF1F2" Offset="0" />
-                    <GradientStop Color="#FFE4E6" Offset="1" />
-                  </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel Spacing="10">
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#DC2626">
-                      <Path Data="M13,14H11V10H13M13,18H11V16H13M1,21H23L12,2L1,21Z"
-                            Fill="White" Width="20" Height="20" Stretch="Uniform"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Erros Criticos" FontSize="12" Foreground="#B91C1C" />
-                      <TextBlock Text="{Binding ErrosCriticos}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
-                    </StackPanel>
-                  </StackPanel>
-                  <TextBlock Text="Requer atencao imediata" FontSize="11" Foreground="#B91C1C" />
-                </StackPanel>
-              </Border>
-
-              <!-- KPI 4 - Pendencias Atrasadas (âmbar) -->
-              <Border Grid.Column="3" Classes="card" BorderThickness="0">
-                <Border.Background>
-                  <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                    <GradientStop Color="#FFFBEB" Offset="0" />
-                    <GradientStop Color="#FEF3C7" Offset="1" />
-                  </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel Spacing="10">
-                  <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="40" Height="40" CornerRadius="10" Background="#D97706">
-                      <Path Data="M12,22A2,2 0 0,0 14,20H10A2,2 0 0,0 12,22M18,16V11C18,7.93 16.36,5.36 13.5,4.68V4A1.5,1.5 0 0,0 12,2.5A1.5,1.5 0 0,0 10.5,4V4.68C7.63,5.36 6,7.92 6,11V16L4,18V19H20V18L18,16Z"
-                            Fill="White" Width="20" Height="20" Stretch="Uniform"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                    <StackPanel VerticalAlignment="Center">
-                      <TextBlock Text="Pendencias Atrasadas" FontSize="12" Foreground="#B45309" />
-                      <TextBlock Text="{Binding PendenciasAtrasadasKpi}" FontSize="30" FontWeight="Bold" Foreground="#1E293B" />
-                    </StackPanel>
-                  </StackPanel>
-                  <TextBlock Text="Passou do horario agendado" FontSize="11" Foreground="#B45309" />
-                </StackPanel>
-              </Border>
-
             </Grid>
-
-            <funcionalidades:PainelReguaTempoView HorizontalAlignment="Stretch" />
           </StackPanel>
-        </StackPanel>
-      </ScrollViewer>
+        </ScrollViewer>
+      </Grid>
 
       <funcionalidades:HistoricoExecucaoPainelPrincipalView Grid.Row="1"
                                                             HorizontalAlignment="Stretch"

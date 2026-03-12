@@ -1,0 +1,45 @@
+---
+description: Como rodar o painel principal para desenvolvimento e testes
+globs:
+alwaysApply: true
+---
+
+# Como rodar o painel direto (UNICO COMANDO)
+
+O projeto usa Avalonia/.NET 8.0 (NAO e WPF).
+O painel tem um modo de bypass que pula o login e abre direto no painel principal.
+
+## Comando canonico (a partir deste workspace "painel principal/"):
+
+```bash
+cd "../Login" && bash scripts/hot_reload_painel_direto.sh
+```
+
+## Sem hot reload (mais estavel):
+
+```bash
+cd "../Login" && bash scripts/hot_reload_painel_direto.sh no-hot-reload
+```
+
+## Build e testes:
+
+```bash
+cd "../Login" && dotnet build Protons.sln -c Debug
+cd "../Login" && dotnet test Protons.sln -c Debug
+```
+
+## REGRAS IMPORTANTES
+
+- NUNCA sugira "dotnet run" direto. Use APENAS o script acima.
+- NUNCA invente comandos. O script configura todas as variaveis de ambiente automaticamente.
+- O script usa `bash` (nao precisa de chmod +x).
+- O bypass so funciona em DEBUG + Development.
+- Banco local do bypass: ~/.local/share/protons-dev/Protons/protons.db
+- Solution: Login/Protons.sln
+- Projeto UI: Login/Protons.UI/Protons.UI.csproj
+
+## Se o painel nao abrir
+
+1. Primeiro faca build: `cd "../Login" && dotnet build Protons.sln -c Debug`
+2. Se o build passar, rode o script novamente.
+3. Se falhar, verifique o log de erro no terminal.

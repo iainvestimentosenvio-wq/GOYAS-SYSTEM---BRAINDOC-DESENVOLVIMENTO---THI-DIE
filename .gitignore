@@ -1,102 +1,35 @@
-# .NET Framework Build Outputs
-bin/
-obj/
-[Bb]in/
-[Oo]bj/
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
-[Aa]ny[Cc]PU/
-*.exe
-*.dll
-*.pdb
+# Tool cache
+.tools/
 
-# Visual Studio / Rider
-.vs/
-.vscode/.suo
-.idea/
-*.user
-*.suo
-*.userprefs
-*.cache
-*.vspscc
-*.vssscc
-.builds
-*.pidb
-*.svclog
-*.scc
-*.DotSettings.user
+# SBOM artifacts
+INSTALADOR/saida/sbom/
 
-# NuGet
-packages/
-*.nupkg
-*.snupkg
-**/packages/*
-!**/packages/build/
-project.lock.json
-project.fragment.lock.json
+# Artefatos de CI e logs de execução — gerados automaticamente pelos scripts de checklist/regressão
+Login/testes/TestResults/checklist*/
+Login/testes/TestResults/regressao_dashboard/
+Login/testes/TestResults/snapshot_dashboard/
+Login/testes/.obj_ci/
 
-# Build Results
-[Dd]ebugPublic/
-[Rr]eleases/
-*_i.c
-*_p.c
-*_h.h
-*.ilk
-*.meta
-*.obj
-*.iobj
-*.pch
-*.ipdb
-*.pgc
-*.pgd
-*.rsp
-*.sbr
-*.tlb
-*.tli
-*.tlh
-*.tmp
-*.tmp_proj
-*_wpftmp.csproj
-*.log
-*.tlog
-*.vspscc
-*.vssscc
+# Logs de build e runtime gerados localmente
+Login/testes/TestResults/smoke/*.log
+Login/testes/TestResults/smoke/*.trx
 
-# Application Data (Sensitive)
-*.db
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite3
-Protons.db
-settings.json
-audit_*.log
+# Ambiente virtual Python
+.venv/
+Login/Protons.UI/appsettings.json
+INSTALADOR/comum/version.env
 
-# Environment and Secrets
-.env
-.env.local
-appsettings.local.json
-secrets.json
-*.pfx
-*.key
-
-# OS Files
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# Temporary Files
-*.swp
-*.swo
-*~
-.tmp/
-
-# Claude Code specific
-.claude/
-!.claude/plans/.gitkeep
-
-# Keep structure folders
-!App/.gitkeep
-!documentos/.gitkeep
+# Artefatos locais de build, testes e publicação
+**/bin/
+**/obj/
+**/TestResults/
+INSTALADOR/saida/
+win-test-results/
+ENTREGA-COMPARTILHADA/
+Login.zip
+INSTALADOR/linux/deb/build/
+Login/testes/.artifacts*/
+**/.obj_ci/
+**/__pycache__/
+**/*.pyc
+INSTALADOR/setup_vm_windows_log.txt

@@ -7,14 +7,15 @@
              x:Class="Protons.UI.Login.Views.LoginView"
              x:DataType="vm:LoginViewModel">
 
-  <Border Background="#101720CC"
+  <Border Background="{DynamicResource SurfaceBrush}"
           CornerRadius="16"
-          Padding="28"
+          Padding="32"
           Width="440"
-          Height="560"
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
-          BoxShadow="0 12 32 0 #66000000">
+          BorderBrush="{DynamicResource SurfaceBorderBrush}"
+          BorderThickness="1"
+          BoxShadow="0 4 6 0 #0D000000, 0 16 48 0 #14000000">
     <Grid RowDefinitions="Auto,Auto,*" RowSpacing="12" VerticalAlignment="Center">
       <StackPanel Orientation="Horizontal" Spacing="10">
         <Border Width="6" Height="28" Background="{DynamicResource AccentPrimaryBrush}" CornerRadius="3"/>

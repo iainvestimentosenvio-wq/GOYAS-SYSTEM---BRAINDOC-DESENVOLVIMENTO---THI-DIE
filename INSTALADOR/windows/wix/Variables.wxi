@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ARQUIVO GERADO AUTOMATICAMENTE - NAO EDITAR -->
+<!-- Versao centralizada em: INSTALADOR\comum\version.env -->
+<Include>
+  <?define ProductName = "Protons" ?>
+  <?define Publisher = "Protons Team" ?>
+  <?define Version = "1.0.0" ?>
+  <?define HasAssets = "0" ?>
+  <?define UpgradeCode = "A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D" ?>
+</Include>

@@ -1,0 +1,35 @@
+===============================================================
+LEIA-ME PRIMEIRO - Windows Installer
+===============================================================
+
+Comando principal (gate base tecnico):
+
+    bash run-windows-base-gate.sh
+
+Fonte oficial de status operacional:
+
+    saida/status/latest-status.json
+
+Comandos adicionais:
+
+    bash run-windows-p10-gate.sh
+    bash run-windows-ux-p10-gate.sh
+    bash build-and-run-windows-gate.sh
+    bash troubleshoot-upload.sh
+
+Build automatizado Linux->VM:
+- `bash build-and-run-windows-gate.sh` faz rebuild de EXE e, quando necessario, MSI sem passo manual na VM.
+- Pre-requisito no host Linux: `dotnet` instalado.
+
+Compatibilidade:
+- Scripts antigos RODAR-* continuam funcionando via wrappers deprecados.
+
+Transporte de payload:
+- Primario: ISO
+- Fallback: QGA/HTTP (quando necessario)
+
+Perfil de assinatura padrao (pre-teste tecnico):
+- technical
+
+Dica:
+- Se o preflight falhar nos gates diretos (`run-windows-*.sh`), use `bash build-and-run-windows-gate.sh` para rebuild automatico via VM.

@@ -1,0 +1,17 @@
+Package: protons
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Your Organization <support@example.com>
+Homepage: https://example.com
+Description: Sistema Protons - Login e Gerenciamento
+ Aplicação desktop para autenticação e gerenciamento de usuários.
+ .
+ Características:
+  - Autenticação local com SQLite
+  - Gerenciamento de usuários e perfis
+  - Auditoria completa de ações
+  - Interface moderna com Avalonia UI
+ .
+ Nota: Aplicação self-contained - não requer dependências externas.

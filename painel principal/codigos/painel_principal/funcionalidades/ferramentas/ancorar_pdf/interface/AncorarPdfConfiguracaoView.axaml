@@ -1,0 +1,904 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.Funcionalidades.Ferramentas.AncorarPdf.ModelosDeVisao"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.Ferramentas.AncorarPdf.AncorarPdfConfiguracaoView"
+             x:DataType="vm:AncorarPdfConfiguracaoViewModel"
+             MinWidth="980"
+             MaxWidth="1680">
+
+  <UserControl.KeyBindings>
+    <KeyBinding Gesture="Delete" Command="{Binding RemoverAncoraSelecionadaCommand}" />
+    <KeyBinding Gesture="Ctrl+Z" Command="{Binding DesfazerCommand}" />
+    <KeyBinding Gesture="Ctrl+Y" Command="{Binding RefazerCommand}" />
+    <KeyBinding Gesture="Ctrl+OemPlus" Command="{Binding ZoomInCommand}" />
+    <KeyBinding Gesture="Ctrl+OemMinus" Command="{Binding ZoomOutCommand}" />
+    <KeyBinding Gesture="Ctrl+D0" Command="{Binding ZoomResetCommand}" />
+  </UserControl.KeyBindings>
+
+  <UserControl.Styles>
+    <Style Selector="Button.tool-toggle">
+      <Setter Property="Padding" Value="10,8" />
+      <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.tool-toggle[Tag=True]">
+      <Setter Property="Background" Value="#DDF2EF" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="Foreground" Value="{DynamicResource AccentPrimaryBrush}" />
+    </Style>
+    <Style Selector="Border.anchor-list-item">
+      <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+      <Setter Property="BorderBrush" Value="{DynamicResource PanelBorder}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Border.anchor-list-item[Tag=True]">
+      <Setter Property="Background" Value="#F3FBF9" />
+      <Setter Property="BorderBrush" Value="{DynamicResource AccentPrimaryBrush}" />
+      <Setter Property="BorderThickness" Value="1.5" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Background="{DynamicResource SurfaceBrush}"
+          CornerRadius="18"
+          Padding="18"
+          BorderBrush="{DynamicResource PanelBorder}"
+          BorderThickness="1"
+          BoxShadow="0 4 6 0 #0D000000, 0 16 48 0 #14000000">
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="14">
+
+      <Grid Grid.Row="0" ColumnDefinitions="*,Auto" ColumnSpacing="10">
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+          <Border Width="48" Height="48" CornerRadius="12"
+                  Background="{DynamicResource PanelSurfaceAlt}"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1">
+            <Image Source="avares://Protons.UI/Assets/UI/Buttons/ancora_pdf_normal.png"
+                   Stretch="Uniform"
+                   Width="34"
+                   Height="34"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center" />
+          </Border>
+          <StackPanel Grid.Column="1" Spacing="2">
+            <TextBlock Text="{Binding Titulo}" FontSize="22" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Subtitulo}" FontSize="12" Foreground="{DynamicResource TextSecondary}" />
+            <TextBlock Text="{Binding TarefaIdTexto}" FontSize="11" Foreground="{DynamicResource TextMuted}" />
+            <TextBlock Text="{Binding ProgramadoPorResumo}" FontSize="11" Foreground="{DynamicResource AccentPrimaryBrush}" TextWrapping="Wrap" />
+          </StackPanel>
+        </Grid>
+
+        <Button Grid.Column="1"
+                Content="✕"
+                Command="{Binding FecharCommand}"
+                Width="34"
+                Height="34"
+                Background="{DynamicResource PanelSurfaceAlt}"
+                BorderBrush="{DynamicResource PanelBorder}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Cursor="Hand" />
+      </Grid>
+
+      <Grid Grid.Row="1" ColumnDefinitions="336,*" ColumnSpacing="16">
+
+        <ScrollViewer Grid.Column="0"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+          <StackPanel Spacing="12">
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    IsVisible="{Binding !ModoApenasAncoras}">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Documento" FontSize="14" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                      ColumnSpacing="10" RowSpacing="8">
+                  <TextBlock Text="Nome" VerticalAlignment="Center" />
+                  <TextBox Grid.Column="1"
+                           Text="{Binding NomeTarefaPersonalizado}"
+                           Watermark="Nome personalizado"
+                           IsEnabled="{Binding PodeEditar}" />
+
+                  <TextBlock Grid.Row="1" Text="Data" VerticalAlignment="Center" />
+                  <DatePicker Grid.Row="1" Grid.Column="1"
+                              SelectedDate="{Binding DataSelecionada}"
+                              IsEnabled="{Binding PodeEditar}" />
+
+                  <TextBlock Grid.Row="2" Text="Hora" VerticalAlignment="Center" />
+                  <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                    <NumericUpDown Width="78" Minimum="0" Maximum="23" FormatString="00"
+                                   Value="{Binding HoraSelecionada}"
+                                   IsEnabled="{Binding PodeEditar}" />
+                    <TextBlock Text=":" VerticalAlignment="Center" />
+                    <NumericUpDown Width="78" Minimum="0" Maximum="59" FormatString="00"
+                                   Value="{Binding MinutoSelecionado}"
+                                   IsEnabled="{Binding PodeEditar}" />
+                    <TextBlock Text=":" VerticalAlignment="Center" />
+                    <NumericUpDown Width="78" Minimum="0" Maximum="59" FormatString="00"
+                                   Value="{Binding SegundoSelecionado}"
+                                   IsEnabled="{Binding PodeEditar}" />
+                  </StackPanel>
+
+                  <TextBlock Grid.Row="3" Text="Recorrência" VerticalAlignment="Center" />
+                  <ComboBox Grid.Row="3" Grid.Column="1"
+                            ItemsSource="{Binding RecorrenciasPermitidas}"
+                            SelectedItem="{Binding RecorrenciaSelecionada}"
+                            IsEnabled="{Binding PodeEditar}" />
+
+                  <TextBlock Grid.Row="4" Text="Pasta" VerticalAlignment="Center" />
+                  <Grid Grid.Row="4" Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBox Text="{Binding PastaMonitoradaPath}" IsEnabled="{Binding PodeEditar}" />
+                    <Button Grid.Column="1"
+                            Content="Selecionar"
+                            Command="{Binding SelecionarPastaMonitoradaCommand}"
+                            IsEnabled="{Binding PodeEditar}" />
+                  </Grid>
+
+                  <TextBlock Grid.Row="5" Text="PDF modelo" VerticalAlignment="Center" />
+                  <Grid Grid.Row="5" Grid.Column="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBox Text="{Binding PdfModeloPath}" IsEnabled="{Binding PodeEditar}" />
+                    <Button Grid.Column="1"
+                            Content="Selecionar"
+                            Command="{Binding SelecionarPdfModeloCommand}"
+                            IsEnabled="{Binding PodeEditar}" />
+                  </Grid>
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    IsVisible="{Binding ModoApenasAncoras}">
+              <StackPanel Spacing="8">
+                <TextBlock Text="Documento" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Text="Modo de ancoragem do wizard" FontSize="11" Foreground="{DynamicResource TextSecondary}" />
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="10">
+                  <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding PdfModeloPath}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding PreviewAdapterNome, StringFormat='Preview: {0}'}"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextSecondary}" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Ferramentas" FontSize="14" FontWeight="SemiBold" />
+                <UniformGrid Columns="3">
+                  <Button Classes="tool-toggle"
+                          Tag="{Binding FerramentaNavegarAtiva}"
+                          Content="Navegar"
+                          Command="{Binding SelecionarFerramentaInteracaoCommand}"
+                          CommandParameter="{x:Static vm:AncorarPdfFerramentaInteracao.Navegar}"
+                          IsEnabled="{Binding PodeEditar}" />
+                  <Button Classes="tool-toggle"
+                          Tag="{Binding FerramentaSmartClickAtiva}"
+                          Content="Smart click"
+                          Command="{Binding SelecionarFerramentaInteracaoCommand}"
+                          CommandParameter="{x:Static vm:AncorarPdfFerramentaInteracao.SmartClick}"
+                          IsEnabled="{Binding PodeEditar}" />
+                  <Button Classes="tool-toggle"
+                          Tag="{Binding FerramentaRetanguloManualAtiva}"
+                          Content="Retângulo"
+                          Command="{Binding SelecionarFerramentaInteracaoCommand}"
+                          CommandParameter="{x:Static vm:AncorarPdfFerramentaInteracao.RetanguloManual}"
+                          IsEnabled="{Binding PodeEditar}" />
+                </UniformGrid>
+
+                <TextBlock Text="{Binding FerramentaInteracaoInstrucao}"
+                           FontSize="11"
+                           Foreground="{DynamicResource AccentPrimaryBrush}"
+                           TextWrapping="Wrap" />
+
+                <StackPanel Spacing="8">
+                  <TextBlock Text="Paleta fixa (10 cores)" FontSize="12" FontWeight="SemiBold" />
+                  <ItemsControl ItemsSource="{Binding CoresPaleta}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" ItemWidth="38" ItemHeight="30" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Button Width="34"
+                                Height="26"
+                                Margin="2"
+                                Background="{Binding .}"
+                                BorderBrush="{DynamicResource PanelBorder}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Command="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).SelecionarCorCommand}"
+                                CommandParameter="{Binding .}"
+                                IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Cor ativa" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" />
+                    <Border Width="96" Height="20" Background="{Binding CorSelecionada}" CornerRadius="6" />
+                  </StackPanel>
+                </StackPanel>
+
+                <UniformGrid Columns="2">
+                  <Button Content="Undo"
+                          Command="{Binding DesfazerCommand}"
+                          IsEnabled="{Binding PodeDesfazer}" />
+                  <Button Content="Redo"
+                          Command="{Binding RefazerCommand}"
+                          IsEnabled="{Binding PodeRefazer}" />
+                </UniformGrid>
+              </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1">
+              <StackPanel Spacing="10">
+                <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                  <TextBlock Text="Âncoras" FontSize="14" FontWeight="SemiBold" />
+                  <Button Grid.Column="1"
+                          Content="+ Âncora"
+                          Command="{Binding AdicionarAncoraCommand}"
+                          IsEnabled="{Binding PodeAdicionarAncora}" />
+                </Grid>
+
+                <ScrollViewer MaxHeight="240"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                  <ItemsControl ItemsSource="{Binding AncorasNaPaginaAtual}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:AncorarPdfAncoraItemViewModel">
+                        <Border Classes="anchor-list-item"
+                                Tag="{Binding SelecionadaNaLista}"
+                                Padding="10"
+                                Margin="0,0,0,8"
+                                CornerRadius="10"
+                                PointerEntered="OnAncoraItemPointerEntered"
+                                PointerExited="OnAncoraItemPointerExited"
+                                PointerPressed="OnAncoraItemPressed">
+                          <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+                            <Border Width="18" Height="18" Background="{Binding CorHex}" CornerRadius="4" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding NomeExibido}"
+                                       FontWeight="SemiBold"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding TipoEsperado}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextSecondary}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                                       Text="{Binding PosicaoResumo}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       TextTrimming="CharacterEllipsis" />
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10"
+                        IsVisible="{Binding !TemAncorasNaPaginaAtual}">
+                  <TextBlock Text="Nenhuma âncora criada nesta página. Escolha uma cor e use Retângulo ou Smart click."
+                             TextWrapping="Wrap"
+                             FontSize="11"
+                             Foreground="{DynamicResource TextSecondary}" />
+                </Border>
+
+                <Border Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10"
+                        DataContext="{Binding AncoraSelecionada}"
+                        IsVisible="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).TemAncoraSelecionada}">
+                  <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+                      <TextBlock Text="Propriedades da seleção" FontSize="13" FontWeight="SemiBold" />
+                      <Button Grid.Column="1"
+                              Content="Remover"
+                              Command="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).RemoverAncoraSelecionadaCommand}"
+                              IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeRemoverAncoraSelecionada}" />
+                    </Grid>
+
+                    <TextBox Text="{Binding NomeExibido}"
+                             Watermark="Nome exibido"
+                             IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <TextBox Text="{Binding ChaveTecnica}"
+                             Watermark="Chave técnica"
+                             IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <ComboBox ItemsSource="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).TiposEsperados}"
+                              SelectedItem="{Binding TipoEsperado}"
+                              IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <ComboBox ItemsSource="{x:Static vm:AncorarPdfAncoraItemViewModel.ModosAncora}"
+                              SelectedItem="{Binding ModoAncora}"
+                              IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <TextBox Text="{Binding TextoAncora}"
+                             Watermark="Texto âncora"
+                             IsVisible="{Binding EhModoTexto}"
+                             IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <TextBox Text="{Binding ExemploEsperado}"
+                             Watermark="Exemplo esperado"
+                             IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
+                    <Border Background="{DynamicResource PanelSurfaceAlt}"
+                            BorderBrush="{DynamicResource PanelBorder}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="6,4"
+                            IsVisible="{Binding RegraNormalizacaoInferida, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                      <TextBlock Text="{Binding RegraNormalizacaoInferida, StringFormat='Regra inferida: {0}'}"
+                                 FontSize="11"
+                                 Foreground="{DynamicResource TextSecondary}" />
+                    </Border>
+                    <TextBlock Text="{Binding PosicaoResumo}"
+                               FontSize="11"
+                               Foreground="{DynamicResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                  </StackPanel>
+                </Border>
+
+                <Border IsVisible="{Binding ConfirmacaoSubstituicaoCorAberta}"
+                        Background="#FEF2F2"
+                        BorderBrush="{DynamicResource AccentRedBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10"
+                        Padding="10">
+                  <StackPanel Spacing="8">
+                    <TextBlock Text="Esta cor já possui âncora. Deseja substituir a marcação existente?" TextWrapping="Wrap" />
+                    <UniformGrid Columns="2">
+                      <Button Content="Não"
+                              Command="{Binding ConfirmarSubstituicaoCorCommand}"
+                              CommandParameter="False" />
+                      <Button Content="Sim, substituir"
+                              Command="{Binding ConfirmarSubstituicaoCorCommand}"
+                              CommandParameter="True"
+                              Classes="btn-danger" />
+                    </UniformGrid>
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Avançado" FontSize="14" FontWeight="SemiBold" />
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                  <TextBlock Text="Nome referência" VerticalAlignment="Center" />
+                  <TextBox Grid.Column="1"
+                           Text="{Binding NomeReferenciaArquivo}"
+                           IsEnabled="{Binding PodeEditar}" />
+
+                  <TextBlock Grid.Row="1" Text="Limiar" VerticalAlignment="Center" />
+                  <NumericUpDown Grid.Row="1" Grid.Column="1"
+                                 Minimum="0" Maximum="1" Increment="0.01"
+                                 Value="{Binding LimiarSimilaridadeNome}"
+                                 IsEnabled="{Binding PodeEditar}" />
+
+                  <TextBlock Grid.Row="2" Text="Highlight" VerticalAlignment="Center" />
+                  <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Slider Width="150" Minimum="0.30" Maximum="0.45"
+                            Value="{Binding HighlightOpacity}"
+                            IsEnabled="{Binding PodeEditar}" />
+                    <NumericUpDown Width="74" Minimum="0.30" Maximum="0.45" Increment="0.01"
+                                   Value="{Binding HighlightOpacity}"
+                                   FormatString="P0"
+                                   IsEnabled="{Binding PodeEditar}" />
+                  </StackPanel>
+
+                  <TextBlock Grid.Row="3" Text="Estratégia" VerticalAlignment="Center" />
+                  <ComboBox Grid.Row="3" Grid.Column="1"
+                            ItemsSource="{Binding ModosSelecaoPermitidos}"
+                            SelectedItem="{Binding ModoSelecaoSelecionado}"
+                            IsEnabled="{Binding PodeEditar}" />
+
+                  <CheckBox Grid.Row="4" Grid.ColumnSpan="2"
+                            Content="Monitorar subpastas"
+                            IsChecked="{Binding MonitorarSubpastas}"
+                            IsEnabled="{Binding PodeEditar}" />
+                  <CheckBox Grid.Row="5" Grid.ColumnSpan="2"
+                            Content="Validação de cliente ativa"
+                            IsChecked="{Binding ValidacaoClienteAtiva}"
+                            IsEnabled="{Binding PodeEditar}" />
+                  <CheckBox Grid.Row="6" Grid.ColumnSpan="2"
+                            Content="Usar PDF modelo de outro cliente (Admin)"
+                            IsChecked="{Binding PdfModeloCrossCliente}"
+                            IsEnabled="{Binding PodeAtivarPdfModeloCrossCliente}" />
+                </Grid>
+
+                <TextBox IsEnabled="{Binding PodeEditarJustificativaCrossCliente}"
+                         Text="{Binding PdfModeloCrossClienteJustificativa}"
+                         IsVisible="{Binding PdfModeloCrossCliente}"
+                         Watermark="Justificativa obrigatória (mínimo 15 caracteres)"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         MinHeight="72" />
+
+                <CheckBox Content="Ativar OCR fallback para PDF escaneado"
+                          IsChecked="{Binding OcrFallbackAtivo}"
+                          IsEnabled="{Binding PodeEditar}" />
+
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
+                  <TextBlock Text="OCR DPI" VerticalAlignment="Center" />
+                  <NumericUpDown Grid.Column="1"
+                                 Minimum="150" Maximum="600" Increment="10"
+                                 Value="{Binding OcrDpi}"
+                                 IsEnabled="{Binding PodeEditarOcrParametros}" />
+                  <TextBlock Grid.Row="1" Text="OCR idiomas" VerticalAlignment="Center" />
+                  <TextBox Grid.Row="1" Grid.Column="1"
+                           Text="{Binding OcrLang}"
+                           Watermark="por+eng"
+                           IsEnabled="{Binding PodeEditarOcrParametros}" />
+                  <TextBlock Grid.Row="2" Grid.ColumnSpan="2"
+                             Text="Use OCR para PDFs escaneados sem texto nativo. Exemplo: por+eng."
+                             TextWrapping="Wrap"
+                             FontSize="11"
+                             Foreground="{DynamicResource TextSecondary}" />
+                </Grid>
+              </StackPanel>
+            </Border>
+
+            <Border Background="{DynamicResource PanelSurfaceAlt}"
+                    CornerRadius="12"
+                    Padding="12"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    IsVisible="{Binding PodeExibirOverlaysDiagnostico}">
+              <StackPanel Spacing="10">
+                <TextBlock Text="Diagnóstico" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding DiagnosticoPaginaAtualResumo}"
+                           TextWrapping="Wrap"
+                           FontSize="11"
+                           Foreground="{DynamicResource AccentPrimaryBrush}"
+                           IsVisible="{Binding MostrarDiagnosticosPreview}" />
+
+                <WrapPanel Orientation="Horizontal" ItemWidth="148" MinHeight="60">
+                  <CheckBox Content="Tokens nativos"
+                            IsChecked="{Binding MostrarTokensNativos}"
+                            IsEnabled="{Binding PodeExibirOverlaysDiagnostico}" />
+                  <CheckBox Content="Tokens OCR"
+                            IsChecked="{Binding MostrarTokensOcr}"
+                            IsEnabled="{Binding PodeExibirOverlaysDiagnostico}" />
+                  <CheckBox Content="Mostrar diagnóstico"
+                            IsChecked="{Binding MostrarDiagnosticosPreview}"
+                            IsEnabled="{Binding PodeExibirOverlaysDiagnostico}" />
+                  <CheckBox Content="Heatmap confiança"
+                            IsChecked="{Binding MostrarHeatmapConfianca}"
+                            IsEnabled="{Binding PodeExibirOverlaysDiagnostico}" />
+                </WrapPanel>
+
+                <ScrollViewer MaxHeight="180"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              IsVisible="{Binding MostrarDiagnosticosPreview}">
+                  <ItemsControl ItemsSource="{Binding DiagnosticosPaginas}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:AncorarPdfPaginaDiagnosticoItemViewModel">
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource PanelBorder}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="8"
+                                Margin="0,0,0,8">
+                          <StackPanel Spacing="4">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                              <TextBlock Text="{Binding Pagina, StringFormat='Página {0}'}"
+                                         FontWeight="SemiBold" />
+                              <Border Background="#EEF2FF"
+                                      BorderBrush="#C7D2FE"
+                                      BorderThickness="1"
+                                      CornerRadius="999"
+                                      Padding="6,2">
+                                <TextBlock Text="{Binding Rota}"
+                                           FontSize="10"
+                                           Foreground="#4338CA" />
+                              </Border>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Resumo}"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Motivo}"
+                                       FontSize="10"
+                                       Foreground="{DynamicResource TextMuted}"
+                                       TextWrapping="Wrap" />
+                          </StackPanel>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </ScrollViewer>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" RowSpacing="12">
+          <Border Background="{DynamicResource PanelSurfaceAlt}"
+                  CornerRadius="12"
+                  Padding="12"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+              <StackPanel Spacing="3">
+                <TextBlock Text="{Binding FerramentaInteracaoTitulo}" FontSize="14" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding StatusInteracaoPreview}"
+                           FontSize="11"
+                           Foreground="{DynamicResource AccentPrimaryBrush}"
+                           TextWrapping="Wrap" />
+              </StackPanel>
+
+              <Border Grid.Column="1"
+                      Background="{DynamicResource SurfaceBrush}"
+                      BorderBrush="{DynamicResource PanelBorder}"
+                      BorderThickness="1"
+                      CornerRadius="999"
+                      Padding="8,4"
+                      Margin="8,0,0,0">
+                <TextBlock Text="{Binding PreviewAdapterNome, StringFormat='Viewer {0}'}"
+                           FontSize="11"
+                           Foreground="{DynamicResource TextSecondary}" />
+              </Border>
+
+              <Border Grid.Column="2"
+                      Background="#ECFDF5"
+                      BorderBrush="#A7F3D0"
+                      BorderThickness="1"
+                      CornerRadius="999"
+                      Padding="8,4"
+                      Margin="8,0,0,0"
+                      IsVisible="{Binding PreviewRenderizadoDisponivel}">
+                <TextBlock Text="Preview pronto"
+                           FontSize="11"
+                           Foreground="#047857" />
+              </Border>
+
+              <Border Grid.Column="3"
+                      Background="#FFF7ED"
+                      BorderBrush="#FDBA74"
+                      BorderThickness="1"
+                      CornerRadius="999"
+                      Padding="8,4"
+                      Margin="8,0,0,0"
+                      IsVisible="{Binding PreviewFallbackAtivo}">
+                <TextBlock Text="Fallback ativo"
+                           FontSize="11"
+                           Foreground="#C2410C" />
+              </Border>
+            </Grid>
+          </Border>
+
+          <Border IsVisible="{Binding SmartDeteccaoAtual, Converter={x:Static ObjectConverters.IsNotNull}}"
+                  Grid.Row="1"
+                  Background="#EFF6FF"
+                  BorderBrush="#93C5FD"
+                  BorderThickness="1"
+                  CornerRadius="12"
+                  Padding="12">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="Detectado:" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" />
+                <TextBlock Text="{Binding SmartDeteccaoAtual.TextoBruto}"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+                <Border Background="#DBEAFE" Padding="4,2" CornerRadius="4">
+                  <TextBlock Text="{Binding SmartTipoEditavel}"
+                             Foreground="#1D4ED8"
+                             FontSize="11" />
+                </Border>
+                <TextBlock Text="{Binding SmartDeteccaoAtual.Confianca, StringFormat='({0:P0})'}"
+                           Foreground="{DynamicResource TextMuted}"
+                           FontSize="11"
+                           VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Border Grid.Row="1"
+                      Background="#DBEAFE"
+                      BorderBrush="#93C5FD"
+                      BorderThickness="1"
+                      CornerRadius="6"
+                      Padding="8,5"
+                      IsVisible="{Binding SmartDeteccaoAtual.TextoNormalizado, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <TextBlock Text="Se importar deste PDF →" Foreground="{DynamicResource TextSecondary}" FontSize="11" />
+                  <TextBlock Text="{Binding SmartDeteccaoAtual.TextoNormalizado}"
+                             FontWeight="SemiBold"
+                             Foreground="#1D4ED8"
+                             FontSize="13" />
+                  <TextBlock Text="{Binding QuantidadeDestaquesSmartTexto}"
+                             Foreground="{DynamicResource TextMuted}"
+                             FontSize="11" />
+                </StackPanel>
+              </Border>
+
+              <Grid Grid.Row="2" ColumnDefinitions="*,*" ColumnSpacing="8">
+                <TextBox Text="{Binding SmartNomeEditavel}"
+                         Watermark="Nome exibido"
+                         IsEnabled="{Binding PodeEditar}" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding SmartChaveEditavel}"
+                         Watermark="Chave técnica"
+                         IsEnabled="{Binding PodeEditar}" />
+              </Grid>
+
+              <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8" HorizontalAlignment="Right">
+                <Button Content="Cancelar"
+                        Command="{Binding CancelarSmartDeteccaoCommand}" />
+                <Button Content="Confirmar âncora"
+                        Command="{Binding ConfirmarSmartDeteccaoCommand}"
+                        IsEnabled="{Binding PodeEditar}"
+                        Background="{DynamicResource AccentPrimaryBrush}"
+                        Foreground="White"
+                        BorderBrush="{DynamicResource AccentHoverBrush}"
+                        BorderThickness="1" />
+              </StackPanel>
+            </Grid>
+          </Border>
+
+          <Border Grid.Row="2"
+                  Background="{DynamicResource PanelSurfaceAlt}"
+                  CornerRadius="12"
+                  Padding="12"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1">
+            <Grid RowDefinitions="Auto,*" RowSpacing="10">
+              <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="6">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                  <TextBlock Text="{Binding FerramentaInteracaoInstrucao}"
+                             Foreground="{DynamicResource AccentPrimaryBrush}"
+                             FontSize="11"
+                             VerticalAlignment="Center" />
+                  <TextBlock Text="Extraindo texto do PDF..."
+                             Foreground="{DynamicResource AccentPrimaryBrush}"
+                             VerticalAlignment="Center"
+                             IsVisible="{Binding ExtracaoEmAndamento}" />
+                </StackPanel>
+                <Button Grid.Column="1" Content="←" Width="30" Height="28"
+                        Command="{Binding IrPaginaAnteriorCommand}"
+                        IsEnabled="{Binding PodeIrPaginaAnterior}"
+                        IsVisible="{Binding PodeUsarMultipagina}"
+                        ToolTip.Tip="Página anterior" />
+                <Border Grid.Column="2"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        CornerRadius="999"
+                        Padding="10,4"
+                        IsVisible="{Binding PodeUsarMultipagina}">
+                  <TextBlock Text="{Binding PaginaPreviewResumo, StringFormat='Página {0}'}"
+                             FontSize="11"
+                             Foreground="{DynamicResource TextSecondary}" />
+                </Border>
+                <Button Grid.Column="3" Content="→" Width="30" Height="28"
+                        Command="{Binding IrPaginaSeguinteCommand}"
+                        IsEnabled="{Binding PodeIrPaginaSeguinte}"
+                        IsVisible="{Binding PodeUsarMultipagina}"
+                        ToolTip.Tip="Próxima página" />
+                <Button Grid.Column="4" Content="−" Width="28" Height="28"
+                        Command="{Binding ZoomOutCommand}" FontSize="16" Padding="0"
+                        ToolTip.Tip="Reduzir zoom (Ctrl+−)" />
+                <Slider Grid.Column="5" Width="140"
+                        Minimum="0.5" Maximum="4"
+                        Value="{Binding ZoomPreview}" />
+                <Button Grid.Column="6" Content="+" Width="28" Height="28"
+                        Command="{Binding ZoomInCommand}" FontSize="16" Padding="0"
+                        ToolTip.Tip="Aumentar zoom (Ctrl++)" />
+                <Button Grid.Column="7" Content="100%" MinWidth="56"
+                        Command="{Binding ZoomResetCommand}"
+                        ToolTip.Tip="Resetar zoom (Ctrl+0)" />
+                <TextBlock Grid.Column="8"
+                           Text="{Binding ZoomPreviewPercentual, StringFormat='{}{0:0}%'}"
+                           VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextSecondary}"
+                           MinWidth="48" />
+                <TextBlock Grid.Column="9" Text="⟳"
+                           FontSize="14"
+                           Foreground="{DynamicResource AccentPrimaryBrush}"
+                           VerticalAlignment="Center"
+                           Margin="4,0,0,0"
+                           IsVisible="{Binding EstaRenderizandoPdf}"
+                           ToolTip.Tip="Melhorando qualidade do PDF..." />
+              </Grid>
+
+              <Border Grid.Row="1"
+                      Background="#09101B"
+                      BorderBrush="#24364F"
+                      BorderThickness="1"
+                      CornerRadius="10"
+                      MinHeight="560">
+                <ScrollViewer x:Name="PreviewScrollViewer"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              ScrollChanged="OnPreviewScrollChanged"
+                              PointerWheelChanged="OnPreviewWheelZoom">
+                  <Canvas x:Name="PreviewCanvas"
+                          Width="{Binding PreviewSurfaceWidth}"
+                          Height="{Binding PreviewSurfaceHeight}"
+                          Background="#101B2B"
+                          PointerPressed="OnPreviewPointerPressed"
+                          PointerMoved="OnPreviewPointerMoved"
+                          PointerReleased="OnPreviewPointerReleased">
+                    <Border Width="{Binding PreviewSurfaceWidth}"
+                            Height="{Binding PreviewSurfaceHeight}"
+                            Background="#0E1725"
+                            BorderBrush="#1A2B42"
+                            BorderThickness="1" />
+
+                    <Image Width="{Binding PreviewSurfaceWidth}"
+                           Height="{Binding PreviewSurfaceHeight}"
+                           Source="{Binding PdfPageBitmap}"
+                           Stretch="Fill"
+                           IsVisible="{Binding PdfPageBitmap, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+                    <ItemsControl ItemsSource="{Binding TokensPreview}"
+                                  IsHitTestVisible="False"
+                                  IsVisible="{Binding PodeExibirOverlaysDiagnostico}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <Canvas />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AncorarPdfTokenPreviewItemViewModel">
+                          <Border Canvas.Left="{Binding PreviewX}"
+                                  Canvas.Top="{Binding PreviewY}"
+                                  Width="{Binding PreviewLargura}"
+                                  Height="{Binding PreviewAltura}"
+                                  BorderBrush="{Binding CorStroke}"
+                                  BorderThickness="1"
+                                  Background="{Binding CorFill}"
+                                  Opacity="{Binding OverlayOpacity}"
+                                  CornerRadius="1"
+                                  IsHitTestVisible="False" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Canvas.Left="10"
+                               Canvas.Top="8"
+                               Text="{Binding PdfModeloPath, StringFormat='PDF modelo: {0}'}"
+                               FontSize="10"
+                               Foreground="#607A9D"
+                               TextTrimming="CharacterEllipsis"
+                               Width="640" />
+
+                    <ItemsControl ItemsSource="{Binding AncorasNaPaginaAtual}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <Canvas />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:AncorarPdfAncoraItemViewModel">
+                          <Border Canvas.Left="{Binding PreviewX}"
+                                  Canvas.Top="{Binding PreviewY}"
+                                  Width="{Binding PreviewLargura}"
+                                  Height="{Binding PreviewAltura}"
+                                  Tag="{Binding DestacadaNoPreview}"
+                                  CornerRadius="2"
+                                  BorderBrush="{Binding CorHex}"
+                                  BorderThickness="1"
+                                  Background="{Binding CorHexBackground}"
+                                  IsHitTestVisible="False">
+                            <Border.Styles>
+                              <Style Selector="Border[Tag=True]">
+                                <Setter Property="BorderThickness" Value="2" />
+                              </Style>
+                            </Border.Styles>
+                            <TextBlock Text="{Binding NomeExibido}"
+                                       Margin="4,1,2,1"
+                                       FontSize="10"
+                                       Foreground="#0B111D"
+                                       TextTrimming="CharacterEllipsis" />
+                          </Border>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <ItemsControl ItemsSource="{Binding DestaquesSmart}" IsHitTestVisible="False">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <Canvas />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:TextoDestaqueSmartItem">
+                          <Border Canvas.Left="{Binding PreviewX}"
+                                  Canvas.Top="{Binding PreviewY}"
+                                  Width="{Binding PreviewLargura}"
+                                  Height="{Binding PreviewAltura}"
+                                  Background="{Binding CorHexBackground}"
+                                  CornerRadius="2"
+                                  IsHitTestVisible="False" />
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border x:Name="SelectionDraftBorder"
+                            IsVisible="False"
+                            BorderBrush="#93C5FD"
+                            BorderThickness="2"
+                            Background="#334B82C3"
+                            CornerRadius="2"
+                            IsHitTestVisible="False" />
+                  </Canvas>
+                </ScrollViewer>
+              </Border>
+            </Grid>
+          </Border>
+        </Grid>
+      </Grid>
+
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8" VerticalAlignment="Center">
+        <TextBlock Text="{Binding Mensagem}"
+                   Foreground="{DynamicResource AccentPrimaryBrush}"
+                   VerticalAlignment="Center"
+                   TextWrapping="Wrap" />
+
+        <Button Grid.Column="1"
+                Content="Fechar"
+                Command="{Binding FecharCommand}"
+                Padding="14,8"
+                IsVisible="{Binding !ModoApenasAncoras}" />
+        <Button Grid.Column="2"
+                Content="Salvar"
+                Command="{Binding SalvarConfiguracaoCommand}"
+                IsEnabled="{Binding PodeEditar}"
+                Padding="18,8"
+                Background="{DynamicResource AccentPrimaryBrush}"
+                Foreground="White"
+                BorderBrush="{DynamicResource AccentHoverBrush}"
+                BorderThickness="1"
+                IsVisible="{Binding !ModoApenasAncoras}" />
+
+        <Button Grid.Column="1"
+                Content="Cancelar âncoras"
+                Command="{Binding CancelarModoAncorasCommand}"
+                Padding="14,8"
+                IsVisible="{Binding ModoApenasAncoras}" />
+        <Button Grid.Column="2"
+                Content="Concluir âncoras"
+                Command="{Binding ConcluirModoAncorasCommand}"
+                IsEnabled="{Binding PodeEditar}"
+                Padding="18,8"
+                Background="{DynamicResource AccentPrimaryBrush}"
+                Foreground="White"
+                BorderBrush="{DynamicResource AccentHoverBrush}"
+                BorderThickness="1"
+                IsVisible="{Binding ModoApenasAncoras}" />
+      </Grid>
+    </Grid>
+  </Border>
+</UserControl>

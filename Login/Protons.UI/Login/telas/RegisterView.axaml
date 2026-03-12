@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Login.ViewModels"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Login.Views.RegisterView"
+             x:DataType="vm:RegisterViewModel">
+
+  <Border Background="{DynamicResource SurfaceBrush}"
+          CornerRadius="16"
+          Padding="32"
+          Width="440"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          BorderBrush="{DynamicResource SurfaceBorderBrush}"
+          BorderThickness="1"
+          BoxShadow="0 4 6 0 #0D000000, 0 16 48 0 #14000000">
+    <StackPanel Spacing="12" VerticalAlignment="Center">
+      <TextBlock Text="Criar Conta" FontSize="24" FontWeight="SemiBold" />
+
+      <StackPanel Spacing="12" IsEnabled="{Binding IsNotBusy}">
+        <TextBox Watermark="Nome" Text="{Binding Nome}" MaxLength="200" AutomationProperties.Name="Nome" />
+        <TextBox Watermark="CPF" Text="{Binding Cpf}" MaxLength="14" AutomationProperties.Name="CPF" />
+        <TextBox Watermark="Cargo" Text="{Binding Cargo}" MaxLength="120" AutomationProperties.Name="Cargo" />
+        <TextBox Watermark="E-mail" Text="{Binding Email}" MaxLength="254" AutomationProperties.Name="E-mail" />
+        <Grid ColumnDefinitions="*,Auto">
+          <TextBox Grid.Column="0" Watermark="Senha" Text="{Binding Senha}" PasswordChar="{Binding SenhaPasswordChar}" MaxLength="256" AutomationProperties.Name="Senha" />
+          <Button Grid.Column="1" Command="{Binding ToggleMostrarSenhaCommand}"
+                  Background="Transparent" BorderThickness="0" Padding="12,0"
+                  MinWidth="44" VerticalAlignment="Stretch"
+                  ToolTip.Tip="Clique para mostrar ou ocultar a senha">
+            <Path Data="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"
+                  Fill="#C8D0DA"
+                  Stretch="Uniform" Width="22" Height="22" />
+          </Button>
+        </Grid>
+
+        <Button Classes="Primary" Content="Salvar" Command="{Binding SalvarCommand}" AutomationProperties.Name="Salvar cadastro" />
+        <Button Classes="Ghost" Content="Voltar" Command="{Binding VoltarCommand}" AutomationProperties.Name="Voltar" />
+      </StackPanel>
+
+      <StackPanel Spacing="6">
+        <ProgressBar IsIndeterminate="True" Height="4" IsVisible="{Binding IsBusy}" />
+        <TextBlock Text="Carregando..." IsVisible="{Binding IsBusy}" Opacity="0.7" />
+        <TextBlock Text="{Binding Mensagem}" Foreground="{DynamicResource WarningBrush}" TextWrapping="Wrap" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

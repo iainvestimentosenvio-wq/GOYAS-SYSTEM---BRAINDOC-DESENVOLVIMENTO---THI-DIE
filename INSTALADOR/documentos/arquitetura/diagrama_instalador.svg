@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Mapa do instalador Protons">
+  <rect width="1200" height="800" fill="#ffffff" />
+  <style>
+    .title { font: 700 20px "Segoe UI", Arial, sans-serif; fill: #111; }
+    .box { fill: #f7f7f7; stroke: #222; stroke-width: 1; }
+    .label { font: 600 12px "Segoe UI", Arial, sans-serif; fill: #111; }
+    .small { font: 500 11px "Segoe UI", Arial, sans-serif; fill: #333; }
+    .arrow { stroke: #555; stroke-width: 1.5; marker-end: url(#arrowHead); }
+  </style>
+  <defs>
+    <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#555" />
+    </marker>
+  </defs>
+
+  <text x="30" y="40" class="title">Instalador Protons - Mapa Atual</text>
+
+  <rect class="box" x="40" y="80" width="260" height="90" rx="8" />
+  <text class="label" x="55" y="110">comum/</text>
+  <text class="small" x="55" y="130">version.env, scripts, sbom</text>
+
+  <rect class="box" x="340" y="80" width="260" height="90" rx="8" />
+  <text class="label" x="355" y="110">ativos/</text>
+  <text class="small" x="355" y="130">icons, generate-ico</text>
+
+  <rect class="box" x="640" y="80" width="260" height="90" rx="8" />
+  <text class="label" x="655" y="110">documentos/</text>
+  <text class="small" x="655" y="130">docs canonicos</text>
+
+  <rect class="box" x="40" y="220" width="260" height="110" rx="8" />
+  <text class="label" x="55" y="250">linux/appimage/</text>
+  <text class="small" x="55" y="270">build-appimage.sh</text>
+  <text class="small" x="55" y="288">AppRun, desktop</text>
+
+  <rect class="box" x="340" y="220" width="260" height="110" rx="8" />
+  <text class="label" x="355" y="250">linux/deb/</text>
+  <text class="small" x="355" y="270">build-deb.sh</text>
+  <text class="small" x="355" y="288">DEBIAN/control</text>
+
+  <rect class="box" x="640" y="220" width="260" height="110" rx="8" />
+  <text class="label" x="655" y="250">windows/</text>
+  <text class="small" x="655" y="270">wix, innosetup</text>
+  <text class="small" x="655" y="288">scripts</text>
+
+  <rect class="box" x="40" y="380" width="260" height="100" rx="8" />
+  <text class="label" x="55" y="410">testes/</text>
+  <text class="small" x="55" y="430">test-appimage.sh</text>
+  <text class="small" x="55" y="448">test-deb.sh</text>
+
+  <rect class="box" x="340" y="380" width="260" height="100" rx="8" />
+  <text class="label" x="355" y="410">saida/</text>
+  <text class="small" x="355" y="430">appimage, deb, windows</text>
+  <text class="small" x="355" y="448">metadata, sbom</text>
+
+  <line class="arrow" x1="170" y1="170" x2="170" y2="220" />
+  <line class="arrow" x1="470" y1="170" x2="470" y2="220" />
+  <line class="arrow" x1="770" y1="170" x2="770" y2="220" />
+
+  <line class="arrow" x1="170" y1="330" x2="170" y2="380" />
+  <line class="arrow" x1="470" y1="330" x2="470" y2="380" />
+
+  <line class="arrow" x1="170" y1="480" x2="470" y2="480" />
+</svg>

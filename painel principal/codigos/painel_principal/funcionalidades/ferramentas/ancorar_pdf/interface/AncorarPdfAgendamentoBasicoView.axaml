@@ -1,0 +1,281 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Protons.UI.Painel.Funcionalidades.Ferramentas.AncorarPdf.ModelosDeVisao"
+             mc:Ignorable="d"
+             x:Class="Protons.UI.Painel.Views.PainelPrincipal.Funcionalidades.Ferramentas.AncorarPdf.AncorarPdfAgendamentoBasicoView"
+             x:DataType="vm:AncorarPdfAgendamentoBasicoViewModel"
+             Width="620">
+
+  <Border Background="{DynamicResource SurfaceBrush}"
+          CornerRadius="16"
+          Padding="18"
+          BorderBrush="{DynamicResource PanelBorder}"
+          BorderThickness="1"
+          BoxShadow="0 4 6 0 #0D000000, 0 16 48 0 #14000000">
+    <Grid RowDefinitions="Auto,*,Auto" RowSpacing="12">
+
+      <!-- Header -->
+      <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+        <Border Width="40" Height="40" CornerRadius="10"
+                Background="{DynamicResource PanelSurfaceAlt}"
+                BorderBrush="{DynamicResource PanelBorder}"
+                BorderThickness="1">
+          <Image Source="avares://Protons.UI/Assets/UI/Buttons/ancora_pdf_normal.png"
+                 Stretch="Uniform" Width="28" Height="28"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </Border>
+        <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center">
+          <TextBlock Text="Nova Tarefa — Ancorar PDF" FontSize="18" FontWeight="SemiBold" />
+          <TextBlock Text="Preencha os dados básicos, configure as âncoras e confirme."
+                     FontSize="11"
+                     Foreground="{DynamicResource TextSecondary}" />
+        </StackPanel>
+        <Button Grid.Column="2"
+                Content="✕"
+                Command="{Binding FecharCommand}"
+                Width="32" Height="32"
+                Background="{DynamicResource PanelSurfaceAlt}"
+                BorderBrush="{DynamicResource PanelBorder}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Cursor="Hand" />
+      </Grid>
+
+      <!-- Corpo: Passo 1 (Básico) -->
+      <StackPanel Grid.Row="1" Spacing="14" IsVisible="{Binding IsEtapaBasico}">
+
+        <Border Background="{DynamicResource PanelSurfaceAlt}"
+                CornerRadius="12"
+                Padding="12"
+                BorderBrush="{DynamicResource PanelBorder}"
+                BorderThickness="1">
+          <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                ColumnSpacing="10" RowSpacing="8">
+
+            <!-- Linha 0: Nome -->
+            <TextBlock Text="Nome" VerticalAlignment="Center" MinWidth="110" />
+            <TextBox Grid.Column="1" Grid.ColumnSpan="2"
+                     Text="{Binding NomeTarefa}"
+                     Watermark="Nome personalizado da tarefa" />
+
+            <!-- Linha 1: Data -->
+            <TextBlock Grid.Row="1" Text="Data" VerticalAlignment="Center" />
+            <DatePicker Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+                        SelectedDate="{Binding DataSelecionada}" />
+
+            <!-- Linha 2: Hora -->
+            <TextBlock Grid.Row="2" Text="Hora" VerticalAlignment="Center" />
+            <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                        Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+              <NumericUpDown Width="120" Height="38"
+                             Minimum="{Binding HoraMinima}" Maximum="23"
+                             Value="{Binding HoraSelecionado}"
+                             FormatString="00"
+                             FontSize="16"
+                             ToolTip.Tip="Hora (00–23)" />
+              <TextBlock Text=":" VerticalAlignment="Center" FontSize="22" FontWeight="Bold"
+                         Foreground="{DynamicResource TextMuted}" />
+              <NumericUpDown Width="120" Height="38"
+                             Minimum="{Binding MinutoMinimo}" Maximum="59"
+                             Value="{Binding MinutoSelecionado}"
+                             FormatString="00"
+                             FontSize="16"
+                             ToolTip.Tip="Minuto (00–59)" />
+              <!-- Hint: apenas quando a data selecionada é hoje -->
+              <Border Background="#EFF6FF"
+                      BorderBrush="#93C5FD"
+                      BorderThickness="1"
+                      CornerRadius="6"
+                      Padding="6,3"
+                      IsVisible="{Binding IsHoje}"
+                      VerticalAlignment="Center">
+                <TextBlock Text="hoje: apenas horários futuros"
+                           Foreground="#2563EB" FontSize="11" />
+              </Border>
+            </StackPanel>
+
+            <!-- Linha 3: Recorrência -->
+            <TextBlock Grid.Row="3" Text="Recorrência" VerticalAlignment="Center" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                      ItemsSource="{Binding RecorrenciasPermitidas}"
+                      SelectedItem="{Binding RecorrenciaSelecionada}" />
+
+            <!-- Linha 4: Pasta monitorada -->
+            <TextBlock Grid.Row="4" Text="Pasta monitorada" VerticalAlignment="Center" />
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PastaMonitoradaPath}" Watermark="Caminho da pasta" />
+            <Button Grid.Row="4" Grid.Column="2"
+                    Content="Selecionar"
+                    Command="{Binding SelecionarPastaCommand}" />
+
+            <!-- Linha 5: PDF modelo -->
+            <TextBlock Grid.Row="5" Text="PDF modelo" VerticalAlignment="Center" />
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding PdfModeloPath}"
+                     Watermark="Arquivo ou pasta com o PDF modelo (obrigatório)" />
+            <Button Grid.Row="5" Grid.Column="2"
+                    Content="Selecionar pasta"
+                    Command="{Binding SelecionarPdfModeloCommand}" />
+            <TextBlock Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
+                       Text="No wizard, escolha uma pasta: o sistema seleciona um PDF dela para configurar as âncoras."
+                       Foreground="{DynamicResource TextSecondary}"
+                       FontSize="11"
+                       TextWrapping="Wrap" />
+          </Grid>
+        </Border>
+
+        <!-- Pill de status de âncoras -->
+        <Border Background="{DynamicResource PanelSurfaceAlt}"
+                BorderBrush="{DynamicResource PanelBorder}"
+                CornerRadius="8"
+                Padding="10,7"
+                BorderThickness="1">
+          <Grid ColumnDefinitions="*,Auto">
+            <TextBlock Text="{Binding ResumoAncoras}"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       Foreground="{DynamicResource TextSecondary}" />
+            <TextBlock Grid.Column="0"
+                       Text="{Binding ResumoAncoras}"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       Foreground="{DynamicResource AccentGreen}"
+                       IsVisible="{Binding PodeAgendar}" />
+            <TextBlock Grid.Column="0"
+                       Text="Nenhuma âncora configurada — clique em 'Configurar âncoras →'"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       Foreground="{DynamicResource TextSecondary}"
+                       IsVisible="{Binding !PodeAgendar}" />
+          </Grid>
+        </Border>
+
+        <TextBlock Text="{Binding Mensagem}"
+                   Foreground="{DynamicResource ErrorBrush}"
+                   TextWrapping="Wrap"
+                   IsVisible="{Binding Mensagem, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+      </StackPanel>
+
+      <!-- Corpo: Passo 3 (Confirmação) -->
+      <Border Grid.Row="1"
+              IsVisible="{Binding IsEtapaConfirmacao}"
+              Background="{DynamicResource PanelSurfaceAlt}"
+              CornerRadius="12"
+              Padding="20"
+              BorderBrush="{DynamicResource AccentPrimaryBrush}"
+              BorderThickness="1">
+        <StackPanel Spacing="14">
+          <TextBlock Text="Confirmar agendamento" FontSize="16" FontWeight="SemiBold" />
+
+          <Border Background="{DynamicResource SurfaceBrush}"
+                  CornerRadius="8"
+                  Padding="12"
+                  BorderBrush="{DynamicResource PanelBorder}"
+                  BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto"
+                  ColumnSpacing="12" RowSpacing="6">
+              <TextBlock Text="Nome:" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
+              <TextBlock Grid.Column="1" Text="{Binding NomeTarefa}" TextWrapping="Wrap" />
+
+              <TextBlock Grid.Row="1" Text="Data/Hora:" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
+              <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                <TextBlock Text="{Binding DataSelecionada, StringFormat='{}{0:dd/MM/yyyy}'}" />
+                <TextBlock Text=" " />
+                <TextBlock Text="{Binding HoraSelecionado, StringFormat='{}{0:D2}'}" />
+                <TextBlock Text=":" Foreground="{DynamicResource TextSecondary}" />
+                <TextBlock Text="{Binding MinutoSelecionado, StringFormat='{}{0:D2}'}" />
+              </StackPanel>
+
+              <TextBlock Grid.Row="2" Text="Pasta:" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding PastaMonitoradaPath}"
+                         TextTrimming="CharacterEllipsis" />
+
+              <TextBlock Grid.Row="3" Text="Âncoras:" Foreground="{DynamicResource TextSecondary}" FontWeight="SemiBold" />
+              <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding ResumoAncoras}"
+                         Foreground="{DynamicResource AccentGreen}" />
+            </Grid>
+          </Border>
+
+          <TextBlock Text="Revise os dados acima e clique em Confirmar para salvar a tarefa."
+                     Foreground="{DynamicResource TextSecondary}" FontSize="13" />
+
+          <TextBlock Text="{Binding Mensagem}"
+                     Foreground="{DynamicResource ErrorBrush}"
+                     TextWrapping="Wrap"
+                     IsVisible="{Binding Mensagem, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+          <Border Background="#FEF3C7"
+                  BorderBrush="#F59E0B"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Padding="10"
+                  IsVisible="{Binding ConflitoMesmoHorarioDetectado}">
+            <TextBlock Text="{Binding ConflitoMensagem}"
+                       Foreground="#92400E"
+                       TextWrapping="Wrap"
+                       FontSize="12" />
+          </Border>
+        </StackPanel>
+      </Border>
+
+      <!-- Footer -->
+      <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8" VerticalAlignment="Center">
+
+        <!-- Passo 1 -->
+        <Button Grid.Column="1"
+                Content="Cancelar"
+                Command="{Binding FecharCommand}"
+                Padding="14,8"
+                IsVisible="{Binding IsEtapaBasico}" />
+        <Button Grid.Column="2"
+                Content="Próximo →"
+                Command="{Binding AvancarParaAncorasCommand}"
+                IsEnabled="{Binding PodeAvancarParaAncoras}"
+                Padding="14,8"
+                IsVisible="{Binding IsEtapaBasico}" />
+        <Button Grid.Column="3"
+                Content="Agendar ▶"
+                Command="{Binding AbrirConfirmacaoCommand}"
+                IsEnabled="{Binding PodeAgendar}"
+                Padding="18,8"
+                Background="{DynamicResource AccentPrimaryBrush}"
+                Foreground="White"
+                BorderBrush="{DynamicResource AccentHoverBrush}"
+                BorderThickness="1"
+                IsVisible="{Binding IsEtapaBasico}" />
+
+        <!-- Passo 3 -->
+        <Button Grid.Column="2"
+                Content="Cancelar"
+                Command="{Binding VoltarDoConfirmarCommand}"
+                Padding="14,8"
+                IsVisible="{Binding MostrarAcoesConfirmacaoPadrao}" />
+        <Button Grid.Column="3"
+                Content="Sim, salvar tarefa"
+                Command="{Binding ConfirmarAgendamentoCommand}"
+                Padding="18,8"
+                Background="{DynamicResource AccentPrimaryBrush}"
+                Foreground="White"
+                BorderBrush="{DynamicResource AccentHoverBrush}"
+                BorderThickness="1"
+                IsVisible="{Binding MostrarAcoesConfirmacaoPadrao}" />
+
+        <Button Grid.Column="2"
+                Content="Mudar horário"
+                Command="{Binding CancelarConflitoMesmoHorarioCommand}"
+                Padding="14,8"
+                IsVisible="{Binding MostrarAcoesConfirmacaoConflito}" />
+        <Button Grid.Column="3"
+                Content="Salvar no mesmo horário"
+                Command="{Binding ConfirmarConflitoMesmoHorarioCommand}"
+                Padding="18,8"
+                Background="#D97706"
+                Foreground="White"
+                BorderBrush="#B45309"
+                BorderThickness="1"
+                IsVisible="{Binding MostrarAcoesConfirmacaoConflito}" />
+      </Grid>
+
+    </Grid>
+  </Border>
+</UserControl>

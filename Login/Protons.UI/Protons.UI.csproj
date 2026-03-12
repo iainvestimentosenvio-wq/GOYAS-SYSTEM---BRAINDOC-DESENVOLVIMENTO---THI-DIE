@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Version>0.1.0</Version>
+    <InformationalVersion>0.1.0</InformationalVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <PublishReadyToRun>true</PublishReadyToRun>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="**\*.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Include="App.axaml" />
+    <AvaloniaXaml Include="Login\**\*.axaml" />
+    <AvaloniaXaml Include="..\..\painel principal\codigos\**\*.axaml" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\painel principal\codigos\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Watch Include="..\..\painel principal\codigos\**\*.axaml" />
+    <Watch Include="..\..\painel principal\codigos\**\*.axaml.cs" />
+    <Watch Include="..\..\painel principal\codigos\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Protons.Core\Protons.Core.csproj" />
+    <ProjectReference Include="..\Protons.Infrastructure\Protons.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <Target Name="ForceCompileAvaloniaXaml" AfterTargets="CoreCompile" DependsOnTargets="CompileAvaloniaXaml" Condition="'$(DesignTimeBuild)' != 'true' AND '@(AvaloniaResource)@(AvaloniaXaml)' != '' AND '$(EnableAvaloniaXamlCompilation)' != 'false'" />
+</Project>
