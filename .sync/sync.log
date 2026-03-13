@@ -2903,3 +2903,11 @@ Please make sure you have the correct access rights
 and the repository exists.
 [2026-03-13 20:12:39] ERRO no push — verifique o log
 [2026-03-13 20:12:44] Alterações detectadas — fazendo commit e push...
+[estabilizacao-fase1 a77f79b] auto-sync: 2026-03-13 20:12:44 [linux]
+ 1 file changed, 12 insertions(+)
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To github.com:iainvestimentosenvio-wq/GOYAS-SYSTEM---BRAINDOC-DESENVOLVIMENTO---THI-DIE.git
+   3d508b8..a77f79b  estabilizacao-fase1 -> estabilizacao-fase1
+[2026-03-13 20:12:47] Push concluído com sucesso
+[2026-03-13 20:12:54] Alterações detectadas — fazendo commit e push...
