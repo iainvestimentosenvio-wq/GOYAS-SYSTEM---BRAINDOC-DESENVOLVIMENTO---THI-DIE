@@ -2174,3 +2174,11 @@ To github.com:iainvestimentosenvio-wq/GOYAS-SYSTEM---BRAINDOC-DESENVOLVIMENTO---
    3a60f89..09b9d93  estabilizacao-fase1 -> estabilizacao-fase1
 [2026-03-12 22:37:00] Push concluído com sucesso
 [2026-03-12 22:37:05] Alterações detectadas — fazendo commit e push...
+[estabilizacao-fase1 ee4e879] auto-sync: 2026-03-12 22:37:05 [linux]
+ 1 file changed, 8 insertions(+)
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+To github.com:iainvestimentosenvio-wq/GOYAS-SYSTEM---BRAINDOC-DESENVOLVIMENTO---THI-DIE.git
+   09b9d93..ee4e879  estabilizacao-fase1 -> estabilizacao-fase1
+[2026-03-12 22:37:07] Push concluído com sucesso
+[2026-03-12 22:37:12] Alterações detectadas — fazendo commit e push...
