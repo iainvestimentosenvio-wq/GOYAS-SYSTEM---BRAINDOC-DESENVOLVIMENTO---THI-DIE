@@ -13,6 +13,9 @@ Login/testes/.obj_ci/
 # Logs de build e runtime gerados localmente
 Login/testes/TestResults/smoke/*.log
 Login/testes/TestResults/smoke/*.trx
+.sync/*.log
+.sync/*.pid
+.sync/runtime/
 
 # Ambiente virtual Python
 .venv/
