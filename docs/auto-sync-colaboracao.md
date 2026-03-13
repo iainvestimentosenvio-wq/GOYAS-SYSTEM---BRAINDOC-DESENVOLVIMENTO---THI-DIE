@@ -9,11 +9,11 @@ Este projeto pode ser usado por duas maquinas sem ficarem brigando pela mesma li
 - O auto-sync local faz `commit` e `push` apenas da branch pessoal da propria maquina.
 - A branch de integracao e atualizada quando voces decidirem juntar o trabalho.
 
-Exemplo:
+Exemplo adotado agora neste repositorio:
 
 - Sua branch: `thiago-dev`
 - Branch do colega: `colega-dev`
-- Branch de integracao: `main`
+- Branch de integracao: `estabilizacao-fase1`
 
 ## Regras praticas
 
@@ -53,7 +53,7 @@ Contexto:
 - Projeto compartilhado com outro desenvolvedor.
 - Cada maquina deve usar branch propria para evitar conflitos.
 - Esta maquina deve usar a branch pessoal do colega, por exemplo `colega-dev`.
-- A branch de integracao do projeto sera `main` (ou outra que eu confirmar).
+- A branch de integracao do projeto sera `estabilizacao-fase1`.
 - O auto-sync deve fazer commit e push apenas da branch pessoal desta maquina.
 - O script deve ignorar `.git`, `.sync`, `bin`, `obj`, `TestResults` e arquivos `.trx`.
 - O log do auto-sync nao pode entrar em commit automatico.
