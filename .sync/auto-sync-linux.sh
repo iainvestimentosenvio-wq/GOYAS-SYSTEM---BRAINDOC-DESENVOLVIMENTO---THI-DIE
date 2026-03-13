@@ -50,31 +50,18 @@ pull_if_behind() {
 log "=== Auto-sync iniciado ==="
 log "Monitorando: $REPO"
 
-ULTIMO_EVENTO=0
+CICLO=0
 
-# Loop principal
+# Loop principal — verifica alterações a cada 5 segundos e pull a cada 30s
 while true; do
-    # Aguarda alteração em qualquer arquivo (exceto .git e .sync)
-    inotifywait -r -e modify,create,delete,move \
-        --exclude '\.git|\.sync|bin/|obj/|\.trx$|TestResults' \
-        "$REPO" -q --format '%f' 2>/dev/null &
-    INOTIFY_PID=$!
+    sleep $DEBOUNCE
+    CICLO=$((CICLO + 1))
 
-    # Também faz pull periódico a cada 30 segundos
-    sleep 30 &
-    SLEEP_PID=$!
+    # Tenta push se houver alterações
+    push_changes
 
-    wait -n $INOTIFY_PID $SLEEP_PID 2>/dev/null
-
-    # Se foi o inotify que disparou
-    if ! kill -0 $INOTIFY_PID 2>/dev/null; then
-        kill $SLEEP_PID 2>/dev/null
-        # Debounce — espera acumular alterações
-        sleep $DEBOUNCE
-        push_changes
-    else
-        # Foi o sleep — faz pull
-        kill $INOTIFY_PID 2>/dev/null
+    # Pull a cada 6 ciclos (~30 segundos)
+    if [ $((CICLO % 6)) -eq 0 ]; then
         pull_if_behind
     fi
 done
