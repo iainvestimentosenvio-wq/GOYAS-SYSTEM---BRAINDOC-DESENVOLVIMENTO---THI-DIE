@@ -32,7 +32,10 @@ if (Test-Path $PidFile) {
 
 if (-not $stopped) {
     $matches = Get-CimInstance Win32_Process | Where-Object {
-        $_.CommandLine -like "*-File*auto-sync-windows.ps1*" -and $_.CommandLine -like "*$ExpectedBranch*"
+        $_.CommandLine -like "*powershell*" -and
+        $_.CommandLine -like "*-File*auto-sync-windows.ps1*" -and
+        $_.CommandLine -like "*$ExpectedBranch*" -and
+        $_.CommandLine -notlike "*-RunOnce*"
     }
 
     foreach ($match in $matches) {
