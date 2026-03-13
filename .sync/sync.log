@@ -2597,3 +2597,15 @@ error: Please commit or stash them.
 [2026-03-13 20:10:42] === Auto-sync iniciado ===
 [2026-03-13 20:10:42] Monitorando: /home/u/Documentos/GOYAS SYSTEMS
 [2026-03-13 20:10:47] Alterações detectadas — fazendo commit e push...
+[estabilizacao-fase1 1d92396] auto-sync: 2026-03-13 20:10:47 [linux]
+ 1 file changed, 7 insertions(+)
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 20.201.28.152 port 443
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[2026-03-13 20:10:47] ERRO no push — verifique o log
+[2026-03-13 20:10:52] Alterações detectadas — fazendo commit e push...
