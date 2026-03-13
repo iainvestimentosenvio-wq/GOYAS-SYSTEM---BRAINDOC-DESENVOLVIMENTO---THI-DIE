@@ -2843,3 +2843,15 @@ error: cannot pull with rebase: You have unstaged changes.
 error: Please commit or stash them.
 [2026-03-13 20:12:14] Pull concluído
 [2026-03-13 20:12:19] Alterações detectadas — fazendo commit e push...
+[estabilizacao-fase1 09ccbe5] auto-sync: 2026-03-13 20:12:19 [linux]
+ 1 file changed, 22 insertions(+)
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 20.201.28.152 port 443
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+[2026-03-13 20:12:19] ERRO no push — verifique o log
+[2026-03-13 20:12:24] Alterações detectadas — fazendo commit e push...
