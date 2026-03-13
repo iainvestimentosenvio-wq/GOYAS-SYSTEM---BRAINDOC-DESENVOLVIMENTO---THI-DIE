@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
-# Auto-sync: monitora alterações e faz push automático para o GitHub
-# Também faz pull automático quando detecta commits novos
+# Auto-sync Linux: monitora alteracoes e faz push/pull automatico com seguranca.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="${REPO:-$(cd "$SCRIPT_DIR/.." && pwd)}"
-LOG="${LOG:-$REPO/.sync/sync.log}"
-DEBOUNCE=5  # segundos de espera após última alteração antes de commitar
+EXPECTED_BRANCH="${EXPECTED_BRANCH:-colega-dev}"
+STATE_DIR_NAME="goyas-systems-auto-sync"
+STATE_ROOT="${XDG_STATE_HOME:-$HOME/.local/state}"
+LOG_DIR="${LOG_DIR:-$STATE_ROOT/$STATE_DIR_NAME/$EXPECTED_BRANCH}"
+LOG="${LOG:-$LOG_DIR/sync.log}"
+DEBOUNCE="${DEBOUNCE:-5}"
+LAST_BRANCH_WARNING=""
 
 # shellcheck source=/dev/null
 source "$SCRIPT_DIR/lib-auto-sync-linux.sh"
@@ -21,33 +25,67 @@ current_branch() {
     git branch --show-current
 }
 
+ensure_expected_branch() {
+    local branch
+    branch="$(current_branch)"
+
+    if [[ "$branch" == "$EXPECTED_BRANCH" ]]; then
+        LAST_BRANCH_WARNING=""
+        return 0
+    fi
+
+    if [[ "$LAST_BRANCH_WARNING" != "$branch" ]]; then
+        log "Branch atual '$branch' nao eh '$EXPECTED_BRANCH'; auto-sync pausado"
+        LAST_BRANCH_WARNING="$branch"
+    fi
+
+    return 1
+}
+
 has_relevant_changes() {
     [[ -n "$(list_relevant_changes)" ]]
 }
 
 stage_relevant_changes() {
     mapfile -t paths < <(list_relevant_changes)
-    if [ "${#paths[@]}" -eq 0 ]; then
+    if [[ "${#paths[@]}" -eq 0 ]]; then
         return 1
     fi
 
     git add -A -- "${paths[@]}"
 }
 
+remote_branch_exists() {
+    git show-ref --verify --quiet "refs/remotes/origin/$EXPECTED_BRANCH"
+}
+
 ensure_upstream() {
-    local branch="$1"
-    if git rev-parse --abbrev-ref --symbolic-full-name "@{u}" >/dev/null 2>&1; then
+    if ! ensure_expected_branch; then
+        return 1
+    fi
+
+    local desired="origin/$EXPECTED_BRANCH"
+    local upstream=""
+
+    upstream="$(git rev-parse --abbrev-ref --symbolic-full-name "@{u}" 2>/dev/null || true)"
+    if [[ "$upstream" == "$desired" ]]; then
         return 0
     fi
 
-    if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
-        git branch --set-upstream-to="origin/$branch" "$branch" >> "$LOG" 2>&1
+    if ! remote_branch_exists; then
+        return 1
     fi
+
+    git branch --set-upstream-to="$desired" "$EXPECTED_BRANCH" >> "$LOG" 2>&1
+    log "Upstream ajustado para $desired"
 }
 
 pull_branch_if_clean() {
-    local branch="$1"
-    if ! git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+    if ! ensure_expected_branch; then
+        return 1
+    fi
+
+    if ! remote_branch_exists; then
         return 0
     fi
 
@@ -56,53 +94,70 @@ pull_branch_if_clean() {
         return 1
     fi
 
-    git pull --rebase origin "$branch" >> "$LOG" 2>&1
+    git pull --rebase origin "$EXPECTED_BRANCH" >> "$LOG" 2>&1
 }
 
 push_changes() {
     cd "$REPO" || exit 1
 
+    if ! ensure_expected_branch; then
+        return 0
+    fi
+
     if ! has_relevant_changes; then
         return 0
     fi
 
-    log "Alterações detectadas — fazendo commit e push..."
-    if ! stage_relevant_changes; then
+    log "Alteracoes detectadas; fazendo commit e push..."
+
+    if ! stage_relevant_changes >> "$LOG" 2>&1; then
         log "Nenhuma alteracao relevante para commit"
         return 0
     fi
 
-    MENSAGEM="auto-sync: $(date '+%Y-%m-%d %H:%M:%S') [linux]"
-    git commit -m "$MENSAGEM" >> "$LOG" 2>&1
+    local message
+    message="auto-sync: $(date '+%Y-%m-%d %H:%M:%S') [linux]"
+    git commit -m "$message" >> "$LOG" 2>&1
 
-    local branch
-    branch="$(current_branch)"
-    ensure_upstream "$branch"
+    if remote_branch_exists; then
+        ensure_upstream || return 1
 
-    if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
-        git pull --rebase origin "$branch" >> "$LOG" 2>&1
-        git push origin "$branch" >> "$LOG" 2>&1
+        if ! pull_branch_if_clean; then
+            log "Push cancelado porque o pull nao ficou seguro"
+            return 1
+        fi
+
+        git push origin "$EXPECTED_BRANCH" >> "$LOG" 2>&1
     else
-        git push -u origin "$branch" >> "$LOG" 2>&1
+        git push -u origin "$EXPECTED_BRANCH" >> "$LOG" 2>&1
     fi
 
-    if [ $? -eq 0 ]; then
-        log "Push concluído com sucesso"
-    else
-        log "ERRO no push — verifique o log"
-    fi
+    log "Push concluido com sucesso"
 }
 
 pull_if_behind() {
     cd "$REPO" || exit 1
-    git fetch origin >> "$LOG" 2>&1
-    LOCAL=$(git rev-parse HEAD)
-    REMOTE=$(git rev-parse "origin/$(current_branch)" 2>/dev/null || true)
 
-    if [ "$LOCAL" != "$REMOTE" ] && [ -n "$REMOTE" ]; then
-        log "Commits novos detectados no GitHub — fazendo pull..."
-        if pull_branch_if_clean "$(current_branch)"; then
-            log "Pull concluído"
+    if ! ensure_expected_branch; then
+        return 0
+    fi
+
+    git fetch origin >> "$LOG" 2>&1
+
+    if ! remote_branch_exists; then
+        return 0
+    fi
+
+    ensure_upstream || return 1
+
+    local local_head remote_head
+    local_head="$(git rev-parse HEAD)"
+    remote_head="$(git rev-parse "origin/$EXPECTED_BRANCH" 2>/dev/null || true)"
+
+    if [[ "$local_head" != "$remote_head" && -n "$remote_head" ]]; then
+        log "Commits novos detectados no GitHub; fazendo pull..."
+        if pull_branch_if_clean; then
+            log "Pull concluido"
         else
             log "Pull nao aplicado automaticamente"
         fi
@@ -110,20 +165,24 @@ pull_if_behind() {
 }
 
 main() {
-    log "=== Auto-sync iniciado ==="
+    mkdir -p "$LOG_DIR"
+    log "=== Auto-sync iniciado (Linux) ==="
     log "Monitorando: $REPO"
+    log "Branch monitorada: $EXPECTED_BRANCH"
+    log "Log local: $LOG"
 
-    CICLO=0
+    local ciclo=0
 
-    # Loop principal — verifica alterações a cada 5 segundos e pull a cada 30s
+    pull_if_behind || true
+
     while true; do
         sleep "$DEBOUNCE"
-        CICLO=$((CICLO + 1))
+        ciclo=$((ciclo + 1))
 
-        push_changes
+        push_changes || true
 
-        if [ $((CICLO % 6)) -eq 0 ]; then
-            pull_if_behind
+        if (( ciclo % 6 == 0 )); then
+            pull_if_behind || true
         fi
     done
 }
