@@ -28,25 +28,14 @@ New-Item -ItemType Directory -Force -Path $state.LogDir | Out-Null
 
 $shell = Get-ShellCommand
 $scriptPath = Join-Path $PSScriptRoot 'auto-sync-windows.ps1'
-$arguments = @(
-    '-NoProfile'
-    '-ExecutionPolicy'
-    'Bypass'
-    '-File'
-    $scriptPath
-    '-ExpectedBranch'
-    $ExpectedBranch
-    '-Repo'
-    $state.Repo
-)
-
+$argumentString = "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`" -ExpectedBranch `"$ExpectedBranch`" -Repo `"$($state.Repo)`""
 if ($LogRoot) {
-    $arguments += @('-LogRoot', $LogRoot)
+    $argumentString += " -LogRoot `"$LogRoot`""
 }
 
 $startParams = @{
     FilePath = $shell
-    ArgumentList = $arguments
+    ArgumentList = $argumentString
     PassThru = $true
 }
 

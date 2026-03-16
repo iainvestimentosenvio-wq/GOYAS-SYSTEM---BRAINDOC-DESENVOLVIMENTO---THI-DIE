@@ -17,20 +17,20 @@ if (-not (Test-Path $state.PidFile)) {
     exit 0
 }
 
-$pid = Get-Content $state.PidFile | Select-Object -First 1
-if (-not $pid) {
+$storedPid = Get-Content $state.PidFile | Select-Object -First 1
+if (-not $storedPid) {
     Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
     Write-Output 'PID invalido removido. Auto-sync nao esta rodando.'
     exit 0
 }
 
-$process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+$process = Get-Process -Id $storedPid -ErrorAction SilentlyContinue
 if (-not $process) {
     Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
-    Write-Output "Processo $pid nao estava mais ativo."
+    Write-Output "Processo $storedPid nao estava mais ativo."
     exit 0
 }
 
-Stop-Process -Id $pid -Force
+Stop-Process -Id $storedPid -Force
 Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
-Write-Output "Auto-sync parado. PID: $pid"
+Write-Output "Auto-sync parado. PID: $storedPid"
