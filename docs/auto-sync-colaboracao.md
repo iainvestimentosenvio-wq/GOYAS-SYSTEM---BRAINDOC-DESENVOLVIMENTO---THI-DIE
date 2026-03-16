@@ -1,72 +1,59 @@
 # Auto-Sync de Colaboracao
 
-Este projeto pode ser usado por duas maquinas sem ficarem brigando pela mesma linha de trabalho.
+Este repositorio passou a suportar o modo de branch compartilhada em `estabilizacao-fase1`, com o entendimento de que conflitos reais devem ser resolvidos manualmente na IDE.
 
-## Modelo recomendado
+## Estrategia oficial atual
 
-- Cada desenvolvedor usa uma branch pessoal.
-- Existe uma branch de integracao no GitHub.
-- O auto-sync local faz `commit` e `push` apenas da branch pessoal da propria maquina.
-- A branch de integracao e atualizada quando voces decidirem juntar o trabalho.
-
-Exemplo adotado agora neste repositorio:
-
-- Sua branch: `thiago-dev`
-- Branch do colega: `colega-dev`
-- Branch de integracao: `estabilizacao-fase1`
+- A branch compartilhada de operacao automatica e `estabilizacao-fase1`.
+- O auto-sync pode rodar nas duas maquinas nessa mesma branch.
+- O script deve parar o fluxo automatico quando encontrar conflito, rebase pendente ou estado inconsistente.
+- A resolucao final continua sendo humana; o projeto nao tenta mesclar conflitos sozinho.
 
 ## Regras praticas
 
-- Nao trabalhem os dois na mesma branch pessoal.
-- O auto-sync nao deve rodar em branch de integracao.
-- Antes de integrar, revisem no GitHub o que entrou na branch pessoal de cada um.
+- Antes de ligar o auto-sync, a maquina precisa estar alinhada com `origin/estabilizacao-fase1`.
+- Se houver conflito, resolva pela IDE e so depois religue o auto-sync.
+- A branch de backup divergida deve ser preservada quando existir.
+- Logs e PID do Windows ficam fora do repositorio, em `%LOCALAPPDATA%\GOYAS-SYSTEMS-auto-sync\<branch>`.
 
-## Como fica o fluxo
+## Linux
 
-1. Voce trabalha na sua branch pessoal.
-2. O script local salva no GitHub automaticamente essa branch.
-3. Seu colega trabalha na branch pessoal dele.
-4. Quando um quiser entregar algo para o outro continuar, integra a branch pessoal na branch de integracao.
-5. O outro faz pull da branch de integracao e continua do ponto atualizado.
+- O script Linux ignora `.sync`, `.git`, `bin`, `obj`, `TestResults` e `.trx`.
+- O log do Linux nao entra no commit automatico.
+- O pull automatico e adiado quando ha alteracoes locais relevantes.
 
-## O que foi corrigido nesta maquina
+## Windows
 
-- O script Linux agora ignora `.sync`, `.git`, `bin`, `obj`, `TestResults` e `.trx`.
-- O log do auto-sync nao entra mais no commit automatico.
-- O script tenta configurar `upstream` quando a branch remota ja existe.
-- O pull automatico so acontece quando nao ha alteracoes locais relevantes.
+- O script principal e [.sync/auto-sync-windows.ps1](/home/u/Documentos/GOYAS%20SYSTEMS/.sync/auto-sync-windows.ps1).
+- Controle manual:
+  - iniciar: [.sync/start-auto-sync-windows.ps1](/home/u/Documentos/GOYAS%20SYSTEMS/.sync/start-auto-sync-windows.ps1)
+  - parar: [.sync/stop-auto-sync-windows.ps1](/home/u/Documentos/GOYAS%20SYSTEMS/.sync/stop-auto-sync-windows.ps1)
+- Inicializacao automatica no boot:
+  - instalar: [.sync/install-auto-sync-startup-windows.ps1](/home/u/Documentos/GOYAS%20SYSTEMS/.sync/install-auto-sync-startup-windows.ps1)
 
-## Passos manuais recomendados para esta maquina
+## Comandos principais no Windows
 
-1. Escolher uma branch pessoal estavel, por exemplo `thiago-dev`.
-2. Deixar o auto-sync rodando apenas nela.
-3. Usar a branch de integracao apenas para juntar trabalho.
-
-## Prompt para o Codex do colega
-
-Use este prompt no computador dele:
-
-```text
-Verifique e configure este repositorio para auto-sync seguro com GitHub.
-
-Contexto:
-- Projeto compartilhado com outro desenvolvedor.
-- Cada maquina deve usar branch propria para evitar conflitos.
-- Esta maquina deve usar a branch pessoal do colega, por exemplo `colega-dev`.
-- A branch de integracao do projeto sera `estabilizacao-fase1`.
-- O auto-sync deve fazer commit e push apenas da branch pessoal desta maquina.
-- O script deve ignorar `.git`, `.sync`, `bin`, `obj`, `TestResults` e arquivos `.trx`.
-- O log do auto-sync nao pode entrar em commit automatico.
-- Se a branch remota pessoal nao existir, o script deve criar com `git push -u origin <branch>`.
-- Se existir, deve sincronizar com cuidado e nao fazer pull automatico quando houver alteracoes locais relevantes.
-
-Objetivos:
-- Confirmar o remoto GitHub correto.
-- Criar ou trocar para a branch pessoal da maquina do colega.
-- Configurar upstream da branch pessoal.
-- Corrigir ou instalar o script de auto-sync local no Linux ou Windows, conforme a maquina.
-- Garantir que os artefatos locais do auto-sync estejam no `.gitignore`.
-- Testar o fluxo e me dizer exatamente quais comandos foram executados e qual branch ficou configurada.
-
-Se houver um script existente de auto-sync no repositorio, reaproveite-o e ajuste apenas o necessario.
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\.sync\start-auto-sync-windows.ps1 -ExpectedBranch estabilizacao-fase1
 ```
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\.sync\stop-auto-sync-windows.ps1 -ExpectedBranch estabilizacao-fase1
+```
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\.sync\auto-sync-windows.ps1 -ExpectedBranch estabilizacao-fase1 -RunOnce
+```
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\.sync\install-auto-sync-startup-windows.ps1 -ExpectedBranch estabilizacao-fase1
+```
+
+## Validacao minima antes de considerar pronto
+
+- `git branch --show-current` deve retornar `estabilizacao-fase1`.
+- `git rev-parse --abbrev-ref --symbolic-full-name "@{u}"` deve retornar `origin/estabilizacao-fase1`.
+- `git status --short --branch` deve mostrar a arvore limpa e sem divergencia.
+- O `RunOnce` do Windows deve completar sem erro.
+- Start e stop manuais devem funcionar.
+- O processo iniciado deve gravar PID e log fora do repositorio.
