@@ -31,5 +31,6 @@ assert_ignored "$ROOT_DIR/Login/obj/Debug/app.o"
 assert_ignored "$ROOT_DIR/Login/testes/TestResults/result.trx"
 assert_tracked "$ROOT_DIR/README.md"
 assert_tracked "$ROOT_DIR/Login/scripts/launch_login.sh"
+assert_tracked "$ROOT_DIR/.sync/auto-sync-linux.sh"
 
 echo "auto-sync linux path filter: ok"

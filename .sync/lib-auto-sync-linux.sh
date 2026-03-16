@@ -19,7 +19,13 @@ should_ignore_path() {
         */.git/*|.git/*)
             return 0
             ;;
-        */.sync/*|.sync/*)
+        */.sync/sync.log|.sync/sync.log)
+            return 0
+            ;;
+        */.sync/*.pid|.sync/*.pid)
+            return 0
+            ;;
+        */.sync/runtime/*|.sync/runtime/*)
             return 0
             ;;
         */bin/*|bin/*)

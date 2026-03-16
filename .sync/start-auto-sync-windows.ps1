@@ -1,71 +1,66 @@
 param(
-    [string]$ExpectedBranch = "estabilizacao-fase1"
+    [Parameter(Mandatory = $true)]
+    [string]$ExpectedBranch,
+    [string]$Repo = (Split-Path -Parent $PSScriptRoot),
+    [string]$LogRoot
 )
 
 Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$RepoRoot = Split-Path -Parent $ScriptDir
-$StateDirName = "GOYAS-SYSTEMS-auto-sync"
-$StateRoot = if ($env:LOCALAPPDATA) {
-    Join-Path $env:LOCALAPPDATA $StateDirName
-} else {
-    Join-Path $env:TEMP $StateDirName
-}
-$StateDir = Join-Path $StateRoot $ExpectedBranch
-$PidFile = Join-Path $StateDir "auto-sync.pid"
-$LogFile = Join-Path $StateDir "sync.log"
-$AutoSyncScript = Join-Path $ScriptDir "auto-sync-windows.ps1"
+. (Join-Path $PSScriptRoot 'lib-auto-sync-windows.ps1')
 
-New-Item -ItemType Directory -Force -Path $StateDir | Out-Null
-Set-Location $RepoRoot
+$state = New-AutoSyncState -Repo $Repo -ExpectedBranch $ExpectedBranch -LogRoot $LogRoot
+Assert-ExpectedBranch -State $state
 
-$currentBranch = ((git branch --show-current) | Out-String).Trim()
-if ($currentBranch -ne $ExpectedBranch) {
-    Write-Error "Branch atual '$currentBranch' nao eh '$ExpectedBranch'. Troque primeiro para a branch correta."
-}
-
-if (Test-Path $PidFile) {
-    $existingPid = (Get-Content $PidFile | Select-Object -First 1).Trim()
+if (Test-Path $state.PidFile) {
+    $existingPid = Get-Content $state.PidFile -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($existingPid) {
-        $existingProcess = Get-Process -Id $existingPid -ErrorAction SilentlyContinue
-        if ($existingProcess) {
+        $process = Get-Process -Id $existingPid -ErrorAction SilentlyContinue
+        if ($process) {
             Write-Output "Auto-sync ja esta rodando. PID: $existingPid"
-            Write-Output "Log: $LogFile"
             exit 0
         }
     }
-
-    Remove-Item $PidFile -Force -ErrorAction SilentlyContinue
 }
 
-$pushCheckOutput = & cmd /c "git push --dry-run origin HEAD:refs/heads/$ExpectedBranch 2>&1"
-if ($LASTEXITCODE -ne 0) {
-    Write-Output "Falha ao validar permissao de push para '$ExpectedBranch'."
-    $pushCheckOutput
-    exit 1
+New-Item -ItemType Directory -Force -Path $state.LogDir | Out-Null
+
+$shell = Get-ShellCommand
+$scriptPath = Join-Path $PSScriptRoot 'auto-sync-windows.ps1'
+$arguments = @(
+    '-NoProfile'
+    '-ExecutionPolicy'
+    'Bypass'
+    '-File'
+    $scriptPath
+    '-ExpectedBranch'
+    $ExpectedBranch
+    '-Repo'
+    $state.Repo
+)
+
+if ($LogRoot) {
+    $arguments += @('-LogRoot', $LogRoot)
 }
 
-$process = Start-Process `
-    -FilePath "powershell.exe" `
-    -ArgumentList @(
-        "-NoProfile",
-        "-ExecutionPolicy", "Bypass",
-        "-File", $AutoSyncScript,
-        "-ExpectedBranch", $ExpectedBranch
-    ) `
-    -WorkingDirectory $RepoRoot `
-    -WindowStyle Hidden `
-    -PassThru
+$startParams = @{
+    FilePath = $shell
+    ArgumentList = $arguments
+    PassThru = $true
+}
 
-Set-Content -Path $PidFile -Value $process.Id -Encoding ascii
-Start-Sleep -Seconds 1
+if ($IsWindows) {
+    $startParams.WindowStyle = 'Hidden'
+}
+
+$process = Start-Process @startParams
+Start-Sleep -Seconds 2
 
 if (-not (Get-Process -Id $process.Id -ErrorAction SilentlyContinue)) {
-    Write-Error "O processo de auto-sync nao permaneceu em execucao. Verifique o log em $LogFile"
+    throw 'Falha ao iniciar o processo de auto-sync.'
 }
 
-Write-Output "Auto-sync iniciado com sucesso."
-Write-Output "PID: $($process.Id)"
-Write-Output "Log: $LogFile"
+[System.IO.File]::WriteAllText($state.PidFile, [string]$process.Id)
+Write-Output "Auto-sync iniciado com sucesso. PID: $($process.Id)"
+Write-Output "Log: $($state.LogFile)"

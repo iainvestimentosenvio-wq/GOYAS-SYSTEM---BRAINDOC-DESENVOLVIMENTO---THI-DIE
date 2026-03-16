@@ -1,50 +1,36 @@
 param(
-    [string]$ExpectedBranch = "estabilizacao-fase1"
+    [Parameter(Mandatory = $true)]
+    [string]$ExpectedBranch,
+    [string]$Repo = (Split-Path -Parent $PSScriptRoot),
+    [string]$LogRoot
 )
 
 Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = 'Stop'
 
-$StateDirName = "GOYAS-SYSTEMS-auto-sync"
-$StateRoot = if ($env:LOCALAPPDATA) {
-    Join-Path $env:LOCALAPPDATA $StateDirName
-} else {
-    Join-Path $env:TEMP $StateDirName
-}
-$StateDir = Join-Path $StateRoot $ExpectedBranch
-$PidFile = Join-Path $StateDir "auto-sync.pid"
+. (Join-Path $PSScriptRoot 'lib-auto-sync-windows.ps1')
 
-$stopped = $false
+$state = New-AutoSyncState -Repo $Repo -ExpectedBranch $ExpectedBranch -LogRoot $LogRoot
 
-if (Test-Path $PidFile) {
-    $pidText = (Get-Content $PidFile | Select-Object -First 1).Trim()
-    if ($pidText) {
-        $process = Get-Process -Id $pidText -ErrorAction SilentlyContinue
-        if ($process) {
-            Stop-Process -Id $pidText -Force
-            Write-Output "Auto-sync parado. PID: $pidText"
-            $stopped = $true
-        }
-    }
-
-    Remove-Item $PidFile -Force -ErrorAction SilentlyContinue
+if (-not (Test-Path $state.PidFile)) {
+    Write-Output 'Auto-sync nao esta rodando.'
+    exit 0
 }
 
-if (-not $stopped) {
-    $matches = Get-CimInstance Win32_Process | Where-Object {
-        $_.CommandLine -like "*powershell*" -and
-        $_.CommandLine -like "*-File*auto-sync-windows.ps1*" -and
-        $_.CommandLine -like "*$ExpectedBranch*" -and
-        $_.CommandLine -notlike "*-RunOnce*"
-    }
-
-    foreach ($match in $matches) {
-        Stop-Process -Id $match.ProcessId -Force -ErrorAction SilentlyContinue
-        Write-Output "Auto-sync parado. PID: $($match.ProcessId)"
-        $stopped = $true
-    }
+$pid = Get-Content $state.PidFile | Select-Object -First 1
+if (-not $pid) {
+    Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
+    Write-Output 'PID invalido removido. Auto-sync nao esta rodando.'
+    exit 0
 }
 
-if (-not $stopped) {
-    Write-Output "Nenhum processo de auto-sync em execucao para '$ExpectedBranch'."
+$process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+if (-not $process) {
+    Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
+    Write-Output "Processo $pid nao estava mais ativo."
+    exit 0
 }
+
+Stop-Process -Id $pid -Force
+Remove-Item $state.PidFile -Force -ErrorAction SilentlyContinue
+Write-Output "Auto-sync parado. PID: $pid"
