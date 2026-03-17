@@ -584,11 +584,18 @@
                       BorderThickness="1"
                       CornerRadius="8"
                       Padding="6">
-                <ScrollViewer MaxHeight="320"
-                              HorizontalScrollBarVisibility="Disabled"
-                              VerticalScrollBarVisibility="Auto">
-                  <ItemsControl ItemsSource="{Binding ItensSeletorClientes}">
-                    <ItemsControl.ItemTemplate>
+                  <ListBox MaxHeight="320"
+                           ItemsSource="{Binding ItensSeletorClientes}"
+                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                           ScrollViewer.VerticalScrollBarVisibility="Auto"
+                           Background="Transparent"
+                           BorderThickness="0">
+                    <ListBox.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                      </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
                       <DataTemplate x:DataType="vm:SeletorClienteItemPainel">
                         <StackPanel Spacing="2">
                           <Button IsVisible="{Binding EhGrupo}"
@@ -641,9 +648,8 @@
                                      Margin="6,4" />
                         </StackPanel>
                       </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </ScrollViewer>
+                    </ListBox.ItemTemplate>
+                  </ListBox>
               </Border>
             </Grid>
           </Border>
