@@ -268,13 +268,25 @@ internal sealed class AncorarPdfPreviewState : IDisposable
     private static string BuildPageCacheKey(string pdfPath, int pagina, int dpi) =>
         $"{pdfPath}|p={Math.Max(1, pagina)}|dpi={Math.Clamp(dpi, 72, 1200)}";
 
-    private static Bitmap CriarBitmap(byte[] pngBytes) =>
-        new(new MemoryStream(pngBytes, writable: false));
+    private static Bitmap CriarBitmap(byte[] pngBytes)
+    {
+        var ms = new MemoryStream(pngBytes, writable: false);
+        try
+        {
+            return new Bitmap(ms);
+        }
+        catch
+        {
+            ms.Dispose();
+            throw;
+        }
+    }
 
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
         CancelarRenderPendente();
+        _pagePngCache.Clear();
     }
 }

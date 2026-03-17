@@ -41,7 +41,7 @@ public sealed class AncorarPdfSeletorArquivoPasta : IAncorarPdfSeletorArquivo
 
             FileInfo fi;
             try { fi = new FileInfo(arquivo); }
-            catch { continue; }
+            catch (Exception) { continue; }
 
             candidatos.Add(new CandidatoArquivoTexto(
                 arquivo, nomeArquivo, sim, fi.LastWriteTimeUtc, fi.Length,
@@ -73,7 +73,7 @@ public sealed class AncorarPdfSeletorArquivoPasta : IAncorarPdfSeletorArquivo
 
         DateTime mtimeAtual;
         try { mtimeAtual = File.GetLastWriteTimeUtc(melhor.ArquivoPath); }
-        catch { return null; }
+        catch (Exception) { return null; }
 
         if (mtimeAtual != melhor.MtimeUtc)
             return null; // arquivo ainda sendo escrito
@@ -84,15 +84,14 @@ public sealed class AncorarPdfSeletorArquivoPasta : IAncorarPdfSeletorArquivo
             using var fs = new FileStream(melhor.ArquivoPath, FileMode.Open,
                 FileAccess.Read, FileShare.Read);
         }
-        catch
+        catch (Exception)
         {
             return null;
         }
 
-        // Computa SHA-256 do arquivo selecionado.
         string hash;
         try { hash = await ComputarHashAsync(melhor.ArquivoPath, ct); }
-        catch { return null; }
+        catch (Exception) { return null; }
 
         return new SelecaoArquivoResultado(
             melhor.ArquivoPath,
