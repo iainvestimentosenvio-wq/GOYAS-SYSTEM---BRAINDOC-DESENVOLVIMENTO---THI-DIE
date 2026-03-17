@@ -195,12 +195,31 @@ public class ReguaTempoControl : Control
     {
         base.OnPointerWheelChanged(e);
 
-        if (!e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+        {
+            var posicaoCursor = e.GetPosition(this);
+            AplicarZoomNoCursor(posicaoCursor.X, e.Delta.Y);
+            e.Handled = true;
             return;
+        }
 
-        var posicaoCursor = e.GetPosition(this);
-        AplicarZoomNoCursor(posicaoCursor.X, e.Delta.Y);
+        AplicarPanPorRoda(e.Delta.Y);
         e.Handled = true;
+    }
+
+    /// <summary>
+    /// Aplica deslocamento horizontal (pan) proporcional à roda do mouse.
+    /// </summary>
+    public void AplicarPanPorRoda(double deltaRodaY)
+    {
+        _conversor.LarguraViewport = Bounds.Width;
+        _conversor.NivelZoom = NivelZoom;
+        _conversor.CentroTemporal = CentroTemporal;
+
+        var pixelsPorStep = Bounds.Width * 0.08;
+        var deltaSeg = (pixelsPorStep * -deltaRodaY) / _conversor.PixelsPorSegundo;
+        CentroTemporal = CentroTemporal.AddSeconds(deltaSeg);
+        InvalidateVisual();
     }
 
     /// <summary>

@@ -596,11 +596,15 @@ public partial class PainelReguaTempoView : UserControl
             if (e.Handled || OrigemPointerEmControleInterativo(e.Source))
                 return;
 
-            if (!e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            {
+                var posicaoNaRegua = e.GetPosition(regua);
+                regua.AplicarZoomNoCursor(posicaoNaRegua.X, e.Delta.Y);
+                e.Handled = true;
                 return;
+            }
 
-            var posicaoNaRegua = e.GetPosition(regua);
-            regua.AplicarZoomNoCursor(posicaoNaRegua.X, e.Delta.Y);
+            regua.AplicarPanPorRoda(e.Delta.Y);
             e.Handled = true;
         };
         conteudo.PointerPressed += (_, e) =>
