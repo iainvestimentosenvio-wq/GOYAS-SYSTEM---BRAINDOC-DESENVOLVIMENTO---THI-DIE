@@ -1426,11 +1426,7 @@ public sealed partial class PainelViewModel
     }
 
     private void AtualizarItensSeletor(IReadOnlyList<SeletorClienteItemPainel> itens)
-    {
-        ItensSeletorClientes.Clear();
-        foreach (var item in itens)
-            ItensSeletorClientes.Add(item);
-    }
+        => Protons.UI.Common.ObservableCollectionExtensions.ReplaceAll(ItensSeletorClientes, itens);
 
     private void AtualizarItensSeletorVazio(string mensagem)
     {

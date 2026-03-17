@@ -906,11 +906,7 @@ public sealed partial class PainelViewModel
     }
 
     private static void AtualizarColecao<T>(ObservableCollection<T> destino, IReadOnlyList<T> origem)
-    {
-        destino.Clear();
-        foreach (var item in origem)
-            destino.Add(item);
-    }
+        => Protons.UI.Common.ObservableCollectionExtensions.ReplaceAll(destino, origem);
 
     private void CarregarDiretorioUsuarios()
     {

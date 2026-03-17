@@ -53,7 +53,8 @@ WHERE ClienteId = $clienteId
   AND ($inicio IS NULL OR VencimentoUtc >= $inicio)
   AND ($fim IS NULL OR VencimentoUtc <= $fim)
   AND ($responsavelId IS NULL OR ResponsavelUserId = $responsavelId)
-ORDER BY VencimentoUtc ASC, Id DESC;
+ORDER BY VencimentoUtc ASC, Id DESC
+LIMIT 1000;
 ";
         cmd.Parameters.AddWithValue("$clienteId", clienteId);
         cmd.Parameters.AddWithValue("$termo", (object?)termoNormalizado ?? DBNull.Value);
@@ -138,7 +139,8 @@ WHERE ClienteId IN ({inPlaceholders})
   AND ($inicio IS NULL OR VencimentoUtc >= $inicio)
   AND ($fim IS NULL OR VencimentoUtc <= $fim)
   AND ($responsavelId IS NULL OR ResponsavelUserId = $responsavelId)
-ORDER BY VencimentoUtc ASC, Id DESC;
+ORDER BY VencimentoUtc ASC, Id DESC
+LIMIT 1000;
 ";
         for (var i = 0; i < clienteIds.Count; i++)
             cmd.Parameters.AddWithValue($"$id{i}", clienteIds[i]);
