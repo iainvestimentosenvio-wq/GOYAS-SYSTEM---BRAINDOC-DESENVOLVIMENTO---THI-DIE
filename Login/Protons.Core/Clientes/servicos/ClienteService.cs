@@ -273,42 +273,49 @@ public sealed class ClienteService : IClienteService
         var nomeFantasia = NormalizarNomeFantasia(entrada.NomeFantasia);
 
         if (string.IsNullOrWhiteSpace(codigoCliente))
-            return Falha("Informe o código do cliente.");
+            return Falha("Informe o código do cliente.", ClienteCadastroErroCodigo.CodigoObrigatorio, ClienteCadastroCampoErro.CodigoCliente);
         if (codigoCliente.Length > ClienteInputLimits.MaxCodigoCliente)
-            return Falha("Código do cliente excede o limite permitido.");
+            return Falha("Código do cliente excede o limite permitido.", ClienteCadastroErroCodigo.CodigoInvalido, ClienteCadastroCampoErro.CodigoCliente);
         if (!CodigoClienteEhValido(codigoCliente))
-            return Falha("Código do cliente inválido. Use letras, números e os separadores -, _, ., /.");
+            return Falha("Código do cliente inválido. Use letras, números e os separadores -, _, ., /.", ClienteCadastroErroCodigo.CodigoInvalido, ClienteCadastroCampoErro.CodigoCliente);
 
         var outroClienteMesmoCodigo = ExecutarComRetry(() => _clientes.GetByCodigoCliente(codigoCliente));
         if (outroClienteMesmoCodigo is not null && outroClienteMesmoCodigo.Id != cliente.Id)
-            return Falha("Já existe cliente ativo cadastrado com este código.");
+            return Falha("Já existe cliente ativo cadastrado com este código.", ClienteCadastroErroCodigo.CodigoDuplicado, ClienteCadastroCampoErro.CodigoCliente);
 
         if (string.IsNullOrWhiteSpace(nome))
-            return Falha("Informe o nome do cliente.");
+            return Falha("Informe o nome do cliente.", ClienteCadastroErroCodigo.NomeInvalido, ClienteCadastroCampoErro.Nome);
         if (nome.Length > ClienteInputLimits.MaxNome)
-            return Falha("Nome do cliente excede o limite permitido.");
+            return Falha("Nome do cliente excede o limite permitido.", ClienteCadastroErroCodigo.NomeInvalido, ClienteCadastroCampoErro.Nome);
         if (!string.IsNullOrWhiteSpace(nomeFantasia) && nomeFantasia.Length > ClienteInputLimits.MaxNomeFantasia)
-            return Falha("Nome fantasia excede o limite permitido.");
+            return Falha("Nome fantasia excede o limite permitido.", ClienteCadastroErroCodigo.NomeInvalido, ClienteCadastroCampoErro.NomeFantasia);
 
         var email = NormalizarEmail(entrada.Email);
         if (!string.IsNullOrWhiteSpace(email))
         {
             if (email.Length > ClienteInputLimits.MaxEmail)
-                return Falha("E-mail do cliente excede o limite permitido.");
+                return Falha("E-mail do cliente excede o limite permitido.", ClienteCadastroErroCodigo.EmailInvalido, ClienteCadastroCampoErro.Email);
             if (!EmailValidator.EhValido(email))
-                return Falha("E-mail do cliente inválido.");
+                return Falha("E-mail do cliente inválido.", ClienteCadastroErroCodigo.EmailInvalido, ClienteCadastroCampoErro.Email);
         }
 
         var telefone = NormalizarTelefone(entrada.Telefone);
-        if (!string.IsNullOrWhiteSpace(telefone) && telefone.Length > ClienteInputLimits.MaxTelefone)
-            return Falha("Telefone do cliente excede o limite permitido.");
+        if (!string.IsNullOrWhiteSpace(telefone))
+        {
+            if (telefone.Length > ClienteInputLimits.MaxTelefone)
+                return Falha("Telefone do cliente excede o limite permitido.", ClienteCadastroErroCodigo.TelefoneInvalido, ClienteCadastroCampoErro.Telefone);
+
+            var somenteDigitosTelefone = new string(telefone.Where(char.IsDigit).ToArray());
+            if (somenteDigitosTelefone.Length is < 10 or > 11)
+                return Falha("Telefone inválido. Informe DDD + número (10 ou 11 dígitos).", ClienteCadastroErroCodigo.TelefoneInvalido, ClienteCadastroCampoErro.Telefone);
+        }
 
         GrupoEmpresarial? grupo = null;
         if (entrada.GrupoEmpresarialId.HasValue)
         {
             grupo = ExecutarComRetry(() => _clientes.GetGrupoById(entrada.GrupoEmpresarialId.Value));
             if (grupo is null || !grupo.Ativo)
-                return Falha("Grupo empresarial inválido.");
+                return Falha("Grupo empresarial inválido.", ClienteCadastroErroCodigo.GrupoInvalido, ClienteCadastroCampoErro.Grupo);
         }
 
         cliente.CodigoCliente = codigoCliente;

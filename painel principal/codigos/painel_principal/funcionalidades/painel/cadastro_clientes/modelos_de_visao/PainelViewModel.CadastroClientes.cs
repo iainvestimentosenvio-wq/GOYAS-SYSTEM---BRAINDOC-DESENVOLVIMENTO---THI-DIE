@@ -275,6 +275,40 @@ public sealed partial class PainelViewModel
         }
     }
 
+    private bool _aplicandoMascaraTelefoneCadastro;
+
+    partial void OnClienteTelefoneCadastroChanged(string? value)
+    {
+        if (_aplicandoMascaraTelefoneCadastro || string.IsNullOrWhiteSpace(value))
+            return;
+
+        var digitos = new string((value ?? "").Where(char.IsDigit).ToArray());
+        if (digitos.Length > 11)
+            digitos = digitos[..11];
+
+        var mascarado = digitos.Length switch
+        {
+            >= 11 => $"({digitos[..2]}) {digitos[2..7]}-{digitos[7..]}",
+            >= 10 => $"({digitos[..2]}) {digitos[2..6]}-{digitos[6..]}",
+            >= 7 => $"({digitos[..2]}) {digitos[2..]}",
+            >= 3 => $"({digitos[..2]}) {digitos[2..]}",
+            _ => digitos
+        };
+
+        if (string.Equals(value, mascarado, StringComparison.Ordinal))
+            return;
+
+        _aplicandoMascaraTelefoneCadastro = true;
+        try
+        {
+            ClienteTelefoneCadastro = mascarado;
+        }
+        finally
+        {
+            _aplicandoMascaraTelefoneCadastro = false;
+        }
+    }
+
     [RelayCommand]
     private void AbrirCadastroClientes()
     {
