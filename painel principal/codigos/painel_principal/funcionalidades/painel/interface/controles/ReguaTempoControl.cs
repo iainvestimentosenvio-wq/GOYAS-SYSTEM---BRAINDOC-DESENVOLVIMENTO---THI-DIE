@@ -144,7 +144,7 @@ public class ReguaTempoControl : Control
                     texto,
                     System.Globalization.CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
-                    new Typeface("Inter", FontStyle.Normal, FontWeight.SemiBold),
+                    new Typeface(FontFamily.Default, FontStyle.Normal, FontWeight.SemiBold),
                     12,
                     brushLabel);
 

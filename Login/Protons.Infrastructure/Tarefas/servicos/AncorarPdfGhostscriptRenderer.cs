@@ -17,6 +17,36 @@ namespace Protons.Infrastructure.Tarefas.Services;
 /// </summary>
 public sealed class AncorarPdfGhostscriptRenderer : IPdfPreviewRenderer
 {
+    private static readonly string GsExecutable = ResolverExecutavelGs();
+
+    private static string ResolverExecutavelGs()
+    {
+        if (!OperatingSystem.IsWindows())
+            return "gs";
+
+        foreach (var nome in new[] { "gswin64c", "gswin32c", "gs" })
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = nome,
+                    Arguments = "--version",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var p = Process.Start(psi);
+                if (p is not null && p.WaitForExit(2000) && p.ExitCode == 0)
+                    return nome;
+            }
+            catch { }
+        }
+
+        return "gs";
+    }
+
     private static readonly PdfRendererCapabilities _capabilities = new(
         SuportaLinux: true,
         SuportaWindows: true,
@@ -41,7 +71,7 @@ public sealed class AncorarPdfGhostscriptRenderer : IPdfPreviewRenderer
             {
                 var psi = new ProcessStartInfo
                 {
-                    FileName = "gs",
+                    FileName = GsExecutable,
                     Arguments = "--version",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -79,7 +109,7 @@ public sealed class AncorarPdfGhostscriptRenderer : IPdfPreviewRenderer
         {
             var psi = new ProcessStartInfo
             {
-                FileName = "gs",
+                FileName = GsExecutable,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,

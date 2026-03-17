@@ -151,13 +151,29 @@ public sealed partial class PainelViewModel : ViewModelBase, IDisposable
         if (Directory.Exists(local))
             return local;
 
-        var linux = "/usr/share/tesseract-ocr/5/tessdata";
-        if (Directory.Exists(linux))
-            return linux;
+        if (OperatingSystem.IsWindows())
+        {
+            var progFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var win = Path.Combine(progFiles, "Tesseract-OCR", "tessdata");
+            if (Directory.Exists(win))
+                return win;
 
-        var linuxAlt = "/usr/share/tessdata";
-        if (Directory.Exists(linuxAlt))
-            return linuxAlt;
+            var winX86 = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                "Tesseract-OCR", "tessdata");
+            if (Directory.Exists(winX86))
+                return winX86;
+        }
+        else
+        {
+            var linux = "/usr/share/tesseract-ocr/5/tessdata";
+            if (Directory.Exists(linux))
+                return linux;
+
+            var linuxAlt = "/usr/share/tessdata";
+            if (Directory.Exists(linuxAlt))
+                return linuxAlt;
+        }
 
         return local;
     }
