@@ -10,7 +10,7 @@ namespace Protons.Infrastructure.Login.Database;
 public sealed class SqliteDb
 {
     private const string SchemaVersionKey = "SchemaVersion";
-    private const int SchemaVersionAtual = 16;
+    private const int SchemaVersionAtual = 17;
 
     private readonly IClienteDataProtector? _dataProtector;
     private readonly bool _allowLegacyPlaintext;
@@ -49,6 +49,7 @@ public sealed class SqliteDb
                 MigrarParaVersao14(connection);
                 MigrarParaVersao15(connection);
                 MigrarParaVersao16(connection);
+                MigrarParaVersao17(connection);
                 EnsureSchemaMetadataTable(connection);
                 ValidarCompatibilidadeProtecaoDados(connection);
                 DefinirVersaoSchema(connection, SchemaVersionAtual);
@@ -120,6 +121,10 @@ public sealed class SqliteDb
             if (versao < 16)
             {
                 MigrarParaVersao16(connection);
+            }
+            if (versao < 17)
+            {
+                MigrarParaVersao17(connection);
             }
 
             EnsureGruposSchema(connection);
@@ -966,6 +971,28 @@ CREATE UNIQUE INDEX IF NOT EXISTS UX_AncorarPdfSaida_Tarefa_PayloadHash_V1
         }
 
         tx.Commit();
+    }
+
+    private static void MigrarParaVersao17(SqliteConnection connection)
+    {
+        if (TemTabela(connection, "Esteiras"))
+            return;
+
+        using var cmd = connection.CreateCommand();
+        cmd.CommandText = @"
+CREATE TABLE IF NOT EXISTS Esteiras (
+  Id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ClienteId INTEGER NOT NULL,
+  Nome TEXT NOT NULL,
+  Ordem INTEGER NOT NULL DEFAULT 0,
+  Ativa INTEGER NOT NULL DEFAULT 1,
+  CriadoEmUtc TEXT NOT NULL,
+  FOREIGN KEY (ClienteId) REFERENCES Clientes(Id)
+);
+
+CREATE INDEX IF NOT EXISTS IX_Esteiras_ClienteId ON Esteiras(ClienteId);
+";
+        cmd.ExecuteNonQuery();
     }
 
     private static void MigrarParaVersao8(SqliteConnection connection)

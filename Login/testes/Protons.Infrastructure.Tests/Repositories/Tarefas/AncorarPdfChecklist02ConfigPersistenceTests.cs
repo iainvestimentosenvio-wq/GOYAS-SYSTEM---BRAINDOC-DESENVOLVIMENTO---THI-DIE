@@ -116,7 +116,7 @@ public sealed class AncorarPdfChecklist02ConfigPersistenceTests
 
             using var versaoCmd = connection.CreateCommand();
             versaoCmd.CommandText = "SELECT Valor FROM SchemaMetadata WHERE Chave = 'SchemaVersion' LIMIT 1";
-            versaoCmd.ExecuteScalar()?.ToString().Should().Be("16");
+            versaoCmd.ExecuteScalar()?.ToString().Should().Be("17");
 
             using var tabelaCmd = connection.CreateCommand();
             tabelaCmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name='AncorarPdfConfiguracoesTarefa'";
