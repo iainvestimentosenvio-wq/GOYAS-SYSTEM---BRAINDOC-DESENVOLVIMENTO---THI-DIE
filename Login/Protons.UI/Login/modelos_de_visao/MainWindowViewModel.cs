@@ -250,6 +250,9 @@ public sealed class MainWindowViewModel : ViewModelBase
             return padrao;
         }
 
+        if (string.Equals(raw, "supremo", StringComparison.OrdinalIgnoreCase))
+            return UserRole.Supremo;
+
         return string.Equals(raw, "admin", StringComparison.OrdinalIgnoreCase)
             ? UserRole.Admin
             : UserRole.Usuario;

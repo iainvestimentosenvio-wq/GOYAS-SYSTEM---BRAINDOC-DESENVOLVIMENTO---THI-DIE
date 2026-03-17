@@ -28,6 +28,22 @@ public class AuthServiceTests
                 It.IsAny<DateTime>()))
             .Returns(new LockoutUpdateResult(1, 0, null, false));
 
+        _userRepositoryMock.Setup(x => x.GetById(It.Is<int>(id => id >= 100)))
+            .Returns((int id) => new User
+            {
+                Id = id,
+                Nome = "Admin Test",
+                Email = $"admin{id}@test.local",
+                Cpf = "000.000.000-00",
+                SenhaHash = "h",
+                SenhaSalt = "s",
+                IteracoesPbkdf2 = 1,
+                Status = UserStatus.Ativo,
+                Role = UserRole.Admin,
+                CriadoEmUtc = DateTime.UtcNow,
+                AtualizadoEmUtc = DateTime.UtcNow
+            });
+
         _authService = new AuthService(
             _userRepositoryMock.Object,
             _passwordHasherMock.Object,
@@ -615,7 +631,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 1;
-        const int adminId = 2;
+        const int adminId = 100;
         const string motivo = "Documentação aprovada";
         var user = CreateTestUser("user@example.com", UserStatus.Pendente, UserRole.Usuario);
         user.Id = userId;
@@ -646,7 +662,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 999;
-        const int adminId = 2;
+        const int adminId = 100;
         const string motivo = "Test";
 
         _userRepositoryMock.Setup(x => x.GetById(userId)).Returns((User?)null);
@@ -676,7 +692,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 5;
-        const int adminId = 1;
+        const int adminId = 100;
         const string motivo = "Promovido para administrador";
         var user = CreateTestUser("operador@example.com", UserStatus.Pendente, UserRole.Usuario);
         user.Id = userId;
@@ -708,7 +724,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 999;
-        const int adminId = 1;
+        const int adminId = 100;
         const string motivo = "Promocao";
 
         _userRepositoryMock.Setup(x => x.GetById(userId)).Returns((User?)null);
@@ -737,7 +753,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 1;
-        const int adminId = 2;
+        const int adminId = 100;
         const string motivo = "Documentação inválida";
         var user = CreateTestUser("user@example.com", UserStatus.Pendente, UserRole.Usuario);
         user.Id = userId;
@@ -768,7 +784,7 @@ public class AuthServiceTests
     {
         // Arrange
         const int userId = 999;
-        const int adminId = 2;
+        const int adminId = 100;
         const string motivo = "Test";
 
         _userRepositoryMock.Setup(x => x.GetById(userId)).Returns((User?)null);
