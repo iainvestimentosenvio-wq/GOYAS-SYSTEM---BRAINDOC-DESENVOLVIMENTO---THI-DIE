@@ -1,0 +1,13 @@
+<Project>
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <!-- Suprimir warnings de estilo em projetos de teste:
+         CA1707: underscores em nomes de método (convenção xUnit)
+         CA1305: locale em ToString (testes não são I18N-sensitive)
+         CA1859: tipo de retorno mais específico (não relevante em testes)
+         CA1861: arrays constantes (clareza sobre performance em testes)
+         CA1847: string.Contains char vs string (clareza em testes) -->
+    <NoWarn>$(NoWarn);CA1707;CA1305;CA1859;CA1861;CA1847;CA1862;CA1805</NoWarn>
+  </PropertyGroup>
+</Project>

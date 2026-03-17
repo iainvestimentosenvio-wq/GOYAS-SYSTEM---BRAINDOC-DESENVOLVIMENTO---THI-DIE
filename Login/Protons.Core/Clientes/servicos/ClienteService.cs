@@ -147,8 +147,15 @@ public sealed class ClienteService : IClienteService
                     return Falha("E-mail do cliente inválido.", ClienteCadastroErroCodigo.EmailInvalido, ClienteCadastroCampoErro.Email);
             }
 
-            if (!string.IsNullOrWhiteSpace(telefone) && telefone.Length > ClienteInputLimits.MaxTelefone)
-                return Falha("Telefone do cliente excede o limite permitido.", ClienteCadastroErroCodigo.TelefoneInvalido, ClienteCadastroCampoErro.Telefone);
+            if (!string.IsNullOrWhiteSpace(telefone))
+            {
+                if (telefone.Length > ClienteInputLimits.MaxTelefone)
+                    return Falha("Telefone do cliente excede o limite permitido.", ClienteCadastroErroCodigo.TelefoneInvalido, ClienteCadastroCampoErro.Telefone);
+
+                var somenteDigitosTelefone = new string(telefone.Where(char.IsDigit).ToArray());
+                if (somenteDigitosTelefone.Length is < 10 or > 11)
+                    return Falha("Telefone inválido. Informe DDD + número (10 ou 11 dígitos).", ClienteCadastroErroCodigo.TelefoneInvalido, ClienteCadastroCampoErro.Telefone);
+            }
 
             var clienteExistente = ExecutarComRetry(() => _clientes.GetByDocumento(documento));
             if (clienteExistente is not null)
@@ -368,7 +375,7 @@ public sealed class ClienteService : IClienteService
             var id = ExecutarComRetry(() => _clientes.CreateGrupo(grupo));
             grupo.Id = id;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             var grupoDuplicado = ExecutarComRetry(() => _clientes.GetGrupoByNomeNormalizado(nomeNormalizado));
             if (grupoDuplicado is not null)
@@ -381,6 +388,8 @@ public sealed class ClienteService : IClienteService
                 };
             }
 
+            System.Diagnostics.Debug.WriteLine(
+                $"[ClienteService] Falha ao cadastrar grupo empresarial: {ex.GetType().Name} - {ex.Message}");
             return FalhaGrupo("Falha ao cadastrar grupo empresarial.");
         }
 

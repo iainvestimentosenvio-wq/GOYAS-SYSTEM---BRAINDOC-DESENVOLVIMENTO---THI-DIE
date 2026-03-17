@@ -21,6 +21,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
 {
     private readonly IAncorarPdfPreviewAdapter _previewAdapter;
     private readonly IPdfPreviewRenderer _renderer;
+    private const int MaxCacheEntries = 20;
     private readonly Dictionary<string, byte[]> _pagePngCache = new(StringComparer.Ordinal);
     private CancellationTokenSource? _renderCts;
     private int _ultimoDpiRenderizado;
@@ -145,6 +146,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
             if (resultado is PdfRenderResult.Sucedido sucedido)
             {
                 var pngBytes = sucedido.ImagemPng.ToArray();
+                EvictCacheIfNeeded();
                 _pagePngCache[cacheKey] = pngBytes;
                 aplicarBitmap(CriarBitmap(pngBytes));
                 _ultimoDpiRenderizado = resultado.Metricas.DpiRealizado;
@@ -235,29 +237,56 @@ internal sealed class AncorarPdfPreviewState : IDisposable
                 var request = new PdfRenderRequest(pdfPath, Pagina: pagina, Dpi: dpi);
                 var resultado = await _renderer.RenderizarAsync(request, ct);
                 if (resultado is PdfRenderResult.Sucedido sucedido)
+                {
+                    EvictCacheIfNeeded();
                     _pagePngCache[cacheKey] = sucedido.ImagemPng.ToArray();
+                }
             }
             catch (OperationCanceledException)
             {
                 return;
             }
-            catch
+            catch (Exception ex)
             {
-                // prefetch é oportunista; não deve poluir UX com falhas silenciosas
+                System.Diagnostics.Debug.WriteLine($"[AncorarPdfPreviewState] Prefetch falhou para página {pagina}: {ex.GetType().Name}");
             }
+        }
+    }
+
+    private void EvictCacheIfNeeded()
+    {
+        while (_pagePngCache.Count >= MaxCacheEntries)
+        {
+            using var enumerator = _pagePngCache.GetEnumerator();
+            if (enumerator.MoveNext())
+                _pagePngCache.Remove(enumerator.Current.Key);
+            else
+                break;
         }
     }
 
     private static string BuildPageCacheKey(string pdfPath, int pagina, int dpi) =>
         $"{pdfPath}|p={Math.Max(1, pagina)}|dpi={Math.Clamp(dpi, 72, 1200)}";
 
-    private static Bitmap CriarBitmap(byte[] pngBytes) =>
-        new(new MemoryStream(pngBytes, writable: false));
+    private static Bitmap CriarBitmap(byte[] pngBytes)
+    {
+        var ms = new MemoryStream(pngBytes, writable: false);
+        try
+        {
+            return new Bitmap(ms);
+        }
+        catch
+        {
+            ms.Dispose();
+            throw;
+        }
+    }
 
     public void Dispose()
     {
         if (_disposed) return;
         _disposed = true;
         CancelarRenderPendente();
+        _pagePngCache.Clear();
     }
 }

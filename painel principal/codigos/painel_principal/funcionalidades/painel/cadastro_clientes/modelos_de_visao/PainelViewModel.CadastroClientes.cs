@@ -102,6 +102,7 @@ public sealed partial class PainelViewModel
     public string CorBordaGrupoCadastro => ObterCorBordaCampo(ClienteCadastroCampoErro.Grupo);
     public string CorBordaEmailCadastro => ObterCorBordaCampo(ClienteCadastroCampoErro.Email);
     public string CorBordaTelefoneCadastro => ObterCorBordaCampo(ClienteCadastroCampoErro.Telefone);
+    public string CorBordaNomeFantasiaCadastro => ObterCorBordaCampo(ClienteCadastroCampoErro.NomeFantasia);
     public bool TemClienteSelecionado => ClienteContextoId is > 0;
     public bool DocumentoCadastroSomenteLeitura => ModoEdicaoClienteCadastro;
     public bool ExibirAcoesEdicaoCliente => ModoEdicaoClienteCadastro && ClienteEdicaoId.HasValue;
@@ -212,6 +213,7 @@ public sealed partial class PainelViewModel
         OnPropertyChanged(nameof(CorBordaGrupoCadastro));
         OnPropertyChanged(nameof(CorBordaEmailCadastro));
         OnPropertyChanged(nameof(CorBordaTelefoneCadastro));
+        OnPropertyChanged(nameof(CorBordaNomeFantasiaCadastro));
     }
 
     partial void OnReferenciaErroCadastroChanged(string? value)
@@ -1651,7 +1653,7 @@ public sealed partial class PainelViewModel
         }
 
         if (fantasia.Length > ClienteInputLimits.MaxNomeFantasia)
-            return FalhaValidacao("Nome fantasia excede o limite permitido.", ClienteCadastroCampoErro.Nome, exibirMensagem);
+            return FalhaValidacao("Nome fantasia excede o limite permitido.", ClienteCadastroCampoErro.NomeFantasia, exibirMensagem);
 
         ClienteNomeFantasiaCadastro = fantasia;
         return true;

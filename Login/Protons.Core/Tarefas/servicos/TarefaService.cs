@@ -336,7 +336,7 @@ public sealed class TarefaService : ITarefaService
             throw new InvalidOperationException("Usuario invalido.");
 
         var admin = ObterUsuarioAtivoOuFalhar(adminUserId);
-        if (admin.Role != UserRole.Admin)
+        if (admin.Role is not (UserRole.Admin or UserRole.Supremo))
             throw new InvalidOperationException("Somente administrador pode gerenciar permissoes de cliente.");
 
         ValidarClienteAtivo(clienteId);

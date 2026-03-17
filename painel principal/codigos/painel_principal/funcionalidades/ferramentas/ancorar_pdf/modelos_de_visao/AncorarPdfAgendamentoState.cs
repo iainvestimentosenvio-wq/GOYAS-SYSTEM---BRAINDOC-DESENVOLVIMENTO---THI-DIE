@@ -79,24 +79,30 @@ internal sealed class AncorarPdfAgendamentoState
         }
         catch (TimeZoneNotFoundException)
         {
-            throw new InvalidOperationException("Timezone inválida para este sistema.");
+            return TimeZoneInfo.Local.Id;
         }
         catch (InvalidTimeZoneException)
         {
-            throw new InvalidOperationException("Timezone inválida para este sistema.");
+            return TimeZoneInfo.Local.Id;
         }
     }
 
     public DateTime ConverterUtcParaTimezone(DateTime utc, string timezoneId)
     {
         var utcKind = DateTime.SpecifyKind(utc, DateTimeKind.Utc);
+        var tzId = string.IsNullOrWhiteSpace(timezoneId)
+            ? TimeZoneInfo.Local.Id
+            : timezoneId.Trim();
         try
         {
-            var tz = TimeZoneInfo.FindSystemTimeZoneById(
-                string.IsNullOrWhiteSpace(timezoneId) ? TimeZoneInfo.Local.Id : timezoneId.Trim());
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(tzId);
             return TimeZoneInfo.ConvertTimeFromUtc(utcKind, tz);
         }
         catch (TimeZoneNotFoundException)
+        {
+            return TimeZoneInfo.ConvertTimeFromUtc(utcKind, TimeZoneInfo.Local);
+        }
+        catch (InvalidTimeZoneException)
         {
             return TimeZoneInfo.ConvertTimeFromUtc(utcKind, TimeZoneInfo.Local);
         }

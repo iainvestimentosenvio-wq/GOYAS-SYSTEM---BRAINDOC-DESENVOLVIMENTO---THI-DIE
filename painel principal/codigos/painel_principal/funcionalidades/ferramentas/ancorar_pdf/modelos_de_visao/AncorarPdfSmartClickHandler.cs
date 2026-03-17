@@ -53,21 +53,24 @@ internal sealed class AncorarPdfSmartClickHandler
         if (!resultado.Encontrado)
             resultado = await DetectarComFallbackRegionalAsync(entradaNormalizada, ct).ConfigureAwait(false);
 
-        if (!resultado.Encontrado)
+        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
         {
-            _context.Mensagem = $"Nenhum texto encontrado no ponto clicado ({resultado.MotivoFalha}).";
-            return;
-        }
+            if (!resultado.Encontrado)
+            {
+                _context.Mensagem = $"Nenhum texto encontrado no ponto clicado ({resultado.MotivoFalha}).";
+                return;
+            }
 
-        _context.SmartDeteccaoAtual = resultado;
-        _context.SmartNomeEditavel = resultado.NomeSugerido;
-        _context.SmartChaveEditavel = resultado.ChaveTecnicaSugerida;
-        _context.SmartTipoEditavel = MapearTipoVariavel(resultado.Tipo);
-        _context.SetDestaquesRelBboxCache(EncontrarOcorrenciasTexto(resultado.TextoBruto, resultado.Pagina));
-        _context.SetDestaqueCorCache(_context.CorSelecionada);
-        _context.SetDestaquesPaginaCache(resultado.Pagina);
-        _context.ReconstruirDestaquesSmart();
-        _context.Mensagem = $"Detectado: {resultado.Tipo} ({resultado.Confianca:P0}) — edite e confirme.";
+            _context.SmartDeteccaoAtual = resultado;
+            _context.SmartNomeEditavel = resultado.NomeSugerido;
+            _context.SmartChaveEditavel = resultado.ChaveTecnicaSugerida;
+            _context.SmartTipoEditavel = MapearTipoVariavel(resultado.Tipo);
+            _context.SetDestaquesRelBboxCache(EncontrarOcorrenciasTexto(resultado.TextoBruto, resultado.Pagina));
+            _context.SetDestaqueCorCache(_context.CorSelecionada);
+            _context.SetDestaquesPaginaCache(resultado.Pagina);
+            _context.ReconstruirDestaquesSmart();
+            _context.Mensagem = $"Detectado: {resultado.Tipo} ({resultado.Confianca:P0}) — edite e confirme.";
+        });
     }
 
     public void ConfirmarSmartDeteccao()

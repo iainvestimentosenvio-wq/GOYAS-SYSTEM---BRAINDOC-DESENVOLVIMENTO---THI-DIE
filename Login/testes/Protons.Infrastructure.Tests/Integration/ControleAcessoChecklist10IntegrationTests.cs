@@ -93,6 +93,7 @@ public sealed class ControleAcessoChecklist10IntegrationTests : IDisposable
         var admin1Id = _userRepo.GetByEmail("adm5a@c10.test")!.Id;
         _authService.CriarConta(CriarUserModel("adm5b@c10.test"), "Senha@1234567");
         var admin2Id = _userRepo.GetByEmail("adm5b@c10.test")!.Id;
+        _authService.PromoverUsuarioAdmin(admin2Id, admin1Id, "promovido para teste");
 
         _authService.CriarConta(CriarUserModel("ua@c10.test"), "Senha@1234567");
         var uaId = _userRepo.GetByEmail("ua@c10.test")!.Id;

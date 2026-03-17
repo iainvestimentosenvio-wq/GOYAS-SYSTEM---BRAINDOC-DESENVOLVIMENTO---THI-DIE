@@ -124,11 +124,11 @@ internal static class DataPathProvider
                     File.Copy(file, targetFile, overwrite: false);
             }
 
-            Debug.WriteLine($"DataPathProvider migration completed: {legacyFull} -> {currentFull}");
+            OpsLogger.WriteInfo($"DataPathProvider migration completed: legacy -> current");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"DataPathProvider migration failed: {ex}");
+            OpsLogger.WriteError("DataPathProvider migration failed", ex);
         }
     }
 
@@ -151,12 +151,12 @@ internal static class DataPathProvider
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"DataPathProvider.NormalizeOrFallback exception: {ex}");
+            OpsLogger.WriteWarning($"DataPathProvider.NormalizeOrFallback exception: {ex.GetType().Name}");
         }
 
         var fallback = Path.Combine(Path.GetTempPath(), "Protons");
         var fallbackFull = Path.GetFullPath(fallback);
-        Debug.WriteLine($"DataPathProvider fallback to temp path: {fallbackFull}");
+        OpsLogger.WriteWarning("DataPathProvider fallback to temp path");
         return fallbackFull;
     }
 }

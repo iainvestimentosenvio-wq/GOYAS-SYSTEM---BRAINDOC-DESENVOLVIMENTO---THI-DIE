@@ -15,6 +15,7 @@ public sealed class AncorarPdfDocumentoAnalyzer : IAncorarPdfDocumentoAnalyzer
     private readonly IAncorarPdfExtratorTexto _extratorNativo;
     private readonly Func<int, string, IAncorarPdfExtratorTexto> _ocrFactory;
     private readonly Action<string, string?>? _onLog;
+    private const int MaxCacheEntries = 10;
     private readonly ConcurrentDictionary<string, AncorarPdfDocumentoAnalise> _analysisCache = new(StringComparer.Ordinal);
     private readonly ConcurrentDictionary<string, IReadOnlyList<PdfPaginaTexto>> _ocrPagesCache = new(StringComparer.Ordinal);
 
@@ -92,6 +93,7 @@ public sealed class AncorarPdfDocumentoAnalyzer : IAncorarPdfDocumentoAnalyzer
             familia = InferirFamiliaDocumento(paginas[0].Tokens);
 
         var analise = new AncorarPdfDocumentoAnalise(arquivoPath, paginas, diagnosticos, familia);
+        EvictIfNeeded(_analysisCache);
         _analysisCache[cacheKey] = analise;
         return analise;
     }
@@ -168,6 +170,7 @@ public sealed class AncorarPdfDocumentoAnalyzer : IAncorarPdfDocumentoAnalyzer
         {
             var ocrExtractor = _ocrFactory(syntheticConfig.OcrDpi, syntheticConfig.OcrLang);
             var paginas = await ocrExtractor.ExtrairAsync(arquivoPath, timeoutCts.Token).ConfigureAwait(false);
+            EvictIfNeeded(_ocrPagesCache);
             _ocrPagesCache[key] = paginas;
             return paginas;
         }
@@ -422,9 +425,29 @@ public sealed class AncorarPdfDocumentoAnalyzer : IAncorarPdfDocumentoAnalyzer
         if (!string.IsNullOrWhiteSpace(arquivoHashHint))
             return arquivoHashHint.Trim().ToLowerInvariant();
 
-        var fi = new FileInfo(arquivoPath);
-        var raw = $"{arquivoPath}|{fi.Length}|{fi.LastWriteTimeUtc.Ticks}";
-        var bytes = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(raw));
-        return Convert.ToHexString(bytes).ToLowerInvariant();
+        try
+        {
+            var fi = new FileInfo(arquivoPath);
+            var raw = $"{arquivoPath}|{fi.Length}|{fi.LastWriteTimeUtc.Ticks}";
+            var bytes = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(raw));
+            return Convert.ToHexString(bytes).ToLowerInvariant();
+        }
+        catch (Exception)
+        {
+            var fallback = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(arquivoPath));
+            return Convert.ToHexString(fallback).ToLowerInvariant();
+        }
+    }
+
+    private static void EvictIfNeeded<T>(ConcurrentDictionary<string, T> cache)
+    {
+        while (cache.Count >= MaxCacheEntries)
+        {
+            using var enumerator = cache.GetEnumerator();
+            if (enumerator.MoveNext())
+                cache.TryRemove(enumerator.Current.Key, out _);
+            else
+                break;
+        }
     }
 }

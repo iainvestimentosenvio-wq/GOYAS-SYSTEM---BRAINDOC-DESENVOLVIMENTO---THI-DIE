@@ -495,7 +495,7 @@ public sealed class AncorarPdfConfiguracaoService : IAncorarPdfConfiguracaoServi
         if (!entrada.PdfModeloCrossCliente)
             return;
 
-        if (solicitante.Role != UserRole.Admin)
+        if (solicitante.Role is not (UserRole.Admin or UserRole.Supremo))
             throw new InvalidOperationException("PDF modelo cross-cliente permitido somente para Admin.");
 
         var justificativa = NormalizarJustificativa(entrada.PdfModeloCrossClienteJustificativa);

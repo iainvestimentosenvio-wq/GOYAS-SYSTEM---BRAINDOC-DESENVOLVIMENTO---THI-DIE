@@ -8,5 +8,6 @@ public enum ClienteCadastroCampoErro
     Documento = 3,
     Grupo = 4,
     Email = 5,
-    Telefone = 6
+    Telefone = 6,
+    NomeFantasia = 7
 }

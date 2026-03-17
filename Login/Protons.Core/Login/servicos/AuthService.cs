@@ -184,6 +184,8 @@ public sealed class AuthService : IAuthService
 
     public void AprovarUsuario(int userId, int adminId, string motivo)
     {
+        ValidarExecutorAdmin(adminId, "APROVAR_USUARIO");
+
         var user = _users.GetById(userId);
         if (user is null)
         {
@@ -193,7 +195,6 @@ public sealed class AuthService : IAuthService
 
         user.Status = UserStatus.Ativo;
         user.AtualizadoEmUtc = _timeProvider.GetUtcNow().UtcDateTime;
-        // Vincula o usuário aprovado ao admin que aprovou (hierarquia C10)
         if (user.ResponsavelAdminId is null)
             user.ResponsavelAdminId = adminId;
         _users.Update(user);
@@ -203,6 +204,8 @@ public sealed class AuthService : IAuthService
 
     public void RejeitarUsuario(int userId, int adminId, string motivo)
     {
+        ValidarExecutorAdmin(adminId, "REJEITAR_USUARIO");
+
         var user = _users.GetById(userId);
         if (user is null)
         {
@@ -219,6 +222,8 @@ public sealed class AuthService : IAuthService
 
     public void PromoverUsuarioAdmin(int userId, int adminId, string motivo)
     {
+        ValidarExecutorAdmin(adminId, "PROMOVER_ADMIN");
+
         var user = _users.GetById(userId);
         if (user is null)
         {
@@ -227,7 +232,6 @@ public sealed class AuthService : IAuthService
         }
 
         user.Role = UserRole.Admin;
-        // Só ativa se estiver pendente — não desbloqueia um usuário bloqueado.
         if (user.Status == UserStatus.Pendente)
             user.Status = UserStatus.Ativo;
         user.AtualizadoEmUtc = _timeProvider.GetUtcNow().UtcDateTime;
@@ -248,6 +252,8 @@ public sealed class AuthService : IAuthService
 
     public ControleAcessoResultado ExcluirUsuario(ExclusaoUsuarioEntrada entrada)
     {
+        ValidarExecutorAdmin(entrada.ExecutorId, "EXCLUIR_USUARIO");
+
         var user = _users.GetById(entrada.UsuarioId);
         if (user is null)
         {
@@ -327,6 +333,16 @@ public sealed class AuthService : IAuthService
             return _users.ListarTodos();
 
         return _users.ListarPorAdmin(adminId);
+    }
+
+    private void ValidarExecutorAdmin(int executorId, string acao)
+    {
+        var executor = _users.GetById(executorId);
+        if (executor is null || executor.Role is not (UserRole.Admin or UserRole.Supremo))
+        {
+            RegistrarAudit(executorId, null, acao, "ERRO", "Executor sem permissão de administrador");
+            throw new InvalidOperationException("Operação permitida somente para Admin ou Supremo.");
+        }
     }
 
     private void RegistrarAudit(int? userId, string? email, string acao, string resultado, string detalhes)

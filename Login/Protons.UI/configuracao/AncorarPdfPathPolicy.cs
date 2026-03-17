@@ -43,8 +43,21 @@ internal sealed class AppSettingsAncorarPdfPathPolicy : IAncorarPdfPathPolicy
         // Pasta monitorada: aceita qualquer caminho válido; a pasta pode ser criada no futuro quando a tarefa rodar.
         // Não exige Directory.Exists — o usuário pode selecionar qualquer pasta do computador.
 
-        if (tipo == AncorarPdfPathTipo.PdfModelo && !File.Exists(caminhoNormalizado))
-            return PathPolicyResult.Falha("PDF modelo não existe ou está inacessível.");
+        if (tipo == AncorarPdfPathTipo.PdfModelo)
+        {
+            bool existe;
+            try
+            {
+                existe = File.Exists(caminhoNormalizado);
+            }
+            catch (Exception)
+            {
+                return PathPolicyResult.Falha("PDF modelo não existe ou está inacessível.");
+            }
+
+            if (!existe)
+                return PathPolicyResult.Falha("PDF modelo não existe ou está inacessível.");
+        }
 
         return PathPolicyResult.Ok();
     }

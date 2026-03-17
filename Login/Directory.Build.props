@@ -28,4 +28,12 @@
     <NuGetAuditMode>all</NuGetAuditMode>
     <NuGetAuditLevel>moderate</NuGetAuditLevel>
   </PropertyGroup>
+
+  <!-- ═══ Qualidade Enterprise ═══════════════════════════════════════════ -->
+  <PropertyGroup>
+    <!-- Roslyn analyzers: nível recomendado pelo .NET SDK (sem pacotes extras) -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>8.0-recommended</AnalysisLevel>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
 </Project>
