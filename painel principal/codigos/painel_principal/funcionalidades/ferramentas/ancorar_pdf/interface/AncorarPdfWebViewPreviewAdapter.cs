@@ -20,8 +20,15 @@ public sealed class AncorarPdfWebViewPreviewAdapter : AncorarPdfPreviewAdapterBa
     private static string? BuildViewerHostUri(string? pdfPath)
     {
         var viewerPath = Path.Combine(AppContext.BaseDirectory, "Assets", "AncorarPdfViewer", "index.html");
-        if (!File.Exists(viewerPath))
+        try
+        {
+            if (!File.Exists(viewerPath))
+                return null;
+        }
+        catch (Exception)
+        {
             return null;
+        }
 
         var baseUri = new Uri(viewerPath).AbsoluteUri;
         if (string.IsNullOrWhiteSpace(pdfPath))

@@ -241,9 +241,9 @@ internal sealed class AncorarPdfPreviewState : IDisposable
             {
                 return;
             }
-            catch
+            catch (Exception ex)
             {
-                // prefetch é oportunista; não deve poluir UX com falhas silenciosas
+                System.Diagnostics.Debug.WriteLine($"[AncorarPdfPreviewState] Prefetch falhou para página {pagina}: {ex.GetType().Name}");
             }
         }
     }

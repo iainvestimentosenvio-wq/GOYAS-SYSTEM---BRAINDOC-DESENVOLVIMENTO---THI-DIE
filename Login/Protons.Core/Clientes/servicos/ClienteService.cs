@@ -368,7 +368,7 @@ public sealed class ClienteService : IClienteService
             var id = ExecutarComRetry(() => _clientes.CreateGrupo(grupo));
             grupo.Id = id;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             var grupoDuplicado = ExecutarComRetry(() => _clientes.GetGrupoByNomeNormalizado(nomeNormalizado));
             if (grupoDuplicado is not null)
@@ -381,6 +381,8 @@ public sealed class ClienteService : IClienteService
                 };
             }
 
+            System.Diagnostics.Debug.WriteLine(
+                $"[ClienteService] Falha ao cadastrar grupo empresarial: {ex.GetType().Name} - {ex.Message}");
             return FalhaGrupo("Falha ao cadastrar grupo empresarial.");
         }
 
