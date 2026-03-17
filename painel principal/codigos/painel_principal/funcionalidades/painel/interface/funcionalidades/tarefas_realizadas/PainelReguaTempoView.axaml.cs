@@ -90,12 +90,20 @@ public partial class PainelReguaTempoView : UserControl
         }
     }
 
+    private DateTime _ultimoMinutoRegua;
+
     private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(PainelViewModel.HoraAtualRegua))
-        {
-            AtualizarOpacidadeTarefas();
-        }
+        if (e.PropertyName != nameof(PainelViewModel.HoraAtualRegua))
+            return;
+
+        var agora = _vm?.HoraAtualRegua ?? DateTime.UtcNow;
+        var minutoAtual = new DateTime(agora.Year, agora.Month, agora.Day, agora.Hour, agora.Minute, 0, DateTimeKind.Utc);
+        if (minutoAtual == _ultimoMinutoRegua)
+            return;
+
+        _ultimoMinutoRegua = minutoAtual;
+        AtualizarOpacidadeTarefas();
     }
 
     private void OnEsteirasChanged(object? sender, NotifyCollectionChangedEventArgs e)

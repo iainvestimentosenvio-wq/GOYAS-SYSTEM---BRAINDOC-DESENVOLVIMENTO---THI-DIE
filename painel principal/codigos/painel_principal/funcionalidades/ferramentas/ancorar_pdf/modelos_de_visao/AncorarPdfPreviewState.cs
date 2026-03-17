@@ -21,6 +21,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
 {
     private readonly IAncorarPdfPreviewAdapter _previewAdapter;
     private readonly IPdfPreviewRenderer _renderer;
+    private const int MaxCacheEntries = 20;
     private readonly Dictionary<string, byte[]> _pagePngCache = new(StringComparer.Ordinal);
     private CancellationTokenSource? _renderCts;
     private int _ultimoDpiRenderizado;
@@ -145,6 +146,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
             if (resultado is PdfRenderResult.Sucedido sucedido)
             {
                 var pngBytes = sucedido.ImagemPng.ToArray();
+                EvictCacheIfNeeded();
                 _pagePngCache[cacheKey] = pngBytes;
                 aplicarBitmap(CriarBitmap(pngBytes));
                 _ultimoDpiRenderizado = resultado.Metricas.DpiRealizado;
@@ -235,7 +237,10 @@ internal sealed class AncorarPdfPreviewState : IDisposable
                 var request = new PdfRenderRequest(pdfPath, Pagina: pagina, Dpi: dpi);
                 var resultado = await _renderer.RenderizarAsync(request, ct);
                 if (resultado is PdfRenderResult.Sucedido sucedido)
+                {
+                    EvictCacheIfNeeded();
                     _pagePngCache[cacheKey] = sucedido.ImagemPng.ToArray();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -245,6 +250,18 @@ internal sealed class AncorarPdfPreviewState : IDisposable
             {
                 System.Diagnostics.Debug.WriteLine($"[AncorarPdfPreviewState] Prefetch falhou para página {pagina}: {ex.GetType().Name}");
             }
+        }
+    }
+
+    private void EvictCacheIfNeeded()
+    {
+        while (_pagePngCache.Count >= MaxCacheEntries)
+        {
+            using var enumerator = _pagePngCache.GetEnumerator();
+            if (enumerator.MoveNext())
+                _pagePngCache.Remove(enumerator.Current.Key);
+            else
+                break;
         }
     }
 
