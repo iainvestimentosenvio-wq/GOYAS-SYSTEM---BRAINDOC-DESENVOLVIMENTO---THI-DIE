@@ -137,11 +137,14 @@ public sealed class AncorarPdfDocnetRenderer : IPdfPreviewRenderer
 
     /// <summary>
     /// Converte bytes BGRA (formato nativo do PDFium) para PNG em MemoryStream via SkiaSharp.
+    /// PDFium usa alpha premultiplicado. Pixels transparentes são compostos sobre fundo branco
+    /// para evitar manchas pretas em PDFs sem background explícito.
     /// </summary>
     private static MemoryStream BgraParaPng(byte[] rawBgra, int width, int height)
     {
-        // Docnet.Core retorna pixels em formato BGRA (4 bytes/pixel, não premultiplicado).
-        using var skBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+        CompositeAlphaSobreBranco(rawBgra);
+
+        using var skBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
         IntPtr pixelPtr = skBitmap.GetPixels();
         Marshal.Copy(rawBgra, 0, pixelPtr, rawBgra.Length);
 
@@ -152,6 +155,35 @@ public sealed class AncorarPdfDocnetRenderer : IPdfPreviewRenderer
         encoded.SaveTo(ms);
         ms.Position = 0;
         return ms;
+    }
+
+    /// <summary>
+    /// Compõe pixels BGRA premultiplicados sobre fundo branco, tornando todos opacos.
+    /// Elimina manchas pretas causadas por transparência em PDFs sem background.
+    /// </summary>
+    private static void CompositeAlphaSobreBranco(byte[] bgra)
+    {
+        for (var i = 0; i < bgra.Length; i += 4)
+        {
+            var a = bgra[i + 3];
+            if (a == 255)
+                continue;
+
+            if (a == 0)
+            {
+                bgra[i] = 255;
+                bgra[i + 1] = 255;
+                bgra[i + 2] = 255;
+                bgra[i + 3] = 255;
+                continue;
+            }
+
+            var invA = 255 - a;
+            bgra[i] = (byte)Math.Min(255, bgra[i] + invA);
+            bgra[i + 1] = (byte)Math.Min(255, bgra[i + 1] + invA);
+            bgra[i + 2] = (byte)Math.Min(255, bgra[i + 2] + invA);
+            bgra[i + 3] = 255;
+        }
     }
 
     private PdfRenderResult.Falhou Falhou(
