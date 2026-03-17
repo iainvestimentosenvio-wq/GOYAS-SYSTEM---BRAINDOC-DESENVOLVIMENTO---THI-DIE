@@ -105,9 +105,11 @@
                   <TextBlock Text="Nome Fantasia (opcional)" FontSize="12" FontWeight="SemiBold" />
                   <TextBox x:Name="NomeFantasiaClienteCadastroTextBox"
                            Text="{Binding ClienteNomeFantasiaCadastro}"
-                           Watermark="Ex.: Exemplo Contabil"
+                           Watermark="Ex.: Exemplo Contábil"
                            TabIndex="3"
-                           KeyDown="OnCadastroCampoKeyDown" />
+                           KeyDown="OnCadastroCampoKeyDown"
+                           BorderBrush="{Binding CorBordaNomeFantasiaCadastro}"
+                           BorderThickness="1" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="0" Grid.Row="1" Spacing="6">
@@ -267,7 +269,7 @@
                         Padding="10,6" />
                 <Button Grid.Column="2"
                         Classes="btn-secondary"
-                        Content="Proxima"
+                        Content="Próxima"
                         Command="{Binding ProximaPaginaClientesCommand}"
                         TabIndex="10"
                         Padding="10,6" />
@@ -280,7 +282,7 @@
                       BorderBrush="{DynamicResource PanelBorder}"
                       BorderThickness="1">
                 <Grid ColumnDefinitions="1.0*,1.6*,1.4*,0.7*,1.1*,1.0*" ColumnSpacing="8">
-                  <TextBlock Text="Codigo" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
+                  <TextBlock Text="Código" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
                   <TextBlock Grid.Column="1" Text="Nome" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
                   <TextBlock Grid.Column="2" Text="Fantasia / Grupo" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
                   <TextBlock Grid.Column="3" Text="Tipo" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondary}" />
