@@ -1,0 +1,4 @@
+# Scripts shell devem usar LF para funcionar no Linux (systemd, bash)
+.sync/*.sh text eol=lf
+# Scripts PowerShell
+.sync/*.ps1 text
