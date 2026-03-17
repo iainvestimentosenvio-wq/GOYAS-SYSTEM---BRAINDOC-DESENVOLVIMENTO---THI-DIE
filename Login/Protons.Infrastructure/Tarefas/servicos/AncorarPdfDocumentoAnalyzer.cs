@@ -441,13 +441,11 @@ public sealed class AncorarPdfDocumentoAnalyzer : IAncorarPdfDocumentoAnalyzer
 
     private static void EvictIfNeeded<T>(ConcurrentDictionary<string, T> cache)
     {
-        while (cache.Count >= MaxCacheEntries)
-        {
-            using var enumerator = cache.GetEnumerator();
-            if (enumerator.MoveNext())
-                cache.TryRemove(enumerator.Current.Key, out _);
-            else
-                break;
-        }
+        if (cache.Count < MaxCacheEntries)
+            return;
+
+        var keysToRemove = cache.Keys.Take(cache.Count - MaxCacheEntries + 1).ToList();
+        foreach (var key in keysToRemove)
+            cache.TryRemove(key, out _);
     }
 }

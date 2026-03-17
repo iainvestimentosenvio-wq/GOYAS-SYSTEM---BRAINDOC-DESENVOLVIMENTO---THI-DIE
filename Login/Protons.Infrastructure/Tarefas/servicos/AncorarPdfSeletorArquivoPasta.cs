@@ -9,8 +9,8 @@ namespace Protons.Infrastructure.Tarefas.Services;
 // verifica estabilidade (mtime estável 500ms) e computa SHA-256 do arquivo selecionado.
 public sealed class AncorarPdfSeletorArquivoPasta : IAncorarPdfSeletorArquivo
 {
-    // Janela de estabilidade: mtime deve ser estável por esta duração antes de processar.
     private static readonly TimeSpan EstabilidadeMinima = TimeSpan.FromMilliseconds(500);
+    private const long MaxFileSizeBytes = 200 * 1024 * 1024; // 200 MB
 
     public async Task<SelecaoArquivoResultado?> SelecionarMelhorAsync(
         string pastaPath,
@@ -42,6 +42,9 @@ public sealed class AncorarPdfSeletorArquivoPasta : IAncorarPdfSeletorArquivo
             FileInfo fi;
             try { fi = new FileInfo(arquivo); }
             catch (Exception) { continue; }
+
+            if (fi.Length == 0 || fi.Length > MaxFileSizeBytes)
+                continue;
 
             candidatos.Add(new CandidatoArquivoTexto(
                 arquivo, nomeArquivo, sim, fi.LastWriteTimeUtc, fi.Length,

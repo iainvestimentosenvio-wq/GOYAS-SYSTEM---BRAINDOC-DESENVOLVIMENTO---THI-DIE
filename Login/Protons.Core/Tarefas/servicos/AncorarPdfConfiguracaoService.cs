@@ -422,8 +422,18 @@ public sealed class AncorarPdfConfiguracaoService : IAncorarPdfConfiguracaoServi
         if (string.IsNullOrWhiteSpace(entrada.PastaMonitoradaPath))
             throw new InvalidOperationException("Pasta monitorada é obrigatória.");
 
+        if (entrada.PastaMonitoradaPath.Trim().Length > 500)
+            throw new InvalidOperationException("Caminho da pasta monitorada excede o limite de 500 caracteres.");
+
         if (string.IsNullOrWhiteSpace(entrada.PdfModeloPath))
             throw new InvalidOperationException("PDF modelo é obrigatório.");
+
+        if (entrada.PdfModeloPath.Trim().Length > 500)
+            throw new InvalidOperationException("Caminho do PDF modelo excede o limite de 500 caracteres.");
+
+        var nomeRef = entrada.NomeReferenciaArquivo ?? string.Empty;
+        if (nomeRef.Trim().Length > 200)
+            throw new InvalidOperationException("Nome de referência do arquivo excede o limite de 200 caracteres.");
 
         if (entrada.OcrDpi is < 150 or > 600)
             throw new InvalidOperationException("OcrDpi deve estar entre 150 e 600.");

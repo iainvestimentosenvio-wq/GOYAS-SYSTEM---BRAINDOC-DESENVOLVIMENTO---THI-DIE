@@ -41,7 +41,7 @@ public sealed class AncorarPdfGhostscriptRenderer : IPdfPreviewRenderer
                 if (p is not null && p.WaitForExit(2000) && p.ExitCode == 0)
                     return nome;
             }
-            catch { }
+            catch (Exception) { }
         }
 
         return "gs";
