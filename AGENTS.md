@@ -44,3 +44,9 @@ Protons is a cross-platform desktop application (Avalonia UI / .NET 8 / C#) for 
 6. **Skipped tests** — Tests under `AncorarPdfSmartDetectorFRETests` require external PDF fixtures not in the repo. Ghostscript-dependent tests skip if `gs` is not installed. Both are expected in cloud environments.
 
 7. **No Docker required** — The app uses embedded SQLite for local/dev mode. PostgreSQL is only needed for production server mode.
+
+8. **Roslyn analyzers** — `Directory.Build.props` enables `AnalysisLevel=8.0-recommended` and `EnforceCodeStyleInBuild`. Test projects have suppressed warnings in `testes/Directory.Build.props`. Production code must build with 0 warnings.
+
+9. **UI threading** — After any `ConfigureAwait(false)` in ViewModel/handler code, always marshal UI updates back to the UI thread via `Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(...)`. See `AncorarPdfSmartClickHandler.cs` for the pattern.
+
+10. **Scroll na esteira** — Plain mouse-wheel on the esteira/régua pans the timeline horizontally. Ctrl+wheel zooms. Both behaviors are handled in `ReguaTempoControl.OnPointerWheelChanged` and the `conteudo.PointerWheelChanged` handler in `PainelReguaTempoView.axaml.cs`.
