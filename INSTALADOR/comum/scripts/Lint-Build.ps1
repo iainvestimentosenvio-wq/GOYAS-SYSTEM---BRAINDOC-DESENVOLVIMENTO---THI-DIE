@@ -10,7 +10,7 @@
 #   - Padrões de código
 # =============================================================================
 
-$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $PSScriptRoot
 $ProjectRoot = Split-Path -Parent (Split-Path -Parent $ScriptDir)

@@ -12,7 +12,7 @@
 # A variavel PROJECT_ROOT deve estar definida antes de chamar este script
 # =============================================================================
 
-set -e
+set -euo pipefail
 
 # Se PROJECT_ROOT nao estiver definido, tentar descobrir
 if [ -z "$PROJECT_ROOT" ]; then

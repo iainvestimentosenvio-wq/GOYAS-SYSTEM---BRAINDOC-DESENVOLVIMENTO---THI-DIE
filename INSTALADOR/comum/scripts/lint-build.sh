@@ -62,7 +62,7 @@ if [ -f "$VERSION_FILE" ]; then
 
     # Verificar version.props
     if [ -f "$SCRIPT_DIR/../version.props" ]; then
-        PROPS_VERSION="$(grep -oP '(?<=<VersionPrefix>)[^<]+' "$SCRIPT_DIR/../version.props" || echo "")"
+        PROPS_VERSION="$(sed -n 's/.*<VersionPrefix>\([^<]*\)<.*/\1/p' "$SCRIPT_DIR/../version.props" || echo "")"
         if [ "$PROPS_VERSION" = "$VERSION" ]; then
             ok "version.props consistente"
         else

@@ -22,10 +22,10 @@ if (-not $ProjectRoot) {
 
 # Estrutura de diretorios de saida
 $script:OutputBase = Join-Path $ProjectRoot "INSTALADOR\saida"
-$script:OutputWindows = Join-Path $OutputBase "windows"
-$script:OutputAppImage = Join-Path $OutputBase "appimage"
-$script:OutputDeb = Join-Path $OutputBase "deb"
-$script:OutputMetadata = Join-Path $OutputBase "metadata"
+$script:OutputWindows = Join-Path $script:OutputBase "windows"
+$script:OutputAppImage = Join-Path $script:OutputBase "appimage"
+$script:OutputDeb = Join-Path $script:OutputBase "deb"
+$script:OutputMetadata = Join-Path $script:OutputBase "metadata"
 
 function Initialize-OutputDirs {
     Write-Host "Inicializando estrutura de diretórios de saída..." -ForegroundColor Gray

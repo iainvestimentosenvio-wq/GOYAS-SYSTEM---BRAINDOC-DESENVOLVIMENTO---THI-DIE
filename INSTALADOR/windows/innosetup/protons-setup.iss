@@ -9,9 +9,11 @@
 #endif
 
 [Setup]
+AppId={{B7E3F1A2-9C4D-4E5F-8A6B-1D2E3F4A5B6C}
 AppName=Protons
 AppVersion={#AppVersion}
 AppPublisher={#AppPublisher}
+AppMutex=ProtonsSingleInstance
 DefaultDirName={autopf}\Protons
 DefaultGroupName=Protons
 OutputDir=..\..\saida\windows
@@ -44,7 +46,7 @@ LanguageDetectionMethod=uilanguage
 ;
 ; SignTool deve estar no PATH ou usar caminho completo
 ; Descomentar as linhas abaixo quando o certificado estiver configurado:
-; SignTool=signtool sign /f "%PROTONS_CERT_PATH%" /p "%PROTONS_CERT_PASS%" /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /v $f
+; SignTool=signtool sign /f "%PROTONS_CERT_PATH%" /p "%PROTONS_CERT_PASS%" /fd SHA256 /tr https://timestamp.digicert.com /td SHA256 /v $f
 ; SignedUninstaller=yes
 
 [Languages]

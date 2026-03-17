@@ -1,6 +1,7 @@
 #!/bin/bash
-SELF=$(readlink -f "$0")
-HERE=${SELF%/*}
+set -euo pipefail
+SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+HERE="${SELF%/*}"
 
 # Configurar ambiente
 export PATH="${HERE}/usr/bin:${PATH}"
