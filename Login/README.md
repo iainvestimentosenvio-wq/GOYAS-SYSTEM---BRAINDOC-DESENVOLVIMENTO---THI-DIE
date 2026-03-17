@@ -43,8 +43,7 @@ Login/
 |---|---|
 | Onboarding e comandos | `../GUIA_CONTINUIDADE_IDE.md` |
 | Mapa da documentação | `../INDEX.md` |
-| Padrão de docs espelho | `documentos/DOCS_OVERVIEW.md` |
-| Guia de trabalho | `documentos/doc_login/GUIA_DE_TRABALHO.md` |
+| Padrão de docs | `documentos/DOCS_OVERVIEW.md` |
 
 ## Build
 

@@ -1,41 +1,25 @@
-# DOCS_OVERVIEW - Documentacao espelhada
+# Documentação — Módulo Login
 
 ## Objetivo
-Explicar o padrao de documentacao 1:1 com o codigo e orientar navegacao.
+Documentar decisões, fluxos e módulos principais. O código é a fonte de verdade; docs complementam.
 
-## Regra 1:1 (espelho)
-Para cada arquivo de codigo de producao (`.cs`/`.axaml`), existe um `.md` com o mesmo caminho em `Login/documentos/doc_login/`.
-
-Exemplos:
-- `Login/Protons.Core/Login/servicos/AuthService.cs`
-  -> `Login/documentos/doc_login/Login/Protons.Core/Login/servicos/AuthService.cs.md`
-- `Login/Protons.UI/Login/telas/LoginView.axaml`
-  -> `Login/documentos/doc_login/Login/Protons.UI/Login/telas/LoginView.axaml.md`
-
-## Onde comecar
-- `../INDEX.md`
-- `../GUIA_CONTINUIDADE_IDE.md`
-- `Login/documentos/README.md`
-- `Login/documentos/doc_login/GUIA_DE_TRABALHO.md`
-
-## Estrutura macro (resumo)
-```text
+## Estrutura
+```
 documentos/
-├── README.md
-├── DOCS_OVERVIEW.md
+├── DOCS_OVERVIEW.md     # Este arquivo
 ├── doc_login/
 │   ├── 00_visao_geral.md
 │   ├── 01_requisitos.md
 │   ├── 05_arquitetura_do_codigo.md
-│   ├── 07_plano_de_testes.md
-│   ├── 11_documento_testes.md
-│   ├── 14_roteiro_testes_manuais.md
-│   ├── RESULTADOS_EVOLUCAO_TESTES.md
-│   ├── doc_testes/
-│   └── Login/Protons.* (espelho do codigo)
-└── TEMPLATES/
+│   └── ... (docs temáticos por assunto)
+└── doc_login/Login/     # Docs espelho (opcional para módulos críticos)
 ```
 
-## Regra de atualizacao
-- Mudou codigo -> atualizar doc espelho correspondente.
-- Codigo novo -> criar doc espelho no mesmo caminho relativo.
+## Regra de documentação
+- **Módulos críticos:** criar `.md` espelho quando o código for complexo ou decisões precisarem ser explicadas.
+- **Mudou código:** atualizar doc correspondente no mesmo commit.
+- **Um assunto = um documento.** Sem duplicatas.
+
+## Referências
+- `../../INDEX.md` — mapa da documentação
+- `../../GUIA_CONTINUIDADE_IDE.md` — retomar o projeto

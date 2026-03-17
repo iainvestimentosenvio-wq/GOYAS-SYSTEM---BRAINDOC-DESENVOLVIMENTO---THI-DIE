@@ -1,19 +1,16 @@
-# Documentacao - Modulo Login
+# Documentação — Login
 
-Este diretorio concentra a documentacao ativa do modulo Login.
+Documentação ativa do módulo Login.
 
-## Entradas oficiais
-- `DOCS_OVERVIEW.md` - como funciona o espelhamento de docs.
-- `doc_login/GUIA_DE_TRABALHO.md` - regra operacional para escrever/manter docs.
-- `doc_login/RESULTADOS_EVOLUCAO_TESTES.md` - historico de execucoes de testes.
-- `doc_login/` - espelho de codigo do modulo Login.
+## Entradas
+- `DOCS_OVERVIEW.md` — padrão e estrutura
+- `doc_login/` — docs temáticos e espelho (quando existir)
 
 ## Regras
-1. Toda mudanca em `.cs`/`.axaml` exige atualizacao do doc espelho.
-2. Documentos temporarios/checklists abertos nao sao mantidos como documentacao ativa.
-3. Em caso de divergencia, o codigo e a execucao local prevalecem; o doc deve ser corrigido.
+1. Código é fonte de verdade; doc complementa.
+2. Docs espelho apenas para módulos críticos.
+3. Um assunto = um documento.
 
-## Pontos de partida
+## Referências
 - `../../INDEX.md`
 - `../../GUIA_CONTINUIDADE_IDE.md`
-- `../README.md`
