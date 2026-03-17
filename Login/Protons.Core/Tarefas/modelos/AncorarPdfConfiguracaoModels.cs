@@ -54,6 +54,8 @@ public sealed record AncorarPdfTemplateAncora
     public double LarguraExtracaoRel { get; init; } = 0.2;
     /// <summary>Altura relativa da região de extração (0.0-1.0) quando usa texto âncora. Default 0.05.</summary>
     public double AlturaExtracaoRel { get; init; } = 0.05;
+    /// <summary>N-ésima ocorrência do texto âncora na página (1 = primeira). Default 1.</summary>
+    public int OcorrenciaTextoAncora { get; init; } = 1;
 }
 
 /// <summary>Modo de localização da região de extração.</summary>

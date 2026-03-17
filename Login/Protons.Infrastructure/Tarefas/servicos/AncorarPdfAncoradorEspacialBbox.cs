@@ -41,13 +41,16 @@ public sealed class AncorarPdfAncoradorEspacialBbox : IAncorarPdfAncoradorEspaci
             }
             else
             {
-                var bboxAncora = _buscaTexto.Buscar(pagina, ancora.TextoAncora);
+                var ocorrencia = Math.Max(1, ancora.OcorrenciaTextoAncora);
+                var bboxAncora = _buscaTexto.Buscar(pagina, ancora.TextoAncora, ocorrencia);
                 if (bboxAncora is null)
                 {
-                    resultado.Add(CriarItemVazio(ancora));
-                    continue;
+                    regiaoExtracao = new BboxRelativo(ancora.XRel, ancora.YRel, ancora.LarguraRel, ancora.AlturaRel);
                 }
-                regiaoExtracao = CalcularRegiaoRelativa(bboxAncora, ancora);
+                else
+                {
+                    regiaoExtracao = CalcularRegiaoRelativa(bboxAncora, ancora);
+                }
             }
 
             var palavrasEncontradas = new List<PdfPalavra>();
@@ -70,8 +73,9 @@ public sealed class AncorarPdfAncoradorEspacialBbox : IAncorarPdfAncoradorEspaci
             var valorNorm = AncorarPdfNormalizadorValores.Normalizar(
                 valorBruto, ancora.Metadado.RegraNormalizacao);
 
-            // Confiança: ≥1 palavra encontrada = plena; 0 palavras = 0.
-            var confianca = palavrasEncontradas.Count > 0 ? 1.0 : 0.0;
+            var confianca = palavrasEncontradas.Count > 0
+                ? AncorarPdfNormalizadorValores.ValidarConfianca(valorNorm, ancora.Metadado.RegraNormalizacao)
+                : 0.0;
 
             // Bbox consolidado: envolvente de todas as palavras encontradas (ou âncora como fallback).
             BboxRelativo? bboxSaida = palavrasEncontradas.Count > 0
