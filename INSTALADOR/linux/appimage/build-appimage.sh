@@ -183,7 +183,7 @@ APPIMAGETOOL_BIN="appimagetool"
 
 verify_appimagetool() {
     local tool_path
-    tool_path="$(command -v appimagetool 2>/dev/null)"
+    tool_path="$(command -v appimagetool 2>/dev/null || true)"
 
     if [ -z "$tool_path" ]; then
         echo "⚠️  appimagetool não encontrado no PATH"
