@@ -34,23 +34,38 @@ internal sealed class AncorarPdfAncorasInteractionHandler
     {
         var started = Stopwatch.StartNew();
 
-        var existenteMesmaCor = _context.Ancoras.FirstOrDefault(x =>
-            string.Equals(x.CorHex, _context.CorSelecionada, StringComparison.OrdinalIgnoreCase));
+        var coresUsadas = _context.Ancoras.Select(a => a.CorHex).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var corDesejada = AncorarPdfPalettePolicy.EhCorPermitida(_context.CorSelecionada)
+            ? _context.CorSelecionada
+            : null;
 
-        if (existenteMesmaCor is not null)
+        if (corDesejada is not null && coresUsadas.Contains(corDesejada))
         {
-            _context.CorPendenteSubstituicao = _context.CorSelecionada;
+            _context.CorPendenteSubstituicao = corDesejada;
+            _context.SelecaoPendenteSubstituicao = null;
             _context.ConfirmacaoSubstituicaoCorAberta = true;
+            _context.StatusInteracaoPreview = "Cor já existente. Confirme a substituição para aplicar nova âncora.";
+            return;
+        }
+
+        var corAtribuida = corDesejada ?? AncorarPdfPalettePolicy.CoresFixas.FirstOrDefault(c => !coresUsadas.Contains(c));
+        if (corAtribuida is null)
+        {
+            _context.Mensagem = AncorarPdfPalettePolicy.MensagemLimiteAncorasAtingido;
             return;
         }
 
         var novoEstado = _context.ConverterAncorasAtuais();
-        novoEstado.Add(AncorarPdfAncorasEditorState.CriarAncoraPadrao(_context.CorSelecionada, novoEstado.Count));
+        novoEstado.Add(AncorarPdfAncorasEditorState.CriarAncoraPadrao(corAtribuida, novoEstado.Count));
         _context.AplicarEstadoComHistorico(novoEstado);
-        _context.AncoraSelecionada = _context.Ancoras.LastOrDefault(x =>
-            string.Equals(x.CorHex, _context.CorSelecionada, StringComparison.OrdinalIgnoreCase));
+        var novaAncora = _context.Ancoras.LastOrDefault(x =>
+            string.Equals(x.CorHex, corAtribuida, StringComparison.OrdinalIgnoreCase));
+        _context.AncoraSelecionada = novaAncora;
 
-        _registrarEvento("ancorar_pdf_c2_anchor_add", $"cor={_context.CorSelecionada} total={_context.AncorasCount}");
+        var ctx = novaAncora is not null
+            ? AncorarPdfLogAncoraHelper.FormatarContextoAncora(novaAncora, corAtribuida)
+            : $"cor={corAtribuida} total={_context.AncorasCount}";
+        _registrarEvento("ancorar_pdf_c2_anchor_add", ctx);
         _registrarMetrica("ancorar_pdf_c2_anchor_hit_test_ms", started.ElapsedMilliseconds, "ms", $"total={_context.AncorasCount}");
     }
 
@@ -59,6 +74,8 @@ internal sealed class AncorarPdfAncorasInteractionHandler
         if (!_context.PodeEditar || ancora is null)
             return;
 
+        var ctxRemovido = AncorarPdfLogAncoraHelper.FormatarContextoAncora(ancora, null);
+
         var novoEstado = _context.ConverterAncorasAtuais();
         var removidos = novoEstado.RemoveAll(a =>
             string.Equals(a.CorHex, ancora.CorHex, StringComparison.OrdinalIgnoreCase) &&
@@ -66,6 +83,8 @@ internal sealed class AncorarPdfAncorasInteractionHandler
 
         if (removidos == 0)
             return;
+
+        _registrarEvento("ancorar_pdf_c2_anchor_remove", ctxRemovido);
 
         var indicePreferido = Math.Min(novoEstado.Count, _context.Ancoras.ToList().FindIndex(x => ReferenceEquals(x, ancora)));
         _context.AplicarEstadoComHistorico(novoEstado);
@@ -89,7 +108,7 @@ internal sealed class AncorarPdfAncorasInteractionHandler
             return;
 
         _context.AncoraSelecionada = ancora;
-        _registrarEvento("ancorar_pdf_c2_anchor_select", $"chave={ancora.ChaveTecnica}");
+        _registrarEvento("ancorar_pdf_c2_anchor_select", AncorarPdfLogAncoraHelper.FormatarContextoAncora(ancora, null));
     }
 
     public void Desfazer()
@@ -109,6 +128,7 @@ internal sealed class AncorarPdfAncorasInteractionHandler
         _context.AplicarEstadoAncoras(estado, registrarHistorico: false);
         _registrarEvento("ancorar_pdf_c2_redo", $"total={_context.AncorasCount}");
     }
+
 }
 
 /// <summary>
@@ -118,8 +138,11 @@ internal interface IAncorarPdfAncorasInteractionContext
 {
     bool PodeEditar { get; }
     string CorSelecionada { get; }
+    string Mensagem { get; set; }
+    string StatusInteracaoPreview { get; set; }
     AncorarPdfAncoraItemViewModel? AncoraSelecionada { get; set; }
     string CorPendenteSubstituicao { get; set; }
+    AncorarPdfPreviewSelection? SelecaoPendenteSubstituicao { get; set; }
     bool ConfirmacaoSubstituicaoCorAberta { get; set; }
     IEnumerable<AncorarPdfAncoraItemViewModel> Ancoras { get; }
     int AncorasCount { get; }

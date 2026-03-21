@@ -21,11 +21,12 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
 {
     private const double PreviewZoomMin = 0.50;
     private const double PreviewZoomMax = 4.00;
+    private const int MaxHistoricoUndoRedo = 120;
     private readonly IAncorarPdfConfiguracaoService _service;
     private IAncorarPdfFilePicker _filePicker;
     private readonly IAncorarPdfPreviewAdapter _previewAdapter;
     private readonly AncorarPdfAgendamentoState _agendamentoState = new();
-    private readonly AncorarPdfAncorasEditorState _ancorasEditorState = new(maxHistorico: 120);
+    private readonly AncorarPdfAncorasEditorState _ancorasEditorState = new(maxHistorico: MaxHistoricoUndoRedo);
     private readonly AncorarPdfSaveOrchestrator _saveOrchestrator = new();
     private readonly AncorarPdfPreviewState _previewState;
     private readonly AncorarPdfLifecycleHandler _lifecycleHandler;
@@ -133,6 +134,7 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
     [ObservableProperty] private bool _mostrarDiagnosticosPreview = true;
     [ObservableProperty] private bool _mostrarHeatmapConfianca = true;
     [ObservableProperty] private string _diagnosticoPaginaAtualResumo = string.Empty;
+    [ObservableProperty] private bool _painelAvancadoAberto;
 
     // Smart Click (C12)
     [ObservableProperty] private bool _extracaoEmAndamento;
@@ -485,6 +487,7 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
     [RelayCommand] private void ZoomIn()    => ZoomPreview = Math.Min(4.0, Math.Round(ZoomPreview + 0.25, 2));
     [RelayCommand] private void ZoomOut()   => ZoomPreview = Math.Max(0.5, Math.Round(ZoomPreview - 0.25, 2));
     [RelayCommand] private void ZoomReset() => ZoomPreview = 1.0;
+    [RelayCommand] private void AlternarPainelAvancado() => PainelAvancadoAberto = !PainelAvancadoAberto;
     [RelayCommand(CanExecute = nameof(PodeIrPaginaAnterior))]
     private void IrPaginaAnterior() => PaginaPreviewAtual = Math.Max(1, PaginaPreviewAtual - 1);
     [RelayCommand(CanExecute = nameof(PodeIrPaginaSeguinte))]
@@ -604,12 +607,7 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
         PdfPageBitmap = null;
     }
 
-    /// <summary>
-    /// Sincroniza a posição de scroll do preview canvas com os valores normalizados [0,1].
-    /// Chamado pelo code-behind ao detectar mudança de scroll no ScrollViewer.
-    /// </summary>
-    /// <param name="scrollXRel">Posição horizontal relativa (0 = esquerda, 1 = direita).</param>
-    /// <param name="scrollYRel">Posição vertical relativa (0 = topo, 1 = base).</param>
+    /// <summary>Sincroniza a posição de scroll do preview com os valores normalizados [0,1].</summary>
     public void AtualizarViewportPreview(double scrollXRel, double scrollYRel)
     {
         var viewportAtual = PreviewSnapshot.Viewport;
@@ -621,16 +619,7 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
         AtualizarEstadoPreviewBindings();
     }
 
-    /// <summary>
-    /// Inicializa a VM para criação de uma nova tarefa a partir de um drag-and-drop na esteira.
-    /// Deve ser chamado antes de tornar o modal visível.
-    /// </summary>
-    /// <param name="payload">Dados do drop: FerramentaId, EsteiraId, TempoAlvoUtc.</param>
-    /// <param name="clienteId">Id do cliente dono da esteira.</param>
-    /// <param name="solicitanteUserId">Id do usuário que realizou o drop.</param>
-    /// <param name="solicitanteNome">Nome exibido do solicitante para auditoria.</param>
-    /// <param name="somenteLeitura">Se verdadeiro, a view fica em modo read-only (ex.: auditor).</param>
-    /// <param name="solicitanteEhAdmin">Se verdadeiro, desbloqueia opções restritas a Admin.</param>
+    /// <summary>Inicializa a VM para nova tarefa a partir de drag-and-drop na esteira.</summary>
     public void IniciarNovaPorDrop(
         NovaTarefaDropPayload payload,
         int clienteId,
@@ -640,16 +629,7 @@ public sealed partial class AncorarPdfConfiguracaoViewModel : ObservableObject, 
         bool solicitanteEhAdmin = false) =>
         _lifecycleHandler.IniciarNovaPorDrop(payload, clienteId, solicitanteUserId, solicitanteNome, somenteLeitura, solicitanteEhAdmin);
 
-    /// <summary>
-    /// Carrega uma tarefa existente na VM para edição ou leitura.
-    /// Faz a busca da configuração em background antes de aplicar o Reset,
-    /// evitando flash de tela em branco durante o await.
-    /// </summary>
-    /// <param name="tarefa">Tarefa a ser aberta (deve ter Id e VencimentoUtc válidos).</param>
-    /// <param name="solicitanteUserId">Id do usuário que abriu a tarefa.</param>
-    /// <param name="solicitanteNome">Nome do solicitante para exibição no cabeçalho.</param>
-    /// <param name="somenteLeitura">Se verdadeiro, todos os controles ficam desabilitados.</param>
-    /// <param name="solicitanteEhAdmin">Se verdadeiro, desbloqueia opções Admin (ex.: PDF cross-cliente).</param>
+    /// <summary>Carrega tarefa existente para edição ou leitura.</summary>
     public async Task AbrirExistenteAsync(
         Tarefa tarefa,
         int solicitanteUserId,

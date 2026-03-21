@@ -8,6 +8,8 @@ Centralizar nesta pasta toda a documentação da ferramenta `ancorar_pdf`.
 | Arquivo | Descrição |
 |---|---|
 | `ADR-001_scheduler.md` | Decisão arquitetural de scheduler (Quartz vs Cronos). Status: **aguardando assinatura da equipe**. |
+| `ADR-002_preview_renderer.md` | Decisão de preview: Docnet (PDFium) vs Ghostscript. |
+| `LOGS_ANCORAS_DEBUG.md` | Formato dos logs de âncoras em log_ops.jsonl e como usar para análise/debug sem print. |
 
 ## Estado de implementação
 

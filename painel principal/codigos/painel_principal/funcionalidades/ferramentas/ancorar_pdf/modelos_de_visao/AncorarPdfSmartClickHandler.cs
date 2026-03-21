@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -77,12 +78,25 @@ internal sealed class AncorarPdfSmartClickHandler
     {
         if (_context.SmartDeteccaoAtual is null || !_context.PodeEditar) return;
 
+        var corAtribuida = _context.CorSelecionada;
+        if (string.IsNullOrWhiteSpace(corAtribuida) || !AncorarPdfPalettePolicy.EhCorPermitida(corAtribuida))
+        {
+            var coresUsadas = _context.Ancoras.Select(a => a.CorHex).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            corAtribuida = AncorarPdfPalettePolicy.CoresFixas.FirstOrDefault(c => !coresUsadas.Contains(c));
+            if (corAtribuida is null)
+            {
+                _context.Mensagem = AncorarPdfPalettePolicy.MensagemLimiteAncorasAtingido;
+                return;
+            }
+            _context.CorSelecionada = corAtribuida;
+        }
+
         var indice = _context.AncorasCount;
         var resultado = _context.SmartDeteccaoAtual;
         var ancora = new AncorarPdfTemplateAncora
         {
             Ordem = indice,
-            CorHex = _context.CorSelecionada,
+            CorHex = corAtribuida,
             Pagina = resultado.Pagina,
             XRel = Math.Clamp(resultado.Bbox.X, 0, 1),
             YRel = Math.Clamp(resultado.Bbox.Y, 0, 1),
@@ -115,8 +129,8 @@ internal sealed class AncorarPdfSmartClickHandler
         _context.SetDestaquesPaginaCache(_context.PaginaPreviewAtual);
         _context.ReconstruirDestaquesSmart();
         _context.Mensagem = $"Âncora '{ancora.Metadado.NomeExibido}' criada pelo smart click.";
-        _registrarEvento("ancorar_pdf_c12_smart_click_confirmado",
-            $"tipo={ancora.Metadado.TipoEsperado} chave={ancora.Metadado.ChaveTecnica}");
+        var ctx = $"nome={AncorarPdfLogAncoraHelper.Sanitizar(ancora.Metadado.NomeExibido)} chave={AncorarPdfLogAncoraHelper.Sanitizar(ancora.Metadado.ChaveTecnica)} tipo={ancora.Metadado.TipoEsperado} pagina={ancora.Pagina} xRel={ancora.XRel.ToString("F3", CultureInfo.InvariantCulture)} yRel={ancora.YRel.ToString("F3", CultureInfo.InvariantCulture)}";
+        _registrarEvento("ancorar_pdf_c12_smart_click_confirmado", ctx);
     }
 
     public void CancelarSmartDeteccao()
@@ -295,7 +309,7 @@ internal interface IAncorarPdfSmartClickContext
 {
     IReadOnlyList<PdfPaginaTexto>? PdfPaginasCache { get; }
     bool PodeEditar { get; }
-    string CorSelecionada { get; }
+    string CorSelecionada { get; set; }
     int AncorasCount { get; }
     AncorarPdfAncoraItemViewModel? AncoraSelecionada { get; set; }
     IEnumerable<AncorarPdfAncoraItemViewModel> Ancoras { get; }

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Protons.Core.Tarefas.Models;
@@ -58,7 +59,8 @@ internal sealed class AncorarPdfSaveHandler
         }
 
         var started = Stopwatch.StartNew();
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        const int SaveTimeoutSeconds = 30;
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(SaveTimeoutSeconds));
 
         try
         {
@@ -71,13 +73,16 @@ internal sealed class AncorarPdfSaveHandler
 
             _context.ApplySaveResult(resultado);
             _context.Mensagem = "Configuração salva com sucesso.";
-            _registrarEvento("ancorar_pdf_c2_save_ok", $"tarefa_id={resultado.TarefaId} versao={resultado.VersaoTemplate}");
+            var anchorsCtx = entrada.TemplateAncoras.Count > 0
+                ? $" anchor_count={entrada.TemplateAncoras.Count} anchor_chaves={string.Join(",", entrada.TemplateAncoras.Select(a => AncorarPdfLogAncoraHelper.Sanitizar(a.Metadado.ChaveTecnica, 25)))}"
+                : $" anchor_count=0";
+            _registrarEvento("ancorar_pdf_c2_save_ok", $"tarefa_id={resultado.TarefaId} versao={resultado.VersaoTemplate}{anchorsCtx}");
             _context.OnSaveSucesso?.Invoke(resultado);
         }
         catch (OperationCanceledException)
         {
             var correlationId = AncorarPdfSaveOrchestrator.GerarCorrelationId();
-            var erroTipado = _saveOrchestrator.CriarErroTimeout(TimeSpan.FromSeconds(30), correlationId);
+            var erroTipado = _saveOrchestrator.CriarErroTimeout(TimeSpan.FromSeconds(SaveTimeoutSeconds), correlationId);
             _context.UltimoErroTipado = erroTipado;
             _context.Mensagem = _saveOrchestrator.ResolverMensagemUsuario(erroTipado);
             _registrarEvento("ancorar_pdf_c2_save_timeout",

@@ -15,8 +15,11 @@ public sealed partial class PainelViewModel
 {
     private const string DataHoraCompletaFormato = "dd/MM/yyyy HH:mm";
     private const string HoraFormato = "HH:mm";
+    private const int HistoricoInicialExibido = 100;
+    private const int HistoricoCarregarMaisIncremento = 50;
 
     private readonly Dictionary<int, string> _mapaNomesUsuarios = new();
+    private List<HistoricoExecucaoItem> _historicoCache = [];
     private CancellationTokenSource? _cargaTarefasCts;
     private int _cargaTarefasVersao;
     private int _cargaHistoricoVersao;
@@ -49,6 +52,7 @@ public sealed partial class PainelViewModel
 
     [ObservableProperty] private bool _temAlertaGapCurto;
     [ObservableProperty] private string _alertaGapCurtoTexto = "";
+    [ObservableProperty] private bool _temMaisHistorico;
 
     public bool AbaFuturasSelecionada => CategoriaTimelineSelecionada == CategoriaTimelineEsteira.Futuras;
     public bool AbaAtrasadasSelecionada => CategoriaTimelineSelecionada == CategoriaTimelineEsteira.Atrasadas;
@@ -456,6 +460,8 @@ public sealed partial class PainelViewModel
         TimelineRealizadas.Clear();
         TimelineExibida.Clear();
         HistoricoExecucao.Clear();
+        _historicoCache = [];
+        TemMaisHistorico = false;
 
         PendenciasFuturasKpi = 0;
         PendenciasAtrasadasKpi = 0;
@@ -504,7 +510,7 @@ public sealed partial class PainelViewModel
         if (escopoCarga == EscopoHistoricoExecucao.Global)
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var tarefas = await Task.Run(() => _tarefaService.BuscarHistoricoGlobal(_userId, 120), cancellationToken);
+            var tarefas = await Task.Run(() => _tarefaService.BuscarHistoricoGlobal(_userId, 200), cancellationToken);
             if (!CargaHistoricoAindaAtual(versaoCarga, escopoCarga, clienteIdCarga, cancellationToken))
                 return;
 
@@ -516,7 +522,7 @@ public sealed partial class PainelViewModel
 
             var mapaClientes = clientes.ToDictionary(c => c.Id, c => c.Nome);
 
-            var historicoGlobal = tarefas
+            _historicoCache = tarefas
                 .OrderByDescending(ObterDataHistorico)
                 .ThenByDescending(t => t.Id)
                 .Select(t =>
@@ -524,16 +530,18 @@ public sealed partial class PainelViewModel
                     var clienteNome = mapaClientes.TryGetValue(t.ClienteId, out var nome) ? nome : $"Cliente {t.ClienteId}";
                     return MapearHistorico(t, t.ClienteId, clienteNome, instante);
                 })
-                .Take(30)
                 .ToList();
+
+            var exibirInicial = _historicoCache.Take(HistoricoInicialExibido).ToList();
 
             if (!CargaHistoricoAindaAtual(versaoCarga, escopoCarga, clienteIdCarga, cancellationToken))
                 return;
 
-            ResumoHistoricoExecucao = historicoGlobal.Count == 0
+            ResumoHistoricoExecucao = _historicoCache.Count == 0
                 ? "Histórico global sem execuções recentes."
-                : $"Histórico global ativo ({historicoGlobal.Count} item(ns)).";
-            AtualizarColecao(HistoricoExecucao, historicoGlobal);
+                : $"Histórico global ativo ({_historicoCache.Count} item(ns)).";
+            AtualizarColecao(HistoricoExecucao, exibirInicial);
+            TemMaisHistorico = _historicoCache.Count > HistoricoInicialExibido;
             return;
         }
 
@@ -544,6 +552,8 @@ public sealed partial class PainelViewModel
 
             ResumoHistoricoExecucao = "Selecione um cliente para ver histórico por cliente.";
             HistoricoExecucao.Clear();
+            _historicoCache = [];
+            TemMaisHistorico = false;
             return;
         }
 
@@ -562,20 +572,43 @@ public sealed partial class PainelViewModel
         }
 
         var clienteNomeContexto = string.IsNullOrWhiteSpace(ClienteContextoNome) ? "Cliente" : ClienteContextoNome;
-        var historicoCliente = tarefasCliente
+        _historicoCache = tarefasCliente
             .OrderByDescending(ObterDataHistorico)
             .ThenByDescending(t => t.Id)
             .Select(t => MapearHistorico(t, clienteIdCarga.Value, clienteNomeContexto, instante))
-            .Take(30)
             .ToList();
+
+        var exibirInicialCliente = _historicoCache.Take(HistoricoInicialExibido).ToList();
 
         if (!CargaHistoricoAindaAtual(versaoCarga, escopoCarga, clienteIdCarga, cancellationToken))
             return;
 
-        ResumoHistoricoExecucao = historicoCliente.Count == 0
+        ResumoHistoricoExecucao = _historicoCache.Count == 0
             ? "Histórico por cliente sem execuções recentes."
-            : $"Histórico do cliente ativo ({historicoCliente.Count} item(ns)).";
-        AtualizarColecao(HistoricoExecucao, historicoCliente);
+            : $"Histórico do cliente ativo ({_historicoCache.Count} item(ns)).";
+        AtualizarColecao(HistoricoExecucao, exibirInicialCliente);
+        TemMaisHistorico = _historicoCache.Count > HistoricoInicialExibido;
+    }
+
+    [RelayCommand]
+    private void CarregarMaisHistorico()
+    {
+        RegistrarInteracaoPainel();
+        var exibidos = HistoricoExecucao.Count;
+        if (exibidos >= _historicoCache.Count)
+        {
+            TemMaisHistorico = false;
+            return;
+        }
+
+        var proximos = _historicoCache
+            .Skip(exibidos)
+            .Take(HistoricoCarregarMaisIncremento)
+            .ToList();
+        foreach (var item in proximos)
+            HistoricoExecucao.Add(item);
+
+        TemMaisHistorico = HistoricoExecucao.Count < _historicoCache.Count;
     }
 
     private async Task CarregarKpiExecucoesHojeGlobalAsync(CancellationToken cancellationToken = default)

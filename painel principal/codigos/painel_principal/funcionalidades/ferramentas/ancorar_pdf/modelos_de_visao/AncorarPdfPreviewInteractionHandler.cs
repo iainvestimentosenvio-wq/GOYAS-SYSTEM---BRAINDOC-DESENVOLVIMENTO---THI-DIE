@@ -55,8 +55,14 @@ internal sealed class AncorarPdfPreviewInteractionHandler
 
         if (string.IsNullOrWhiteSpace(_context.CorSelecionada) || !AncorarPdfPalettePolicy.EhCorPermitida(_context.CorSelecionada))
         {
-            _context.StatusInteracaoPreview = "Selecione uma cor válida antes de capturar no preview.";
-            return;
+            var coresUsadas = _context.Ancoras.Select(a => a.CorHex).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var proxCor = AncorarPdfPalettePolicy.CoresFixas.FirstOrDefault(c => !coresUsadas.Contains(c));
+            if (proxCor is null)
+            {
+                _context.StatusInteracaoPreview = AncorarPdfPalettePolicy.MensagemLimiteAncorasAtingido;
+                return;
+            }
+            _context.CorSelecionada = proxCor;
         }
 
         var existenteMesmaCor = _context.Ancoras.FirstOrDefault(x =>
@@ -74,10 +80,14 @@ internal sealed class AncorarPdfPreviewInteractionHandler
         var novoEstado = _context.ConverterAncorasAtuais();
         novoEstado.Add(AncorarPdfAncorasEditorState.CriarAncoraPorSelecao(_context.CorSelecionada, novoEstado.Count, selecao));
         _context.AplicarEstadoComHistorico(novoEstado);
-        _context.AncoraSelecionada = _context.Ancoras.LastOrDefault(x =>
+        var novaAncora = _context.Ancoras.LastOrDefault(x =>
             string.Equals(x.CorHex, _context.CorSelecionada, StringComparison.OrdinalIgnoreCase));
+        _context.AncoraSelecionada = novaAncora;
         _context.StatusInteracaoPreview = "Seleção aplicada no preview.";
-        _registrarEvento("ancorar_pdf_c2_preview_render", $"tipo=selecao total={_context.AncorasCount}");
+        var ctx = novaAncora is not null
+            ? AncorarPdfLogAncoraHelper.FormatarContextoAncora(novaAncora, _context.CorSelecionada)
+            : $"tipo=selecao total={_context.AncorasCount}";
+        _registrarEvento("ancorar_pdf_c2_preview_render", ctx);
     }
 
     public void ConfirmarSubstituicaoCor(string substituirRaw)
@@ -100,14 +110,19 @@ internal sealed class AncorarPdfPreviewInteractionHandler
         if (indice < 0)
             return;
 
+        var antiga = novoEstado[indice];
         novoEstado[indice] = selecao is null
             ? AncorarPdfAncorasEditorState.CriarAncoraPadrao(cor, indice)
             : AncorarPdfAncorasEditorState.CriarAncoraPorSelecao(cor, indice, selecao);
         _context.AplicarEstadoComHistorico(novoEstado);
-        _context.AncoraSelecionada = _context.Ancoras.FirstOrDefault(x =>
+        var novaAncora = _context.Ancoras.FirstOrDefault(x =>
             string.Equals(x.CorHex, cor, StringComparison.OrdinalIgnoreCase));
+        _context.AncoraSelecionada = novaAncora;
         _context.StatusInteracaoPreview = "Substituição aplicada no preview.";
-        _registrarEvento("ancorar_pdf_c2_anchor_replace", $"cor={cor}");
+        var ctx = $"cor={cor} antiga_nome={AncorarPdfLogAncoraHelper.Sanitizar(antiga.Metadado.NomeExibido)} antiga_chave={AncorarPdfLogAncoraHelper.Sanitizar(antiga.Metadado.ChaveTecnica)}";
+        if (novaAncora is not null)
+            ctx += $" nova_nome={AncorarPdfLogAncoraHelper.Sanitizar(novaAncora.NomeExibido)} nova_chave={AncorarPdfLogAncoraHelper.Sanitizar(novaAncora.ChaveTecnica)}";
+        _registrarEvento("ancorar_pdf_c2_anchor_replace", ctx);
     }
 }
 

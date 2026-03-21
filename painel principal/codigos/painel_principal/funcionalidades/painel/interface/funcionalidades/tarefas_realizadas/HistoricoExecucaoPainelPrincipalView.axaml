@@ -176,7 +176,20 @@
                   BorderThickness="1"
                   CornerRadius="8">
             <ScrollViewer MaxHeight="420" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-              <ItemsControl ItemsSource="{Binding HistoricoExecucao}" ItemTemplate="{StaticResource HistoricoExecucaoTemplate}" />
+              <StackPanel Spacing="8">
+                <ItemsControl ItemsSource="{Binding HistoricoExecucao}" ItemTemplate="{StaticResource HistoricoExecucaoTemplate}" />
+                <Button Content="Carregar mais"
+                        Command="{Binding CarregarMaisHistoricoCommand}"
+                        IsVisible="{Binding TemMaisHistorico}"
+                        Padding="16,8"
+                        FontSize="12"
+                        HorizontalAlignment="Center"
+                        Background="{DynamicResource PanelSurfaceAlt}"
+                        BorderBrush="{DynamicResource PanelBorder}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Cursor="Hand" />
+              </StackPanel>
             </ScrollViewer>
           </Border>
         </StackPanel>

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -352,18 +353,7 @@ public sealed partial class PainelViewModel : ViewModelBase, IDisposable
                     DispararComSeguranca(CarregarTarefasClienteAsync(), "ancorar_pdf_c11_recarregar_tarefas_falha");
             },
             timeProvider: timeProvider);
-        AncorarPdfAgendamentoBasico.PropertyChanged += (_, e) =>
-        {
-            if (e.PropertyName is nameof(AncorarPdfAgendamentoBasicoViewModel.EstaAtivo)
-                               or nameof(AncorarPdfAgendamentoBasicoViewModel.EtapaAtual))
-            {
-                OnPropertyChanged(nameof(AgendamentoBasicoAberto));
-                OnPropertyChanged(nameof(ConfiguracaoAncorarPdfVisivelWizard));
-                OnPropertyChanged(nameof(ConfiguracaoAncorarPdfVisivel));
-                OnPropertyChanged(nameof(ModalConfiguracaoTarefaVisivel));
-                OnPropertyChanged(nameof(ConfiguracaoTarefaEhGenerica));
-            }
-        };
+        AncorarPdfAgendamentoBasico.PropertyChanged += OnAgendamentoBasicoPropertyChanged;
 
         InicializarPlaceholders();
         Dispatcher.UIThread.Post(CarregarClientesPersistidos, DispatcherPriority.Background);
@@ -383,6 +373,19 @@ public sealed partial class PainelViewModel : ViewModelBase, IDisposable
                 await Task.Delay(500);
                 await Dispatcher.UIThread.InvokeAsync(CarregarPendenciasAsync);
             }), "pendencias_carga_inicial_falha");
+        }
+    }
+
+    private void OnAgendamentoBasicoPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(AncorarPdfAgendamentoBasicoViewModel.EstaAtivo)
+                           or nameof(AncorarPdfAgendamentoBasicoViewModel.EtapaAtual))
+        {
+            OnPropertyChanged(nameof(AgendamentoBasicoAberto));
+            OnPropertyChanged(nameof(ConfiguracaoAncorarPdfVisivelWizard));
+            OnPropertyChanged(nameof(ConfiguracaoAncorarPdfVisivel));
+            OnPropertyChanged(nameof(ModalConfiguracaoTarefaVisivel));
+            OnPropertyChanged(nameof(ConfiguracaoTarefaEhGenerica));
         }
     }
 
@@ -482,6 +485,7 @@ public sealed partial class PainelViewModel : ViewModelBase, IDisposable
         _disposed = true;
         _timerSessaoInatividade.Stop();
         _timerHoraComputador.Stop();
+        AncorarPdfAgendamentoBasico.PropertyChanged -= OnAgendamentoBasicoPropertyChanged;
         AncorarPdfConfiguracao.Dispose();
         _execucaoAutomaticaSerial.Dispose();
 

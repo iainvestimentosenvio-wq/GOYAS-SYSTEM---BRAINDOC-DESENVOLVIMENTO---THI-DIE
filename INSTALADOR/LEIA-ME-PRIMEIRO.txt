@@ -17,12 +17,17 @@ Comandos adicionais:
     bash build-and-run-windows-gate.sh
     bash troubleshoot-upload.sh
 
+Use os comandos canônicos listados acima.
+
 Build automatizado Linux->VM:
 - `bash build-and-run-windows-gate.sh` faz rebuild de EXE e, quando necessario, MSI sem passo manual na VM.
 - Pre-requisito no host Linux: `dotnet` instalado.
 
-Compatibilidade:
-- Scripts antigos RODAR-* continuam funcionando via wrappers deprecados.
+Teste manual Windows (se aplicável):
+- Copie a pasta para a Área de Trabalho.
+- Clique com botão direito em TESTAR.cmd e "Executar como administrador".
+- Envie win-test-results\<timestamp> com o log.
+- MSI/EXE em INSTALADOR\saida\windows; auto-build requer repo completo + WiX + Inno + .NET SDK.
 
 Transporte de payload:
 - Primario: ISO

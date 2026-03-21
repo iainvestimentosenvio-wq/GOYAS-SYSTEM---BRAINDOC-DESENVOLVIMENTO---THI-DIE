@@ -22,6 +22,8 @@ internal sealed class AncorarPdfPreviewState : IDisposable
     private readonly IAncorarPdfPreviewAdapter _previewAdapter;
     private readonly IPdfPreviewRenderer _renderer;
     private const int MaxCacheEntries = 20;
+    private const double ZoomThresholdUpgradeDpi = 2.9;
+    private const int DpiUpgradeMax = 432;
     private readonly Dictionary<string, byte[]> _pagePngCache = new(StringComparer.Ordinal);
     private CancellationTokenSource? _renderCts;
     private int _ultimoDpiRenderizado;
@@ -87,7 +89,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
     /// e ainda não foi renderizado na resolução máxima.
     /// </summary>
     public bool DeveAgendarUpgrade(double zoomPreview, string? pdfModeloPath)
-        => zoomPreview > 2.9 && _ultimoDpiRenderizado < 432 && !string.IsNullOrWhiteSpace(pdfModeloPath);
+        => zoomPreview > ZoomThresholdUpgradeDpi && _ultimoDpiRenderizado < DpiUpgradeMax && !string.IsNullOrWhiteSpace(pdfModeloPath);
 
     /// <summary>
     /// Renderiza a página 1 do PDF via <see cref="IPdfPreviewRenderer"/> e aplica o bitmap resultante.
@@ -195,7 +197,7 @@ internal sealed class AncorarPdfPreviewState : IDisposable
             if (ct.IsCancellationRequested) return;
             if (!DeveAgendarUpgrade(zoomPreview, pdfModeloPath)) return;
 
-            await RenderizarPdfAsync(pdfModeloPath, paginaAtual, aplicarBitmap, setRenderizando, setMensagem, 432, ct);
+            await RenderizarPdfAsync(pdfModeloPath, paginaAtual, aplicarBitmap, setRenderizando, setMensagem, DpiUpgradeMax, ct);
         }
         catch (OperationCanceledException)
         {

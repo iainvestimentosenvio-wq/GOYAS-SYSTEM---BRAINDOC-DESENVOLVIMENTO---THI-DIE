@@ -1,6 +1,8 @@
 # Ferramenta: Ancorar PDF
 
-Estrutura base para evolução da funcionalidade em camadas:
+Editor de âncoras para extração de dados de PDFs. Para abrir a tela: painel principal → tarefa Ancorar PDF ou wizard "+ Nova tarefa" → Ancorar PDF.
+
+## Estrutura
 
 - `interface/`: Views/controles e integração visual no painel.
 - `modelos_de_visao/`: ViewModels e estado da ferramenta.

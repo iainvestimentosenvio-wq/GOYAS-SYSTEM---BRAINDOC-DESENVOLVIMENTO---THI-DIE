@@ -8,6 +8,9 @@ extract_status_path() {
     if [[ "$path" == *" -> "* ]]; then
         path="${path##* -> }"
     fi
+    # git status pode devolver caminhos entre aspas; git add falha se mantivermos as aspas
+    path="${path#\"}"
+    path="${path%\"}"
     printf '%s\n' "$path"
 }
 

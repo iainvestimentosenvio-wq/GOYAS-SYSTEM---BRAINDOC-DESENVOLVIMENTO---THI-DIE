@@ -23,10 +23,11 @@ bash build-and-run-windows-gate.sh
 
 ### Linux
 ```bash
-# AppImage
-bash linux/appimage/build-appimage.sh
+# Build completo (ícones + DEB + AppImage)
+bash build-linux-completo.sh
 
-# DEB
+# Ou individual:
+bash linux/appimage/build-appimage.sh
 bash linux/deb/build-deb.sh
 ```
 

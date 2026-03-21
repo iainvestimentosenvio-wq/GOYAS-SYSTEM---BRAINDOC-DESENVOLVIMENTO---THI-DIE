@@ -212,35 +212,6 @@
                            Foreground="{DynamicResource AccentPrimaryBrush}"
                            TextWrapping="Wrap" />
 
-                <StackPanel Spacing="8">
-                  <TextBlock Text="Paleta fixa (10 cores)" FontSize="12" FontWeight="SemiBold" />
-                  <ItemsControl ItemsSource="{Binding CoresPaleta}">
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" ItemWidth="38" ItemHeight="30" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <Button Width="34"
-                                Height="26"
-                                Margin="2"
-                                Background="{Binding .}"
-                                BorderBrush="{DynamicResource PanelBorder}"
-                                BorderThickness="1"
-                                CornerRadius="6"
-                                Command="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).SelecionarCorCommand}"
-                                CommandParameter="{Binding .}"
-                                IsEnabled="{Binding $parent[UserControl].((vm:AncorarPdfConfiguracaoViewModel)DataContext).PodeEditar}" />
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                  <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                    <TextBlock Text="Cor ativa" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" />
-                    <Border Width="96" Height="20" Background="{Binding CorSelecionada}" CornerRadius="6" />
-                  </StackPanel>
-                </StackPanel>
-
                 <UniformGrid Columns="2">
                   <Button Content="Undo"
                           Command="{Binding DesfazerCommand}"
@@ -388,13 +359,25 @@
               </StackPanel>
             </Border>
 
+            <Button Content="Avançado ▾"
+                    Command="{Binding AlternarPainelAvancadoCommand}"
+                    Padding="12,8"
+                    FontSize="12"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Background="{DynamicResource PanelSurfaceAlt}"
+                    BorderBrush="{DynamicResource PanelBorder}"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Cursor="Hand" />
+
             <Border Background="{DynamicResource PanelSurfaceAlt}"
                     CornerRadius="12"
                     Padding="12"
                     BorderBrush="{DynamicResource PanelBorder}"
-                    BorderThickness="1">
+                    BorderThickness="1"
+                    IsVisible="{Binding PainelAvancadoAberto}">
               <StackPanel Spacing="10">
-                <TextBlock Text="Avançado" FontSize="14" FontWeight="SemiBold" />
                 <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8" RowSpacing="8">
                   <TextBlock Text="Nome referência" VerticalAlignment="Center" />
                   <TextBox Grid.Column="1"
@@ -733,8 +716,8 @@
               </Grid>
 
               <Border Grid.Row="1"
-                      Background="#09101B"
-                      BorderBrush="#24364F"
+                      Background="#E8ECF0"
+                      BorderBrush="{DynamicResource PanelBorder}"
                       BorderThickness="1"
                       CornerRadius="10"
                       MinHeight="560">
@@ -746,14 +729,14 @@
                   <Canvas x:Name="PreviewCanvas"
                           Width="{Binding PreviewSurfaceWidth}"
                           Height="{Binding PreviewSurfaceHeight}"
-                          Background="#101B2B"
+                          Background="#FFFFFF"
                           PointerPressed="OnPreviewPointerPressed"
                           PointerMoved="OnPreviewPointerMoved"
                           PointerReleased="OnPreviewPointerReleased">
                     <Border Width="{Binding PreviewSurfaceWidth}"
                             Height="{Binding PreviewSurfaceHeight}"
-                            Background="#0E1725"
-                            BorderBrush="#1A2B42"
+                            Background="#F5F5F5"
+                            BorderBrush="{DynamicResource PanelBorder}"
                             BorderThickness="1" />
 
                     <Image Width="{Binding PreviewSurfaceWidth}"

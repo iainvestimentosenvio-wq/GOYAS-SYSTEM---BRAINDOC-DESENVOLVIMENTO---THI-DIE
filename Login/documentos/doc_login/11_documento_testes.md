@@ -66,4 +66,4 @@ Projetos de testes:
 
 ## Observacoes
 - Este documento descreve o proposito de cada suite. Para detalhes de casos individuais, consultar os arquivos de teste listados acima.
-- Os resultados das execucoes ficam registrados em `Login/documentos/doc_login/RESULTADOS_EVOLUCAO_TESTES.md`.
+- Os resultados das execucoes ficam em `Login/testes/TestResults/` (gerados, ignorados pelo git).

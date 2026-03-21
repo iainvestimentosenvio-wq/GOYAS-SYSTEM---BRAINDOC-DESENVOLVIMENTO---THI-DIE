@@ -14,7 +14,7 @@ Manter documentacao curta, confiavel e util para evolucao tecnica do projeto.
 - `documentacao/painel/drag_drop/`: regras e fluxo do drag-and-drop.
 - `documentacao/painel/codigo/`: docs por arquivo critico.
 - `documentacao/modelos/`: template para criar doc por codigo.
-- `../DOC_AUMEJAMOS/README.md`: trilha de evolucao planejada para o futuro.
+- Planejamento futuro: issues e backlog do projeto.
 
 ## Regra para criar doc por codigo
 Criar doc por arquivo quando pelo menos um criterio se aplicar:

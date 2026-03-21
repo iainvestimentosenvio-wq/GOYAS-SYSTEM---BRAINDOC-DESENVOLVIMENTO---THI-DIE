@@ -82,7 +82,7 @@ cd "../Login" && bash scripts/hot_reload_painel_direto.sh
 
 ## 7. Regras de documentação
 
-- Arquivo de código novo (`.cs` / `.axaml`) exige doc espelho com o mesmo caminho relativo e sufixo `.md`.
+- Docs espelho apenas para módulos críticos (ver `Login/documentos/DOCS_OVERVIEW.md`).
 - Não criar checklists de execução ou docs de pendência no branch ativo — use issues/commits.
 - Um assunto = um documento. Sem duplicatas.
 
@@ -91,7 +91,7 @@ cd "../Login" && bash scripts/hot_reload_painel_direto.sh
 ## 8. Estratégia de commit
 
 1. Alteração de código.
-2. Atualização do doc espelho correspondente.
+2. Atualizar doc correspondente (se existir).
 3. `dotnet build` + `dotnet test` com 0 falhas.
 4. Commit único por tema funcional.
 
@@ -103,5 +103,5 @@ cd "../Login" && bash scripts/hot_reload_painel_direto.sh
 |---|---|
 | Build falhou | `dotnet build Protons.sln -c Debug` — ler a saída de erro completa |
 | Painel não abre | Fazer build primeiro; depois rodar o script novamente |
-| Doc inconsistente | Comparar doc espelho com o arquivo de código correspondente |
+| Doc inconsistente | Comparar doc com o código correspondente |
 | Banco bloqueado | Verificar `PROTONS_DATA_KEY_BASE64` (seção 5) |

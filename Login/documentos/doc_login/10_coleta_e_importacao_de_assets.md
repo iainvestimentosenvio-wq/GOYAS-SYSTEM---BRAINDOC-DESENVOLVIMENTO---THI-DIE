@@ -2,7 +2,7 @@
 
 ## A) Quando executar este passo
 - Executar quando a UI de login estiver funcional e houver assets reais.
-- Se fizer parte de validacao de release, registrar em `RESULTADOS_EVOLUCAO_TESTES.md`.
+- Se fizer parte de validacao de release, registrar em issues ou changelog.
 
 ## B) Arquivos necessarios (inputs)
 - Logo: PNG (preferencial), idealmente com transparencia.

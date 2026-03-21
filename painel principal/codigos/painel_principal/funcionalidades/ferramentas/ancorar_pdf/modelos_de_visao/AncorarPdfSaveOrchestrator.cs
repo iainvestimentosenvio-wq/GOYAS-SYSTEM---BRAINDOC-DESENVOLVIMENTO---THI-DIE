@@ -37,112 +37,169 @@ internal sealed class AncorarPdfSaveOrchestrator : IDisposable
 
     public bool Validar(AncorarPdfSaveValidationInput input, Func<string?, string> normalizarTimezoneId, out string erro)
     {
+        if (!ValidarNomeTarefa(input, out erro)) return false;
+        if (!ValidarPastaPdf(input, out erro)) return false;
+        if (!ValidarPdfModelo(input, out erro)) return false;
+        if (!ValidarOpacidade(input, out erro)) return false;
+        if (!ValidarPdfModeloCrossCliente(input, out erro)) return false;
+        if (!ValidarOcr(input, out erro)) return false;
+        if (!ValidarHorario(input, out erro)) return false;
+        if (!ValidarParametros(input, out erro)) return false;
+        if (!ValidarDst(input, out erro)) return false;
+        if (!ValidarTimezone(input, normalizarTimezoneId, out erro)) return false;
+        erro = string.Empty;
+        return true;
+    }
+
+    private static bool ValidarNomeTarefa(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (string.IsNullOrWhiteSpace(input.NomeTarefaPersonalizado))
         {
             erro = "Nome da tarefa é obrigatório.";
             return false;
         }
-
         if (input.NomeTarefaPersonalizado.Trim().Length > 200)
         {
             erro = "Nome da tarefa não pode ter mais de 200 caracteres.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarPastaPdf(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (string.IsNullOrWhiteSpace(input.PastaMonitoradaPath))
         {
             erro = "Pasta monitorada é obrigatória.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarPdfModelo(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (string.IsNullOrWhiteSpace(input.PdfModeloPath))
         {
             erro = "PDF modelo é obrigatório.";
             return false;
         }
-
-        var pdfModeloPathNormalizado = input.PdfModeloPath.Trim();
-        if (Directory.Exists(pdfModeloPathNormalizado))
+        var path = input.PdfModeloPath.Trim();
+        if (Directory.Exists(path))
         {
             erro = "No modal avançado, PDF modelo deve ser arquivo .pdf. Pasta é permitida apenas no wizard básico.";
             return false;
         }
-
-        if (!pdfModeloPathNormalizado.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+        if (!path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
         {
             erro = "PDF modelo deve ter extensão .pdf.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarOpacidade(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (input.HighlightOpacity is < 0.30 or > 0.45)
         {
             erro = "Opacidade de destaque deve estar entre 30% e 45%.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarPdfModeloCrossCliente(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (input.PdfModeloCrossCliente && !input.SolicitanteEhAdmin)
         {
             erro = "Somente Admin pode usar PDF modelo cross-cliente.";
             return false;
         }
-
-        if (input.OcrFallbackAtivo)
+        if (input.PdfModeloCrossCliente)
         {
-            if (input.OcrDpi is < 150 or > 600)
-            {
-                erro = "OCR DPI deve estar entre 150 e 600.";
-                return false;
-            }
-
-            if (!EhOcrLangValido(input.OcrLang))
-            {
-                erro = "OCR idiomas deve usar formato Tesseract, por exemplo: por+eng.";
-                return false;
-            }
+            var len = input.PdfModeloCrossClienteJustificativa?.Trim().Length ?? 0;
+            if (len < 15) { erro = "Informe justificativa cross-cliente com no mínimo 15 caracteres."; return false; }
+            if (len > 500) { erro = "Justificativa cross-cliente não pode exceder 500 caracteres."; return false; }
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarOcr(AncorarPdfSaveValidationInput input, out string erro)
+    {
+        if (!input.OcrFallbackAtivo) { erro = string.Empty; return true; }
+        if (input.OcrDpi is < 150 or > 600)
+        {
+            erro = "OCR DPI deve estar entre 150 e 600.";
+            return false;
+        }
+        if (!EhOcrLangValido(input.OcrLang))
+        {
+            erro = "OCR idiomas deve usar formato Tesseract, por exemplo: por+eng.";
+            return false;
+        }
+        erro = string.Empty;
+        return true;
+    }
+
+    private static bool ValidarHorario(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (input.HoraSelecionada is < 0 or > 23)
         {
             erro = "Hora inválida. Informe um valor entre 0 e 23.";
             return false;
         }
-
         if (input.MinutoSelecionado is < 0 or > 59)
         {
             erro = "Minuto inválido. Informe um valor entre 0 e 59.";
             return false;
         }
-
         if (input.SegundoSelecionado is < 0 or > 59)
         {
             erro = "Segundo inválido. Informe um valor entre 0 e 59.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarParametros(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (input.LimiarSimilaridadeNome is < 0 or > 1)
         {
             erro = "Limiar de similaridade deve estar entre 0 e 1.";
             return false;
         }
-
         if (input.PrioridadeExecucaoSelecionada is < 1 or > 5)
         {
             erro = "Prioridade de execução deve estar entre 1 e 5.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarDst(AncorarPdfSaveValidationInput input, out string erro)
+    {
         if (!input.DstHorarioInvalidoPolicies.Contains(input.DstHorarioInvalidoPolicySelecionada, StringComparer.Ordinal))
         {
             erro = "Política DST para horário inválido é obrigatória.";
             return false;
         }
-
         if (!input.DstHorarioAmbiguoPolicies.Contains(input.DstHorarioAmbiguoPolicySelecionada, StringComparer.Ordinal))
         {
             erro = "Política DST para horário ambíguo é obrigatória.";
             return false;
         }
+        erro = string.Empty;
+        return true;
+    }
 
+    private static bool ValidarTimezone(AncorarPdfSaveValidationInput input, Func<string?, string> normalizarTimezoneId, out string erro)
+    {
         try
         {
             _ = normalizarTimezoneId(input.TimezoneIdSelecionado);
@@ -152,19 +209,6 @@ internal sealed class AncorarPdfSaveOrchestrator : IDisposable
             erro = ex.Message;
             return false;
         }
-
-        if (input.PdfModeloCrossCliente && (input.PdfModeloCrossClienteJustificativa?.Trim().Length ?? 0) < 15)
-        {
-            erro = "Informe justificativa cross-cliente com no mínimo 15 caracteres.";
-            return false;
-        }
-
-        if (input.PdfModeloCrossCliente && (input.PdfModeloCrossClienteJustificativa?.Trim().Length ?? 0) > 500)
-        {
-            erro = "Justificativa cross-cliente não pode exceder 500 caracteres.";
-            return false;
-        }
-
         erro = string.Empty;
         return true;
     }

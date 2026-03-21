@@ -415,6 +415,7 @@ public sealed class AncorarPdfCommandStackState
 public static class AncorarPdfPalettePolicy
 {
     public const int MaximoAncoras = 10;
+    public const string MensagemLimiteAncorasAtingido = "Limite de 10 âncoras atingido.";
     public const double ContrasteMinimoSobreBranco = 1.4;
 
     public static readonly IReadOnlyList<string> CoresFixas =

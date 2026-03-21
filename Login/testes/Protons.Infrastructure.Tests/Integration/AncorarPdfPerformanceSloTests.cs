@@ -160,6 +160,40 @@ public sealed class AncorarPdfPerformanceSloTests : IDisposable
             "cancellation deve propagar como OperationCanceledException, não exceção interna");
     }
 
+    /// <summary>
+    /// SLO_P06: Memória — 50 extrações consecutivas sem crescimento linear detectável.
+    /// Força GC antes/depois e verifica que o crescimento de heap está dentro de limite (20MB).
+    /// </summary>
+    [Fact]
+    [Trait("Category", "SLO_P06")]
+    public async Task SLO_P06_Memoria_50_extracaoes_sem_crescimento_linear()
+    {
+        var pdfPath = CriarPdfComPalavras(_tempDir, "slo-p06.pdf", paginas: 1, palavrasPorPagina: 50);
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+        var memAntes = GC.GetTotalMemory(forceFullCollection: true);
+
+        const int iteracoes = 50;
+        for (int i = 0; i < iteracoes; i++)
+        {
+            var paginas = await _extrator.ExtrairAsync(pdfPath, CancellationToken.None);
+            paginas.Should().NotBeEmpty();
+        }
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+        var memDepois = GC.GetTotalMemory(forceFullCollection: true);
+        var crescimento = (long)(memDepois - memAntes);
+
+        // Limite: 20MB para 50 extrações (extrator deve liberar recursos entre chamadas)
+        const long limiteBytes = 20L * 1024 * 1024;
+        crescimento.Should().BeLessThanOrEqualTo(limiteBytes,
+            $"crescimento de memória em 50 extrações deve ser ≤ {limiteBytes / (1024 * 1024)}MB; obtido={crescimento / (1024 * 1024):F1}MB");
+    }
+
     public void Dispose()
     {
         try { Directory.Delete(_tempDir, recursive: true); } catch { }

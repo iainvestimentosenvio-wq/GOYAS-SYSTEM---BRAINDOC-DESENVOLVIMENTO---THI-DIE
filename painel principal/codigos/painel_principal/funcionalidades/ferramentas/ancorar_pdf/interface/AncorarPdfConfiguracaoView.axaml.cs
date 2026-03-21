@@ -167,9 +167,8 @@ public partial class AncorarPdfConfiguracaoView : UserControl
 
     private void OnPreviewWheelZoom(object? sender, PointerWheelEventArgs e)
     {
-        if (!e.KeyModifiers.HasFlag(KeyModifiers.Control)) return;
         if (Vm is null) return;
-        e.Handled = true; // impede scroll normal quando Ctrl está pressionado
+        e.Handled = true;
         var passo = e.Delta.Y > 0 ? 0.15 : -0.15;
         Vm.ZoomPreview = Math.Clamp(Vm.ZoomPreview + passo, 0.5, 4.0);
     }

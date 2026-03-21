@@ -97,6 +97,7 @@ internal sealed class AncorarPdfPdfRenderHandler
             _registrarEvento?.Invoke("ancorar_pdf_pdf_extract_error", $"{ex.GetType().Name}: {ex.Message}");
             SetNaUi(() =>
             {
+                _context.Mensagem = "Não foi possível extrair texto do PDF. Verifique se o arquivo está acessível.";
                 _context.SetDocumentoAnalise(null);
                 _context.SetPdfPaginasCache(null);
                 _context.DefinirTotalPaginasPreview(1);

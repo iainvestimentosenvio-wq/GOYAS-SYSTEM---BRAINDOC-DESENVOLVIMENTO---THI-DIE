@@ -503,6 +503,22 @@ public sealed class PainelAncorarPdfChecklist02ViewModelTests
     }
 
     [Fact]
+    [Trait("Category", "Memoria")]
+    public void PainelViewModel_Dispose_DeveSerIdempotenteENaoLancar()
+    {
+        using var harness = new PainelAncorarPdfChecklist01TestHarness();
+        var vm = harness.ViewModel;
+
+        var act = () =>
+        {
+            vm.Dispose();
+            vm.Dispose();
+        };
+
+        act.Should().NotThrow("Dispose deve ser idempotente e remover handler PropertyChanged sem NullReference");
+    }
+
+    [Fact]
     [Trait("ChecklistGate", "C2_P1")]
     [Trait("Category", "C2_P1")]
     public async Task C2_P1_SelecionarPdfModeloNoModalDeveUsarPickerDeArquivo()

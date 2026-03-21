@@ -7,6 +7,7 @@ using Protons.UI.Painel.Funcionalidades.Ferramentas.AncorarPdf.Interface;
 
 namespace Protons.UI.Painel.Funcionalidades.Ferramentas.AncorarPdf.ModelosDeVisao;
 
+/// <summary>Estado do editor de âncoras com undo/redo.</summary>
 internal sealed class AncorarPdfAncorasEditorState
 {
     private readonly AncorarPdfCommandStackState _commandStack;

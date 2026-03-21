@@ -15,12 +15,25 @@ public sealed class AncorarPdfStorageProviderFilePicker : IAncorarPdfFilePicker
         _resolveTopLevel = resolveTopLevel;
     }
 
+    /// <summary>
+    /// Garante que a janela principal esteja em foco antes de abrir o diálogo.
+    /// Corrige o bug onde o file picker aparece atrás da janela (Linux/Windows).
+    /// Ref: Avalonia #10751, #10998
+    /// </summary>
+    private void GarantirJanelaEmFoco()
+    {
+        var topLevel = _resolveTopLevel();
+        if (topLevel is Window window)
+            window.Activate();
+    }
+
     public async Task<string?> SelecionarPastaAsync()
     {
         var storage = _resolveTopLevel()?.StorageProvider;
         if (storage is null)
             return null;
 
+        GarantirJanelaEmFoco();
         var resultado = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
             Title = "Selecionar pasta monitorada",
@@ -36,6 +49,7 @@ public sealed class AncorarPdfStorageProviderFilePicker : IAncorarPdfFilePicker
         if (storage is null)
             return null;
 
+        GarantirJanelaEmFoco();
         var resultado = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Selecionar arquivo PDF modelo",
@@ -52,6 +66,7 @@ public sealed class AncorarPdfStorageProviderFilePicker : IAncorarPdfFilePicker
         if (storage is null)
             return null;
 
+        GarantirJanelaEmFoco();
         var resultado = await storage.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
             Title = "Selecionar pasta do PDF modelo (wizard)",

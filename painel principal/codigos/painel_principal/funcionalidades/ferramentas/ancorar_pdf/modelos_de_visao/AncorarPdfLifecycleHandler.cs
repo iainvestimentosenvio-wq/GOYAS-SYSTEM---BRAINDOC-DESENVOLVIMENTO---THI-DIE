@@ -44,9 +44,24 @@ internal sealed class AncorarPdfLifecycleHandler
 
     public void Reset()
     {
+        ResetPreview();
+        ResetAgendamento();
+        ResetAncoras();
+    }
+
+    private void ResetPreview()
+    {
         _previewState.ResetRenderState();
         _context.EstaRenderizandoPdf = false;
+        _context.ModoApenasAncoras = false;
+        _context.LimparDocumentoAnalisePreview();
+        _context.SetOnAncorasCallbacks(null, null);
+        _context.DisposePdfPageBitmap();
+        _context.SetPdfPageBitmap(null);
+    }
 
+    private void ResetAgendamento()
+    {
         var agoraLocal = _timeProvider.GetLocalNow().DateTime;
 
         _context.EstaAtiva = false;
@@ -94,13 +109,11 @@ internal sealed class AncorarPdfLifecycleHandler
         _context.PaginaPreviewAtual = 1;
         _context.TotalPaginasPreview = 1;
         _context.StatusInteracaoPreview = AncorarPdfFerramentaInteracaoCatalogo.ObterInstrucao(_context.FerramentaInteracaoSelecionada);
-        _context.ClearAncoras();
-        _context.LimparDocumentoAnalisePreview();
-        _context.ModoApenasAncoras = false;
-        _context.SetOnAncorasCallbacks(null, null);
-        _context.DisposePdfPageBitmap();
-        _context.SetPdfPageBitmap(null);
+    }
 
+    private void ResetAncoras()
+    {
+        _context.ClearAncoras();
         _ancorasEditorState.DefinirEstadoInicial([]);
         _previewState.AtualizarDocumento(null);
         _previewState.AtualizarAncoras([], _context.HighlightOpacity);

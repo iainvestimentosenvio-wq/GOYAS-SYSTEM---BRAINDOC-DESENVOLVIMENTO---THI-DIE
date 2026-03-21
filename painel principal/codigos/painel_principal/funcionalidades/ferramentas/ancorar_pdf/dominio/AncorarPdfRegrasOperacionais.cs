@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Protons.UI.Painel.Funcionalidades.Ferramentas.AncorarPdf.Dominio;
 
+/// <summary>Validação de documento e nome para matching de cliente em PDFs.</summary>
 public sealed class AncorarPdfValidacaoClientePolicy
 {
     public static bool ValidarDocumentoENome(
@@ -64,6 +65,7 @@ public sealed class AncorarPdfValidacaoClientePolicy
     }
 }
 
+/// <summary>Política de detecção de misfire (atraso) em execuções agendadas.</summary>
 public static class AncorarPdfMisfireBacklogPolicy
 {
     private static readonly TimeSpan LimiarPadraoMisfire = TimeSpan.FromSeconds(15);

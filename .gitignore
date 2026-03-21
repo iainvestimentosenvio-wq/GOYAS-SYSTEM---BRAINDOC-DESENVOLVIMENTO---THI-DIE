@@ -21,6 +21,10 @@ Login/testes/TestResults/smoke/*.trx
 
 # Ambiente virtual Python
 .venv/
+INSTALADOR/ativos/icons/.venv/
+
+# Artefatos de documentação histórica
+documentacao_ativa/
 Login/Protons.UI/appsettings.json
 INSTALADOR/comum/version.env
 

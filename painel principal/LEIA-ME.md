@@ -51,4 +51,4 @@ cd "../Login" && dotnet test Protons.sln -c Debug
 
 ## Documentacao de futuro
 
-- Planejamento de evolucao: `DOC_AUMEJAMOS/README.md`
+- Planejamento de evolucao: issues e backlog do projeto

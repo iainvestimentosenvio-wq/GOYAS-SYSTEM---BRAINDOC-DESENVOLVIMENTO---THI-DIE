@@ -57,8 +57,9 @@ public sealed class AncorarPdfDocnetRenderer : IPdfPreviewRenderer
                 _ = DocLib.Instance;
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[AncorarPdfDocnetRenderer] DocLib.Instance indisponível: {ex.GetType().Name} - {ex.Message}");
                 return false;
             }
         }
@@ -140,10 +141,14 @@ public sealed class AncorarPdfDocnetRenderer : IPdfPreviewRenderer
     /// </summary>
     private static MemoryStream BgraParaPng(byte[] rawBgra, int width, int height)
     {
-        // Docnet.Core retorna pixels em formato BGRA (4 bytes/pixel, não premultiplicado).
-        using var skBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
-        IntPtr pixelPtr = skBitmap.GetPixels();
-        Marshal.Copy(rawBgra, 0, pixelPtr, rawBgra.Length);
+        using var skBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
+        using var canvas = new SKCanvas(skBitmap);
+        canvas.Clear(SKColors.White);
+
+        using var srcBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
+        IntPtr srcPtr = srcBitmap.GetPixels();
+        Marshal.Copy(rawBgra, 0, srcPtr, rawBgra.Length);
+        canvas.DrawBitmap(srcBitmap, 0, 0);
 
         using var skImage = SKImage.FromBitmap(skBitmap);
         using var encoded = skImage.Encode(SKEncodedImageFormat.Png, 100);
