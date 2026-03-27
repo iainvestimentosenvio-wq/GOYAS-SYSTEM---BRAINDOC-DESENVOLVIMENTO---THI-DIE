@@ -1,295 +1,207 @@
-# PROJETO PROTONS
+# Protons
 
-WPF Desktop Application for secure user authentication and management.
+**Local-first desktop automation system for accounting offices.**
+Built with .NET 8 + Avalonia UI — runs offline, no cloud dependency, no external APIs.
 
-## Overview
+> **PT-BR:** Sistema de automação desktop local para escritórios de contabilidade. Roda 100% offline, sem dependência de nuvem.
 
-- **Platform**: Windows (offline-only)
-- **Framework**: .NET Framework 4.8
-- **Architecture**: MVVM with strict layer separation
-- **Database**: SQLite (local)
-- **UI**: WPF with MaterialDesignInXamlToolkit
+---
 
-## Current Status
+## What it solves
 
-**Planning/Documentation Phase** - No code implementation yet.
+Accounting offices operate with sensitive fiscal data — NFS-e invoices, tax reports, shared-drive files — spread across multiple desktops and a local server. Manual processes create audit gaps, data loss risk, and no traceability of who did what.
 
-Comprehensive documentation available in `documentos/doc_login/`:
-- Requirements and specifications
-- Architecture and design
-- Security and audit guidelines
-- Testing strategy
+Protons provides:
+- **Secure local authentication** with full audit trail
+- **Admin approval workflow** for new user access
+- **Multi-database support** (SQLite offline or PostgreSQL for multi-PC environments)
+- **Cross-platform desktop UI** that runs on both Windows and Linux
 
-## Project Structure
+---
+
+## Architecture
+
+Protons follows a strict **Clean Architecture** / **MVVM** pattern:
 
 ```
-PROJETO PROTONS/
-├── .codex/                 # Architecture rules and policies
-├── .vscode/                # VSCode configuration
-├── documentos/             # Documentation (mirrors code structure)
-│   ├── doc_login/          # Login module documentation
-│   └── TEMPLATES/          # Documentation templates
-├── App/                    # Source code (empty - planning phase)
-│   └── Login/              # Login module structure
-│       ├── UI/             # Views and ViewModels
-│       ├── Core/           # Business logic and services
-│       └── Infrastructure/ # Data access and repositories
-└── scripts/                # Utility scripts
+UI (Avalonia/MVVM)
+   └── Protons.Core      — domain logic, services, validation rules
+         └── Protons.Infrastructure  — SQLite / PostgreSQL repositories
 ```
 
-## Critical Rules
+**Rule:** The UI layer never accesses the database directly.
+All data flows through `Protons.Core` services → `Protons.Infrastructure` repositories.
 
-### Documentation Mirroring (MANDATORY)
+See [`docs/showcase/architecture-overview.md`](docs/showcase/architecture-overview.md) for the full component diagram.
 
-Every code file MUST have a corresponding documentation file:
-- Code: `App/Login/AuthService.cs`
-- Doc: `documentos/doc_login/App/Login/AuthService.md`
+---
 
-**Before ANY commit**:
-1. Create/update .md for each .cs file
-2. Update `documentos/DOCS_OVERVIEW.md`
-3. Update module INDEX (e.g., `documentos/doc_login/INDEX.md`)
+## Tech stack
 
-### Architecture Rules
+| Layer | Technology |
+|---|---|
+| UI framework | [Avalonia UI](https://avaloniaui.net/) (MVVM, XAML, cross-platform) |
+| Runtime | .NET 8 |
+| Language | C# (nullable enabled, implicit usings) |
+| Local database | SQLite (via `Microsoft.Data.Sqlite`) |
+| Server database | PostgreSQL (optional, multi-PC mode) |
+| Password hashing | PBKDF2 + salt (no plaintext storage) |
+| Test framework | xUnit + Moq |
+| Installer (Windows) | WiX Toolset + Inno Setup |
+| Installer (Linux) | AppImage + DEB |
 
-- **Layer Flow**: UI → Core → Infrastructure (one-way only)
-- **No Direct DB Access**: ViewModels must NOT access SQLite
-- **Service Isolation**: Core services must NOT reference WPF
+---
 
-### Security Requirements
+## Modules
 
-- **Password Storage**: PBKDF2 + salt (NEVER plaintext)
-- **Lockout**: 5 failed attempts → 30 second lockout
-- **Audit Events**: All critical actions logged
-- **No Sensitive Logs**: Never log passwords, full CPF, etc.
+| Module | Status | Description |
+|---|---|---|
+| **Login** | Active | Authentication, registration, admin approval, audit log |
+| **Painel Principal** | In progress | Main dashboard, notification center, admin controls |
+| **INSTALADOR** | Active | Cross-platform installers (Windows MSI/Inno, Linux AppImage/DEB) |
 
-## Setup
+See [`docs/showcase/modules-overview.md`](docs/showcase/modules-overview.md) for details on each module.
 
-### Prerequisites
+---
 
-- Windows 10+
-- Visual Studio 2019/2022 Community Edition (recommended) OR VSCode
-- .NET Framework 4.8 SDK
-- Git
+## Repository structure
 
-### Initial Setup
+```
+.
+├── Login/                        # Login module (main deliverable)
+│   ├── Protons.Core/             # Domain: services, models, validation
+│   ├── Protons.Infrastructure/   # Repositories: SQLite + PostgreSQL
+│   ├── Protons.UI/               # Avalonia UI: views, viewmodels
+│   ├── testes/                   # Test projects (xUnit + Moq)
+│   └── documentos/               # Module-level documentation
+│       └── doc_login/            # Architecture docs, test results, guides
+│
+├── painel principal/             # Main dashboard module (in progress)
+│   ├── telas/                    # Avalonia views
+│   └── modelos_de_visao/         # ViewModels
+│
+├── INSTALADOR/                   # Installer scripts and assets
+│   ├── windows/                  # WiX + Inno Setup
+│   ├── linux/                    # AppImage + DEB
+│   ├── comum/                    # Shared scripts and versioning
+│   ├── ativos/                   # Icon pipeline and visual assets
+│   └── documentos/               # Installer documentation
+│
+├── docs/
+│   └── showcase/                 # Public-facing technical documentation
+│       ├── architecture-overview.md
+│       ├── modules-overview.md
+│       ├── roadmap-public.md
+│       └── repo-branding-suggestions.md
+│
+└── INDEX.md                      # Internal project map and migration plan
+```
 
-1. Clone repository (or initialize git if starting fresh)
+---
+
+## Build & test
+
+**Prerequisites:** .NET 8 SDK (`dotnet --version` must show `8.x`)
+
 ```bash
-git init
+# Build the Login module
+cd Login
+dotnet build Protons.sln -c Release
+
+# Run tests
+cd Login
+dotnet test Protons.sln -c Release
 ```
 
-2. Install Git hooks (enforces documentation rules)
-```powershell
-.\scripts\setup-git-hooks.ps1
+**Validated environment:** Ubuntu 22.04, .NET 8.0.122
+**Build result:** `Compilação com êxito — 0 Aviso(s), 0 Erro(s)`
+**Test result:** 192 total — 191 passed, 1 known failure (lockout audit mock, tracked)
+
+> Tests for `Protons.UI` require a display (Avalonia) and are not run in headless CI. Core and Infrastructure tests run fully headless.
+
+---
+
+## Database configuration
+
+Protons supports two modes, configured in `appsettings.json`:
+
+```json
+{
+  "Database": {
+    "Mode": "Local",
+    "Sqlite": { "Path": "" },
+    "Server": {
+      "Provider": "Postgres",
+      "ConnectionString": "Host=localhost;Port=5432;Database=protons;Username=protons;Password=..."
+    }
+  },
+  "Audit": { "UseHashChain": false }
+}
 ```
 
-3. Install VSCode extensions (if using VSCode)
-```bash
-code --install-extensions
-```
+- **Local mode:** SQLite at `%AppData%\Protons\protons.db` (Windows) or `~/.local/share/Protons/protons.db` (Linux)
+- **Server mode:** PostgreSQL — tables are auto-created on first run
+- Config file location priority: `%AppData%/Protons/appsettings.json` → `appsettings.json` next to the executable
 
-4. Copy environment template
-```bash
-cp .env.example .env
-```
+---
 
-### Complete Setup (Automated)
+## Security model
 
-Run the complete setup script:
-```powershell
-.\scripts\complete-setup.ps1
-```
+- Passwords stored with **PBKDF2 + salt** — no plaintext ever persisted
+- **Lockout:** 5 consecutive failed attempts → 30-second block (configurable)
+- Auth errors return a **generic message** — no e-mail existence leak
+- **Audit chain:** optional hash-chained audit log — detects tampering of local records
+- Sensitive data (CPF, passwords) never written to log files
 
-This will:
-- Verify Git installation
-- Initialize repository if needed
-- Configure Git settings
-- Install pre-commit hooks
-- Create .env from template
-- Install VSCode extensions
-- Verify setup completeness
+---
 
-### Development with VSCode
+## Project status
 
-**Important**: VSCode support for WPF is limited. For full WPF development (visual designers, XAML intellisense), use Visual Studio.
+| Area | Status |
+|---|---|
+| Login module — core & infra | Stable, 192 tests |
+| Login module — UI (Avalonia) | Functional, manual-tested on Windows |
+| Admin approval workflow | Implemented |
+| Audit log with hash chain | Implemented |
+| Dual-database (SQLite + Postgres) | Implemented |
+| Main dashboard | In progress |
+| Windows installer (MSI + Inno) | Active development |
+| Linux installer (AppImage + DEB) | Active development |
+| CI/CD pipeline | Planned |
 
-VSCode setup is suitable for:
-- Documentation work
-- Light code editing
-- Code review
-- Scripts and automation
+---
 
-### Development with Visual Studio
+## Roadmap
 
-Recommended IDE for WPF development:
-1. Open `.sln` file when created
-2. Install Extensions: MaterialDesignInXamlToolkit
-3. Build with F5
+See [`docs/showcase/roadmap-public.md`](docs/showcase/roadmap-public.md) for the full roadmap.
 
-## Documentation
+**Short version:**
+1. Stabilize Login + installer → production-ready release
+2. Main dashboard with notification center
+3. First automation module (NFS-e import from PDF)
+4. PostgreSQL server mode — multi-PC deployment
+5. CI/CD pipeline (GitHub Actions)
 
-All documentation in `documentos/`:
-- `DOCS_OVERVIEW.md` - Central index
-- `doc_login/` - Login module documentation
-- `TEMPLATES/` - Templates for new documentation
+---
 
-**Key Documents**:
-- [Vision and Overview](documentos/doc_login/00_visao_geral.md)
-- [Requirements](documentos/doc_login/01_requisitos.md)
-- [Architecture](documentos/doc_login/05_arquitetura_do_codigo.md)
-- [Security](documentos/doc_login/04_seguranca_e_auditoria.md)
-- [Pre-commit Hooks](documentos/SETUP_PRECOMMIT_HOOKS.md)
+## Development notes
 
-## Scripts
+- Internal documentation lives in `Login/documentos/doc_login/` and `INSTALADOR/documentos/`
+- Architecture decisions are documented in `INDEX.md` (project map) and individual module docs
+- Every code file has a mirrored documentation file — see `INDEX.md` for the mirroring convention
+- The `painel principal/` folder is currently compiled by `Login/Protons.UI` — it will be extracted into its own project when the module is ready
+- `win-test-results/`, `imagem para referencia/`, `ENTREGA-COMPARTILHADA/` are local working folders, not part of the source tree
 
-- `scripts/verify-doc-mirror.ps1` - Verify documentation completeness
-- `scripts/setup-git-hooks.ps1` - Install pre-commit hooks
-- `scripts/complete-setup.ps1` - Automated complete setup
-- `scripts/verify-setup.ps1` - Verify setup completeness
-
-## Verification
-
-Check documentation mirror:
-```powershell
-.\scripts\verify-doc-mirror.ps1
-```
-
-Auto-fix missing docs:
-```powershell
-.\scripts\verify-doc-mirror.ps1 -Fix
-```
-
-Verify complete setup:
-```powershell
-.\scripts\verify-setup.ps1
-```
-
-## Build (Future)
-
-When code exists:
-```bash
-# VSCode
-Ctrl+Shift+B
-
-# Visual Studio
-F5 (Build and Run)
-
-# Command Line
-msbuild Protons.sln /p:Configuration=Debug
-```
-
-## Testing (Future)
-
-Unit tests:
-```bash
-dotnet test
-```
+---
 
 ## Contributing
 
-1. Read `.codex/PROJECT_RULES.md`
-2. Follow MVVM architecture
-3. **Document before/with code** (not after)
-4. Run `verify-doc-mirror.ps1` before committing
-5. Pre-commit hook will enforce documentation rules
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelines.
 
-## Development Workflow
+## Security
 
-### Before Starting Work
-```bash
-# Update from remote
-git pull origin main
+See [`SECURITY.md`](SECURITY.md) for the vulnerability disclosure policy.
 
-# Create feature branch
-git checkout -b feature/your-feature-name
-```
+---
 
-### While Coding
-1. Create C# code file in `App/Login/`
-2. Immediately create/update corresponding .md in `documentos/doc_login/App/Login/`
-3. Document: objective, functionality, inputs/outputs, dependencies, testing
-
-### Before Committing
-```powershell
-# Verify documentation is complete
-.\scripts\verify-doc-mirror.ps1
-
-# Check git status
-git status
-
-# Stage files
-git add .
-
-# Commit (will be checked by pre-commit hook)
-git commit
-```
-
-### Commit Message Template
-The project includes a commit message template with checklists for:
-- Documentation mirroring
-- Architecture compliance
-- Security requirements
-
-Template is automatically used: `git commit` opens template in editor.
-
-## Configuration Files
-
-- `.cursorrules` - AI assistant behavior rules (strict documentation enforcement)
-- `.editorconfig` - Code formatting standards (C#, XAML, XML)
-- `.env.example` - Environment variable template
-- `.gitignore` - Git ignore patterns (protects sensitive data)
-- `.gitmessage` - Commit message template
-- `.vscode/settings.json` - VSCode configuration
-- `.vscode/extensions.json` - Recommended extensions
-- `.vscode/tasks.json` - Build tasks
-- `.vscode/launch.json` - Debug configuration
-
-## Pre-commit Hooks
-
-The project enforces documentation rules via Git pre-commit hooks. These hooks:
-- Block commits without corresponding .md files
-- Verify .md files are not empty
-- Ensure indices are updated
-
-**Important**: Hooks run on Windows with Git Bash. To test:
-```bash
-# Create test file
-echo "test" > App/Login/Test.cs
-git add App/Login/Test.cs
-git commit -m "test"
-# Expected: BLOCKED with error message
-```
-
-For manual hook installation or troubleshooting, see:
-```
-documentos/SETUP_PRECOMMIT_HOOKS.md
-```
-
-## Troubleshooting
-
-### Pre-commit hook not running
-- Verify Git Bash is installed (required on Windows)
-- Check `.git/hooks/pre-commit` exists
-- Run: `.\scripts\setup-git-hooks.ps1`
-
-### VSCode IntelliSense not working
-- Install `ms-dotnettools.csharp` extension
-- Wait for OmniSharp to initialize
-- If still not working, use Visual Studio instead
-
-### Documentation mirror verification fails
-- Run: `.\scripts\verify-doc-mirror.ps1 -Fix`
-- This auto-generates missing .md files from template
-- Edit generated files with proper content
-
-## License
-
-[To be determined]
-
-## References
-
-- [WPF Documentation](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/)
-- [MaterialDesignInXamlToolkit](https://github.com/MaterialDesignInXAML/MaterialDesignInXamlToolkit)
-- [MVVM Pattern](https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm)
-- [.NET Framework 4.8](https://learn.microsoft.com/en-us/dotnet/framework/)
+*This repository is under active development. APIs and module structure may change.*
